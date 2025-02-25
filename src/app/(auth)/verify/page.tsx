@@ -4,7 +4,7 @@ import { useAuth } from "@/components/provider/auth-provider";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useSearchParams, redirect } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 
 const Varify = () => {
   const searchParams = useSearchParams();
@@ -37,4 +37,12 @@ const Varify = () => {
   );
 };
 
-export default Varify;
+const VarifyPage = () => {
+  return (
+    <Suspense>
+      <Varify />
+    </Suspense>
+  );
+};
+
+export default VarifyPage;
