@@ -8,6 +8,8 @@ const transporter = nodemailer.createTransport({
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
   },
+  secure: true, // use SSL
+  port: 465, // use the appropriate port
 } as nodemailer.TransportOptions);
 
 async function mail({
