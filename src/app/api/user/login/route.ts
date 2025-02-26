@@ -13,13 +13,15 @@ export async function POST(req: Request) {
   try {
     const user = await isRightUser(info.username, info.password);
     if (user?.message) {
-      return NextResponse.json({ message: user.message, status: 401 });
+      return NextResponse.json(user, { status: 401 });
     } else {
-      const response = NextResponse.json({
-        message: `${user.username} welcome to app!`,
-        status: 200,
-        user: user,
-      });
+      const response = NextResponse.json(
+        {
+          message: `${user.username} welcome to app!`,
+          user: user,
+        },
+        { status: 200 }
+      );
       const jwtToken = setUser({ user });
       console.log("jwt token", jwtToken);
       response.cookies.set({
@@ -30,21 +32,27 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "server error!.", error: error });
+    return NextResponse.json(
+      { message: "server error!.", error: error },
+      { status: 500 }
+    );
   }
 }
 
 const isRightUser = async function (username: string, password: string) {
   const user = await User.findOne({ username: username });
   if (!user) {
-    return { message: "wrong username." };
+    return { message: "wrong username.", status: 400 };
   }
   const isOk = await bcrypt.compare(password, user.password);
   if (!isOk) {
-    return { message: "wrong password." };
+    return { message: "wrong password.", status: 401 };
+  }
+  if (!user.isVerified) {
+    return { message: "please verify your email.", status: 406 };
   }
   if (user.role !== "admin" && user.status !== "active") {
-    return { message: "blocked by admin!!" };
+    return { message: "blocked by admin!!", status: 403 };
   }
   return user;
 };

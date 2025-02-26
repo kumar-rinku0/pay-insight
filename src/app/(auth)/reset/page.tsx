@@ -1,6 +1,6 @@
 "use client";
 
-import { redirect, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useAuth } from "@/components/provider/auth-provider";
 
 const formSchema = z
   .object({
@@ -43,10 +42,6 @@ const formSchema = z
 const ResetPassword = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("TOKEN");
-  const auth = useAuth();
-  if (!auth?.loading && auth?.isAuthenticated) {
-    redirect("/");
-  }
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,7 +60,7 @@ const ResetPassword = () => {
       .put(`/api/user/reset?TOKEN=${token}`, values)
       .then((res) => {
         console.log(res);
-        if (res.data.status === 200) {
+        if (res.status === 200) {
           console.log("PASSWORD updated!");
         } else {
           console.log(res.data.message);

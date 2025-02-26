@@ -36,7 +36,7 @@ export default function Home() {
 
   return (
     <div className="app">
-      <Header isThemeToggle={false} root={true} />
+      <Header root={true} />
       <h1>Welcome to my front-end application</h1>
       <button onClick={handleClick}>user</button>
       <Link href="/login"> login</Link>

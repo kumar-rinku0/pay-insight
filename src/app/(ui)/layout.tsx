@@ -1,4 +1,3 @@
-import ThemeProvider from "@/components/provider/theme-provider";
 import "../globals.css";
 import Header from "@/components/partial/header";
 import SideNav from "@/components/partial/side-nav";
@@ -9,8 +8,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ThemeProvider>
-      <Header isThemeToggle={true} />
+    <div>
+      <Header />
       <div className="flex">
         <SideNav />
         <div className="w-full overflow-x-auto bg-accent dark:bg-primary">
@@ -23,6 +22,6 @@ export default async function RootLayout({
           </div>
         </div>
       </div>
-    </ThemeProvider>
+    </div>
   );
 }

@@ -18,7 +18,7 @@ const Varify = () => {
       .get(`/api/user/verify?TOKEN=${token}`)
       .then((res) => {
         console.log(res);
-        if (res.data.status === 200) {
+        if (res.status === 200) {
           const { username, _id, email } = res.data.user;
           auth?.signIn({ username, email, _id });
         } else {
@@ -26,7 +26,7 @@ const Varify = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.status);
       });
   };
   return (

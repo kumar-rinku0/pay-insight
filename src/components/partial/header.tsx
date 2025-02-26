@@ -31,13 +31,7 @@ import {
   // NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 
-const Header = ({
-  isThemeToggle,
-  root,
-}: {
-  isThemeToggle?: boolean;
-  root?: boolean;
-}) => {
+const Header = ({ root }: { root?: boolean }) => {
   return (
     <header className="flex items-center h-16 px-4 border-b border-b-neutral-200 dark:border-b-neutral-800 shrink-0 md:px-6 justify-between">
       {root && (
@@ -49,11 +43,9 @@ const Header = ({
         <div className="flex justify-center items-center">
           <Skeleton className="h-9 w-9 rounded-full" />
         </div>
-        {isThemeToggle && (
-          <div>
-            <ThemeToggle />
-          </div>
-        )}
+        <div>
+          <ThemeToggle />
+        </div>
       </div>
       <div className={`sm:hidden z-10`}>
         <MobileNav />

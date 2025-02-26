@@ -10,10 +10,16 @@ export async function POST(req: NextRequest) {
   const { email } = await req.json();
   const user = await User.findOne({ email });
   if (!user) {
-    return NextResponse.json({ message: "Incorrect email.", status: 400 });
+    return NextResponse.json(
+      { message: "Incorrect email.", status: 400 },
+      { status: 400 }
+    );
   }
   createMailSystem({ address: email, type: "reset", _id: user._id });
-  return NextResponse.json({ message: "mail sent.", status: 200 });
+  return NextResponse.json(
+    { message: "mail sent.", status: 200 },
+    { status: 200 }
+  );
 }
 
 export async function PUT(req: NextRequest) {
@@ -22,14 +28,23 @@ export async function PUT(req: NextRequest) {
     const TOKEN = searchParams.get("TOKEN");
     const { password, confirmPassword } = await req.json();
     if (password !== confirmPassword) {
-      return NextResponse.json({ message: "Incorrect password.", status: 400 });
+      return NextResponse.json(
+        { message: "Incorrect password.", status: 400 },
+        { status: 400 }
+      );
     }
     const user = await User.findOne({ resetToken: TOKEN });
     if (!user) {
-      return NextResponse.json({ message: "Invalid Token!", status: 401 });
+      return NextResponse.json(
+        { message: "Invalid Token!", status: 401 },
+        { status: 401 }
+      );
     }
     if (user && user.resetTokenExpire < Date.now()) {
-      return NextResponse.json({ message: "Token has expired.", status: 401 });
+      return NextResponse.json(
+        { message: "Token has expired.", status: 401 },
+        { status: 401 }
+      );
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -41,16 +56,22 @@ export async function PUT(req: NextRequest) {
       },
       { new: true }
     );
-    return NextResponse.json({
-      message: "Password updated!",
-      status: 200,
-      user: res,
-    });
+    return NextResponse.json(
+      {
+        message: "Password updated!",
+        status: 200,
+        user: res,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.log(error);
-    return NextResponse.json({
-      message: "Internal Server Error.",
-      status: 500,
-    });
+    return NextResponse.json(
+      {
+        message: "Internal Server Error.",
+        status: 500,
+      },
+      { status: 500 }
+    );
   }
 }

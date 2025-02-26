@@ -39,7 +39,8 @@ const emailFormSchema = z.object({
 const Login = () => {
   const [loading, setLoading] = useState({
     button: false,
-    password: false,
+    forgetPassword: false,
+    verifyUser: false,
     overlay: false,
   });
   const auth = useAuth();
@@ -66,15 +67,31 @@ const Login = () => {
       .post("/api/user/login", values)
       .then((res) => {
         console.log(res.data);
-        if (res.data.status === 200) {
+        if (res.status === 200) {
           const { username, _id, email } = res.data.user;
           auth?.signIn({ username, _id, email });
-        } else {
-          console.log(res.data.message);
-          setLoading((values) => ({ ...values, password: true }));
         }
       })
       .catch((err) => {
+        if (err.status === 401) {
+          console.log(err.response.data);
+          const { status } = err.response.data;
+          if (status === 401) {
+            setLoading((values) => ({
+              ...values,
+              forgetPassword: true,
+              verifyUser: false,
+            }));
+          } else if (status === 406) {
+            setLoading((values) => ({
+              ...values,
+              verifyUser: true,
+              forgetPassword: false,
+            }));
+          }
+        } else {
+          console.log("Server Error!");
+        }
         console.log(err);
       })
       .finally(() => {
@@ -92,30 +109,54 @@ const Login = () => {
   function handleSubmitEmail(values: z.infer<typeof emailFormSchema>) {
     setLoading((values) => ({ ...values, button: true }));
     console.log(values);
-    axios
-      .post("/api/user/reset", values)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.status === 200) {
-          console.log("Email sent, to reset password.");
-        } else if (res.data.status === 400) {
-          console.log("Incorrect mail address!");
-        } else {
-          console.log("Server Error!");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoading((values) => ({ ...values, button: false }));
-      });
+    if (loading.forgetPassword) {
+      axios
+        .post("/api/user/reset", values)
+        .then((res) => {
+          console.log(res.data);
+          if (res.status === 200) {
+            console.log("Email sent, to reset password.");
+          }
+        })
+        .catch((err) => {
+          if (err.status === 400) {
+            console.log(err.response.data);
+          } else {
+            console.log("Server Error!");
+          }
+          console.log(err);
+        })
+        .finally(() => {
+          setLoading((values) => ({ ...values, button: false }));
+        });
+    } else if (loading.verifyUser) {
+      axios
+        .post("/api/user/verify", values)
+        .then((res) => {
+          console.log(res.data);
+          if (res.status === 200) {
+            console.log("Email sent, to verify email.");
+          }
+        })
+        .catch((err) => {
+          if (err.status === 400) {
+            console.log(err.response.data);
+          } else {
+            console.log("Server Error!");
+          }
+          console.log(err);
+        })
+        .finally(() => {
+          setLoading((values) => ({ ...values, button: false }));
+        });
+    }
   }
 
-  function handleForgetPassword() {
-    setLoading((values) => ({ ...values, overlay: true }));
-    // axios.get("/api/user/reset");
-    // setLoading((values) => ({ ...values, password: false }));
+  function handleOpenOverlay() {
+    setLoading((values) => ({
+      ...values,
+      overlay: true,
+    }));
   }
 
   function handleCancel() {
@@ -151,6 +192,14 @@ const Login = () => {
                         </FormItem>
                       )}
                     />
+                    {loading.verifyUser && (
+                      <span
+                        className="self-end text-sm underline cursor-pointer"
+                        onClick={handleOpenOverlay}
+                      >
+                        verify email
+                      </span>
+                    )}
                   </div>
                   <div className="flex flex-col gap-2">
                     <FormField
@@ -166,12 +215,14 @@ const Login = () => {
                         </FormItem>
                       )}
                     />
-                    <span
-                      className="self-end text-sm underline cursor-pointer"
-                      onClick={handleForgetPassword}
-                    >
-                      forget password
-                    </span>
+                    {loading.forgetPassword && (
+                      <span
+                        className="self-end text-sm underline cursor-pointer"
+                        onClick={handleOpenOverlay}
+                      >
+                        forget password
+                      </span>
+                    )}
                   </div>
                   <Button
                     type="submit"
@@ -198,10 +249,20 @@ const Login = () => {
       {loading.overlay && (
         <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
           <CardHeader>
-            <CardTitle className="text-xl">Reset Password</CardTitle>
-            <CardDescription>
-              Enter your Email to reset password.
-            </CardDescription>
+            {loading.verifyUser && (
+              <>
+                <CardTitle className="text-xl">Verifiy Email</CardTitle>
+                <CardDescription>Enter your Email to Verify!.</CardDescription>
+              </>
+            )}
+            {loading.forgetPassword && (
+              <>
+                <CardTitle className="text-xl">Reset Password</CardTitle>
+                <CardDescription>
+                  Enter your Email to reset password.
+                </CardDescription>
+              </>
+            )}
           </CardHeader>
           <CardContent>
             <div>
@@ -243,7 +304,7 @@ const Login = () => {
                       className="w-full"
                       disabled={loading.button}
                     >
-                      {loading.button ? "Loading..." : "Reset Password"}
+                      {loading.button ? "Loading..." : "Submit"}
                     </Button>
                   </div>
                 </form>
