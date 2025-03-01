@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import { z } from "zod";
@@ -26,9 +26,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 
 const formSchema = z.object({
-  username: z.string().min(2).max(20),
+  email: z.string().min(2).max(50).email(),
   password: z.string().min(8).max(50),
 });
 
@@ -43,6 +45,7 @@ const Login = () => {
     verifyUser: false,
     overlay: false,
   });
+  const router = useRouter();
   const auth = useAuth();
   if (!auth?.loading && auth?.isAuthenticated) {
     redirect("/");
@@ -52,7 +55,7 @@ const Login = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -70,12 +73,14 @@ const Login = () => {
         if (res.status === 200) {
           const { username, _id, email } = res.data.user;
           auth?.signIn({ username, _id, email });
+          toast(`${username} welcome to onvoid!`);
         }
       })
       .catch((err) => {
         if (err.status === 401) {
           console.log(err.response.data);
-          const { status } = err.response.data;
+          const { status, message } = err.response.data;
+          toast(message);
           if (status === 401) {
             setLoading((values) => ({
               ...values,
@@ -164,7 +169,10 @@ const Login = () => {
   }
 
   return (
-    <main className="flex h-screen justify-center items-center">
+    <main className="flex h-[90vh] sm:h-screen justify-center items-center">
+      <Button className="fixed top-4 left-4" onClick={() => router.back()}>
+        <ArrowLeft className="text-2xl" />
+      </Button>
       {!loading.overlay && (
         <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
           <CardHeader>
@@ -181,12 +189,12 @@ const Login = () => {
                   <div className="flex flex-col gap-2">
                     <FormField
                       control={form.control}
-                      name="username"
+                      name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Username</FormLabel>
+                          <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="Username" {...field} />
+                            <Input placeholder="Email Address" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

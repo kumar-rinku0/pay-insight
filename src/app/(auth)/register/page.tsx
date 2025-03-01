@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,6 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAuth } from "@/components/provider/auth-provider";
+import { ArrowLeft } from "lucide-react";
 
 const formSchema = z.object({
   username: z.string().min(2).max(20),
@@ -34,6 +35,7 @@ const formSchema = z.object({
 
 const Register = () => {
   const auth = useAuth();
+  const router = useRouter();
   if (!auth?.loading && auth?.isAuthenticated) {
     redirect("/");
   }
@@ -57,16 +59,22 @@ const Register = () => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          console.log("mail sent. verify email adderess!");
+          toast("mail sent. verify email adderess!");
+          router.push("/login");
         }
       })
       .catch((err) => {
         console.log(err);
+        const { message } = err.response.data;
+        toast(message);
       });
   }
 
   return (
-    <main className="flex h-screen justify-center items-center">
+    <main className="flex h-[90vh] sm:h-screen justify-center items-center">
+      <Button className="fixed top-4 left-4" onClick={() => router.back()}>
+        <ArrowLeft className="text-2xl" />
+      </Button>
       <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
         <CardHeader>
           <CardTitle className="text-xl">Sign Up</CardTitle>

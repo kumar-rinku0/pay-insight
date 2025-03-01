@@ -7,6 +7,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -32,6 +33,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     isVerified: {
       type: Boolean,
@@ -48,19 +50,19 @@ const userSchema = new Schema(
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     const salt = await bcrypt.genSalt(10);
-    const hexcode = await bcrypt.hash(this.password, salt);
+    const hexcode = await bcrypt.hash(this.password.trim(), salt);
     this.password = hexcode;
   }
   next();
 });
 
 userSchema.statics.isRightUser = async function (
-  username: string,
+  email: string,
   password: string
 ) {
-  const user = await User.findOne({ username }).exec();
+  const user = await User.findOne({ email }).exec();
   if (!user) {
-    return { message: "wrong username." };
+    return { message: "wrong email." };
   }
   const isOk = await bcrypt.compare(password, user.password);
   if (!isOk) {

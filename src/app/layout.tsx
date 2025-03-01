@@ -3,6 +3,7 @@ import { Geist, Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/provider/auth-provider";
 import ThemeProvider from "@/components/provider/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default async function RootLayout({
       >
         <ThemeProvider>
           <AuthProvider>{children}</AuthProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

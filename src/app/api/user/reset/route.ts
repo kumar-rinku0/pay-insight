@@ -47,7 +47,7 @@ export async function PUT(req: NextRequest) {
       );
     }
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password.trim(), salt);
     const res = await User.findByIdAndUpdate(
       user._id,
       {

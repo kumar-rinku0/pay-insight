@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const info = await req.json();
   console.log(info);
   const userbyusername = await User.findOne({
-    username: info.username,
+    username: info.username.trim(),
   });
   if (userbyusername) {
     return NextResponse.json(
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     );
   }
   const userbyemail = await User.findOne({
-    email: info.email,
+    email: info.email.trim(),
   });
   if (userbyemail) {
     return NextResponse.json(
@@ -35,7 +35,12 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
-  const user = new User(info);
+
+  const user = new User({
+    username: info.username.trim(),
+    email: info.email.trim(),
+    password: info.password.trim(),
+  });
   try {
     await user.save();
   } catch (error) {

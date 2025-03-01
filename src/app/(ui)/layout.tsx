@@ -1,12 +1,21 @@
+"use client";
+
 import "../globals.css";
 import Header from "@/components/partial/header";
 import SideNav from "@/components/partial/side-nav";
+import { useAuth } from "@/components/provider/auth-provider";
+import { redirect } from "next/navigation";
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const auth = useAuth();
+  console.log(auth);
+  if (!auth?.loading && !auth?.isAuthenticated) {
+    redirect("/login");
+  }
   return (
     <div>
       <Header />

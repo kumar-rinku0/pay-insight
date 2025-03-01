@@ -5,20 +5,15 @@ import Header from "@/components/partial/header";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/provider/auth-provider";
-
-// interface inputsType  {
-//   username: string;
-//   password: string;
-//   email: string;
-// };
+import { LoaderPinwheel } from "lucide-react";
 
 export default function Home() {
   const auth = useAuth();
 
   if (auth?.loading) {
     return (
-      <div className="h-[80vh] flex items-center justify-center">
-        <h3>loading...</h3>
+      <div className="h-[90vh] flex items-center justify-center">
+        <LoaderPinwheel className="animate-spin h-10 w-10" />
       </div>
     );
   }
