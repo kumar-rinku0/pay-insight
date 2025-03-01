@@ -6,7 +6,7 @@ import axios from "axios";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -59,11 +59,14 @@ const Register = () => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          console.log("mail sent. verify email adderess!");
+          toast("mail sent. verify email adderess!");
+          router.push("/login");
         }
       })
       .catch((err) => {
         console.log(err);
+        const { message } = err.response.data;
+        toast(message);
       });
   }
 

@@ -27,6 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   username: z.string().min(2).max(20),
@@ -72,12 +73,14 @@ const Login = () => {
         if (res.status === 200) {
           const { username, _id, email } = res.data.user;
           auth?.signIn({ username, _id, email });
+          toast(`${username} welcome to onvoid!`);
         }
       })
       .catch((err) => {
         if (err.status === 401) {
           console.log(err.response.data);
-          const { status } = err.response.data;
+          const { status, message } = err.response.data;
+          toast(message);
           if (status === 401) {
             setLoading((values) => ({
               ...values,
