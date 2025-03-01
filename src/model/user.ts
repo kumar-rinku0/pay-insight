@@ -7,6 +7,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -32,6 +33,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     isVerified: {
       type: Boolean,
@@ -48,7 +50,7 @@ const userSchema = new Schema(
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     const salt = await bcrypt.genSalt(10);
-    const hexcode = await bcrypt.hash(this.password, salt);
+    const hexcode = await bcrypt.hash(this.password.trim(), salt);
     this.password = hexcode;
   }
   next();

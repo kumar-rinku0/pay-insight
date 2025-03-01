@@ -26,7 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ArrowLeftCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const formSchema = z.object({
   username: z.string().min(2).max(20),
@@ -166,9 +166,9 @@ const Login = () => {
   }
 
   return (
-    <main className="flex h-screen justify-center items-center">
+    <main className="flex h-[90vh] sm:h-screen justify-center items-center">
       <Button className="fixed top-4 left-4" onClick={() => router.back()}>
-        <ArrowLeftCircle className="text-2xl" />
+        <ArrowLeft className="text-2xl" />
       </Button>
       {!loading.overlay && (
         <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">

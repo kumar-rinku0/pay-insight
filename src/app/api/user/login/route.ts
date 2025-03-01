@@ -40,11 +40,11 @@ export async function POST(req: Request) {
 }
 
 const isRightUser = async function (username: string, password: string) {
-  const user = await User.findOne({ username: username });
+  const user = await User.findOne({ username: username.trim() });
   if (!user) {
     return { message: "wrong username.", status: 400 };
   }
-  const isOk = await bcrypt.compare(password, user.password);
+  const isOk = await bcrypt.compare(password.trim(), user.password);
   if (!isOk) {
     return { message: "wrong password.", status: 401 };
   }
