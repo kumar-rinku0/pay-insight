@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   const info = await req.json();
   console.log(info);
   try {
-    const user = await isRightUser(info.username, info.password);
+    const user = await isRightUser(info.email, info.password);
     if (user?.message) {
       return NextResponse.json(user, { status: 401 });
     } else {
@@ -39,10 +39,10 @@ export async function POST(req: Request) {
   }
 }
 
-const isRightUser = async function (username: string, password: string) {
-  const user = await User.findOne({ username: username.trim() });
+const isRightUser = async function (email: string, password: string) {
+  const user = await User.findOne({ email: email.trim() });
   if (!user) {
-    return { message: "wrong username.", status: 400 };
+    return { message: "wrong email address.", status: 400 };
   }
   const isOk = await bcrypt.compare(password.trim(), user.password);
   if (!isOk) {

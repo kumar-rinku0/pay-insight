@@ -57,12 +57,12 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.statics.isRightUser = async function (
-  username: string,
+  email: string,
   password: string
 ) {
-  const user = await User.findOne({ username }).exec();
+  const user = await User.findOne({ email }).exec();
   if (!user) {
-    return { message: "wrong username." };
+    return { message: "wrong email." };
   }
   const isOk = await bcrypt.compare(password, user.password);
   if (!isOk) {
