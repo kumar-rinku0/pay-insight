@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import axios from "axios";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useAuth } from "@/components/provider/auth-provider";
+import { ArrowLeftCircle } from "lucide-react";
 
 const formSchema = z.object({
   username: z.string().min(2).max(20),
@@ -34,6 +35,7 @@ const formSchema = z.object({
 
 const Register = () => {
   const auth = useAuth();
+  const router = useRouter();
   if (!auth?.loading && auth?.isAuthenticated) {
     redirect("/");
   }
@@ -67,6 +69,9 @@ const Register = () => {
 
   return (
     <main className="flex h-screen justify-center items-center">
+      <Button className="fixed top-4 left-4" onClick={() => router.back()}>
+        <ArrowLeftCircle className="text-2xl" />
+      </Button>
       <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
         <CardHeader>
           <CardTitle className="text-xl">Sign Up</CardTitle>

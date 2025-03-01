@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import { z } from "zod";
@@ -26,6 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { ArrowLeftCircle } from "lucide-react";
 
 const formSchema = z.object({
   username: z.string().min(2).max(20),
@@ -43,6 +44,7 @@ const Login = () => {
     verifyUser: false,
     overlay: false,
   });
+  const router = useRouter();
   const auth = useAuth();
   if (!auth?.loading && auth?.isAuthenticated) {
     redirect("/");
@@ -165,6 +167,9 @@ const Login = () => {
 
   return (
     <main className="flex h-screen justify-center items-center">
+      <Button className="fixed top-4 left-4" onClick={() => router.back()}>
+        <ArrowLeftCircle className="text-2xl" />
+      </Button>
       {!loading.overlay && (
         <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
           <CardHeader>
