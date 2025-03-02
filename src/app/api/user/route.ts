@@ -22,12 +22,16 @@ export async function POST(req: NextRequest) {
     email: (googleUser as JwtPayload).email,
   });
   if (userbyemail) {
-    const res = NextResponse.redirect(new URL("/", req.url));
+    const res = NextResponse.redirect(req.nextUrl.origin);
     const jwtToken = setUser({ user: userbyemail });
     console.log("jwt token", jwtToken);
     res.cookies.set({
       name: "JWT_TOKEN",
       value: jwtToken,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Ensuring secure cookies in production
+      path: "/", // Set the cookie path
+      maxAge: 60 * 60 * 24 * 7, // Cookie expiration (7 days)
     });
     return res;
   }
@@ -50,12 +54,16 @@ export async function POST(req: NextRequest) {
   }
   await user.save();
   console.log("user created.", user);
-  const res = NextResponse.redirect(new URL("/", req.url));
+  const res = NextResponse.redirect(req.nextUrl.origin);
   const jwtToken = setUser({ user: user });
   console.log("jwt token", jwtToken);
   res.cookies.set({
     name: "JWT_TOKEN",
     value: jwtToken,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Ensuring secure cookies in production
+    path: "/", // Set the cookie path
+    maxAge: 60 * 60 * 24 * 7, // Cookie expiration (7 days)
   });
   return res;
 }
