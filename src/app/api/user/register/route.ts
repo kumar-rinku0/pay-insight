@@ -9,25 +9,13 @@ connection();
 export async function POST(req: Request) {
   const info = await req.json();
   console.log(info);
-  const userbyusername = await User.findOne({
-    username: info.username.trim(),
-  });
-  if (userbyusername) {
-    return NextResponse.json(
-      {
-        message: "user already exist, try another username!",
-        user: userbyusername,
-      },
-      { status: 400 }
-    );
-  }
   const userbyemail = await User.findOne({
     email: info.email.trim(),
   });
   if (userbyemail) {
     return NextResponse.json(
       {
-        message: "user already exist!",
+        message: "user already exist! with this email.",
         error:
           "email alrady exist, in case you forget your password, try to reset it.",
         user: userbyemail,
@@ -37,7 +25,8 @@ export async function POST(req: Request) {
   }
 
   const user = new User({
-    username: info.username.trim(),
+    givenName: info.givenName.trim(),
+    familyName: info.familyName.trim(),
     email: info.email.trim(),
     password: info.password.trim(),
   });
@@ -68,11 +57,5 @@ export async function POST(req: Request) {
     },
     { status: 200 }
   );
-  // const jwtToken = setUser({ user });
-  // response.cookies.set({
-  //   name: "JWT_TOKEN",
-  //   value: jwtToken,
-  //   path: "/",
-  // });
   return response;
 }
