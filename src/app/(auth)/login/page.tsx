@@ -168,6 +168,9 @@ const Login = () => {
     setLoading((values) => ({ ...values, overlay: false }));
   }
 
+  if (typeof window !== "undefined") {
+    return null;
+  }
   return (
     <main className="flex h-[90vh] sm:h-screen justify-center items-center">
       <Button className="fixed top-4 left-4" onClick={() => router.back()}>
@@ -239,9 +242,33 @@ const Login = () => {
                   >
                     {loading.button ? "Loading..." : "Login to App"}
                   </Button>
-                  <Button variant="outline" type="button" className="w-full">
-                    Login with Google
-                  </Button>
+                  {/* <Button variant="outline" type="button" className="w-full"> */}
+                  <div id="googleLogin">
+                    <script
+                      src="https://accounts.google.com/gsi/client"
+                      async
+                    ></script>
+                    <div
+                      id="g_id_onload"
+                      data-client_id="589945850717-s6ihorkmuagsbmai49cur3bbb3psc8se.apps.googleusercontent.com"
+                      data-context="signin"
+                      data-ux_mode="popup"
+                      data-login_uri="/api/user"
+                      data-auto_select="true"
+                      data-itp_support="true"
+                      // data-auto_prompt="false"
+                    ></div>
+                    <div
+                      className="g_id_signin"
+                      data-type="standard"
+                      data-shape="rectangular"
+                      data-theme="outline"
+                      data-text="signin_with"
+                      data-size="large"
+                      data-logo_alignment="left"
+                    ></div>
+                  </div>
+                  {/* </Button> */}
                 </form>
               </Form>
             </div>
