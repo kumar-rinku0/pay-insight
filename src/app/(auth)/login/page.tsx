@@ -39,7 +39,7 @@ const emailFormSchema = z.object({
 });
 
 const Login = () => {
-  const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
+  const DOMAIN = process.env.DOMAIN || "https://on-void.vercel.app";
   const [loading, setLoading] = useState({
     button: false,
     forgetPassword: false,
