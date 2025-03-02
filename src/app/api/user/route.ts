@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connection from "@/lib/conection";
-import { getInfo } from "@/util/jwt";
+import { getInfo, setUser } from "@/util/jwt";
 import User from "@/model/user";
 import { JwtPayload } from "jsonwebtoken";
 
@@ -22,13 +22,14 @@ export async function POST(req: NextRequest) {
     email: (googleUser as JwtPayload).email,
   });
   if (userbyemail) {
-    return NextResponse.json(
-      {
-        message: `${userbyemail.givenName} ${userbyemail.familyName} welcome back!`,
-        user: userbyemail,
-      },
-      { status: 200 }
-    );
+    const res = NextResponse.redirect(new URL("/", req.url));
+    const jwtToken = setUser({ user: userbyemail });
+    console.log("jwt token", jwtToken);
+    res.cookies.set({
+      name: "JWT_TOKEN",
+      value: jwtToken,
+    });
+    return res;
   }
   const user = new User({
     email: (googleUser as JwtPayload).email,
@@ -49,5 +50,12 @@ export async function POST(req: NextRequest) {
   }
   await user.save();
   console.log("user created.", user);
-  return NextResponse.json({ message: "user created.", user }, { status: 200 });
+  const res = NextResponse.redirect(new URL("/", req.url));
+  const jwtToken = setUser({ user: user });
+  console.log("jwt token", jwtToken);
+  res.cookies.set({
+    name: "JWT_TOKEN",
+    value: jwtToken,
+  });
+  return res;
 }
