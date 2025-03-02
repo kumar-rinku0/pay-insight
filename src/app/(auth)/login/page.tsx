@@ -39,6 +39,7 @@ const emailFormSchema = z.object({
 });
 
 const Login = () => {
+  const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
   const [loading, setLoading] = useState({
     button: false,
     forgetPassword: false,
@@ -239,9 +240,21 @@ const Login = () => {
                   >
                     {loading.button ? "Loading..." : "Login to App"}
                   </Button>
-                  <Button variant="outline" type="button" className="w-full">
-                    Login with Google
-                  </Button>
+                  <div>
+                    <script
+                      src="https://accounts.google.com/gsi/client"
+                      async
+                    ></script>
+                    <div
+                      id="g_id_onload"
+                      data-client_id="589945850717-s6ihorkmuagsbmai49cur3bbb3psc8se.apps.googleusercontent.com"
+                      data-context="signin"
+                      data-ux_mode="popup"
+                      data-login_uri={`${DOMAIN}/api/user`}
+                      data-auto_select="true"
+                      data-itp_support="true"
+                    ></div>
+                  </div>
                 </form>
               </Form>
             </div>

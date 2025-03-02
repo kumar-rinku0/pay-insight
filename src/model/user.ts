@@ -1,6 +1,11 @@
 import mongoose, { Schema, model } from "mongoose";
 import bcrypt from "bcryptjs";
 
+function generateUsername() {
+  const timestamp = Date.now(); // Get current timestamp
+  return `user_${timestamp}`;
+}
+
 const userSchema = new Schema(
   {
     username: {
@@ -8,6 +13,19 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       trim: true,
+      default: generateUsername,
+    },
+    givenName: {
+      type: String,
+      required: true,
+    },
+    familyName: {
+      type: String,
+      default: null,
+    },
+    picture: {
+      type: String,
+      default: null,
     },
     password: {
       type: String,

@@ -28,7 +28,8 @@ import { useAuth } from "@/components/provider/auth-provider";
 import { ArrowLeft } from "lucide-react";
 
 const formSchema = z.object({
-  username: z.string().min(2).max(20),
+  givenName: z.string().min(2, "at least 2 characters!").max(20),
+  familyName: z.string().max(20).optional(),
   email: z.string().email(),
   password: z.string().min(8).max(50),
 });
@@ -43,7 +44,8 @@ const Register = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      givenName: "",
+      familyName: "",
       email: "",
       password: "",
     },
@@ -89,20 +91,37 @@ const Register = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-4"
               >
-                <div className="grid gap-2">
-                  <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Username</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Username" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="givenName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>First Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="First Name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <FormField
+                      control={form.control}
+                      name="familyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Last Name (optional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Last Name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
                 <div className="grid gap-2">
                   <FormField

@@ -1,10 +1,20 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import User from "@/model/user";
 import { setUser } from "@/util/jwt";
 import connection from "@/lib/conection";
 import bcrypt from "bcryptjs";
 
 connection();
+
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const code = searchParams.get("code");
+  console.log(code);
+  return NextResponse.json(
+    { req: req, message: "login page." },
+    { status: 200 }
+  );
+}
 
 export async function POST(req: Request) {
   // console.log(req);
