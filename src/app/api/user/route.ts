@@ -11,5 +11,5 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const info = await req.formData();
   console.log(info);
-  return NextResponse.redirect("http://localhost:3000");
+  return NextResponse.json({ message: "POST request made to /api/user" });
 }

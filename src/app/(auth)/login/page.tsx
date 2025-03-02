@@ -39,6 +39,7 @@ const emailFormSchema = z.object({
 });
 
 const Login = () => {
+  const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
   const [loading, setLoading] = useState({
     button: false,
     forgetPassword: false,
@@ -249,7 +250,7 @@ const Login = () => {
                       data-client_id="589945850717-s6ihorkmuagsbmai49cur3bbb3psc8se.apps.googleusercontent.com"
                       data-context="signin"
                       data-ux_mode="popup"
-                      data-login_uri={"http://localhost:3000/api/auth/google"}
+                      data-login_uri={`${DOMAIN}/api/user`}
                       data-auto_select="true"
                       data-itp_support="true"
                     ></div>
