@@ -30,13 +30,36 @@ import {
   NavigationMenuTrigger,
   // NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
+import axios from "axios";
 
 const Header = ({ root }: { root?: boolean }) => {
+  const auth = useAuth();
+  const handleClick = () => {
+    axios
+      .get("/api/user")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <header className="flex items-center h-16 px-4 border-b border-b-neutral-200 dark:border-b-neutral-800 shrink-0 md:px-6 justify-between">
       {root && (
         <div className="hidden sm:flex sm:w-[50%] justify-center z-10">
           <DesktopNav />
+          <div className="flex gap-4 items-center">
+            <Button onClick={handleClick}>user</Button>
+            {auth?.isAuthenticated ? (
+              <Button onClick={auth?.signOut}>logout</Button>
+            ) : (
+              <>
+                <Link href="/login"> login</Link>
+                <Link href="/register"> register</Link>
+              </>
+            )}
+          </div>
         </div>
       )}
       <div className="flex items-center justify-center gap-4">

@@ -39,7 +39,6 @@ const emailFormSchema = z.object({
 });
 
 const Login = () => {
-  const DOMAIN = process.env.DOMAIN || "https://on-void.vercel.app";
   const [loading, setLoading] = useState({
     button: false,
     forgetPassword: false,
@@ -240,7 +239,7 @@ const Login = () => {
                   >
                     {loading.button ? "Loading..." : "Login to App"}
                   </Button>
-                  <div>
+                  {/* <div>
                     <script
                       src="https://accounts.google.com/gsi/client"
                       async
@@ -254,7 +253,7 @@ const Login = () => {
                       data-auto_select="true"
                       data-itp_support="true"
                     ></div>
-                  </div>
+                  </div> */}
                 </form>
               </Form>
             </div>
