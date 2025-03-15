@@ -23,6 +23,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -40,6 +42,7 @@ const formSchema = z
   });
 
 const ResetPassword = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("TOKEN");
   // 1. Define your form.
@@ -62,12 +65,14 @@ const ResetPassword = () => {
         console.log(res);
         if (res.status === 200) {
           console.log("PASSWORD updated!");
-        } else {
-          console.log(res.data.message);
+          toast("password updated!");
+          router.push("/login");
         }
       })
       .catch((err) => {
         console.log(err);
+        const { message } = err.response.data;
+        toast(message);
       });
   }
   return (

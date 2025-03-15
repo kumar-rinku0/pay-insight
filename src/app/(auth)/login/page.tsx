@@ -73,7 +73,7 @@ const Login = () => {
         if (res.status === 200) {
           const { username, _id, email, givenName } = res.data.user;
           auth?.signIn({ username, _id, email, givenName });
-          toast(`${username} welcome to onvoid!`);
+          toast(`${givenName} welcome to onvoid!`);
         }
       })
       .catch((err) => {

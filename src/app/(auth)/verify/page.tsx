@@ -3,10 +3,12 @@
 import { useAuth } from "@/components/provider/auth-provider";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { useSearchParams, redirect } from "next/navigation";
+import { useSearchParams, redirect, useRouter } from "next/navigation";
 import React, { Suspense } from "react";
+import { toast } from "sonner";
 
 const Varify = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("TOKEN");
   const auth = useAuth();
@@ -19,14 +21,16 @@ const Varify = () => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          const { username, _id, email, givenName } = res.data.user;
-          auth?.signIn({ username, email, _id, givenName });
-        } else {
-          console.log(res.data.message);
+          const { email } = res.data.user;
+          toast(`${email} verified!`);
+          router.push("/login");
         }
       })
       .catch((err) => {
         console.log(err.status);
+        const { message } = err.response.data;
+        console.log(message);
+        toast(message);
       });
   };
   return (
