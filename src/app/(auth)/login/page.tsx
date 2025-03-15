@@ -71,8 +71,8 @@ const Login = () => {
       .then((res) => {
         console.log(res.data);
         if (res.status === 200) {
-          const { username, _id, email } = res.data.user;
-          auth?.signIn({ username, _id, email });
+          const { username, _id, email, givenName } = res.data.user;
+          auth?.signIn({ username, _id, email, givenName });
           toast(`${username} welcome to onvoid!`);
         }
       })
