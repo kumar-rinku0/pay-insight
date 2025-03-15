@@ -19,8 +19,8 @@ const Varify = () => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          const { username, _id, email } = res.data.user;
-          auth?.signIn({ username, email, _id });
+          const { username, _id, email, givenName } = res.data.user;
+          auth?.signIn({ username, email, _id, givenName });
         } else {
           console.log(res.data.message);
         }

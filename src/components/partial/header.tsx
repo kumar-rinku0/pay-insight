@@ -152,7 +152,7 @@ export const MobileNav = () => {
           {auth?.isAuthenticated ? (
             <SheetTitle className="h-32 flex justify-start items-center gap-4">
               <Skeleton className="w-14 h-14 rounded-full" />
-              <span>{auth.user?.username}</span>
+              <span>{auth.user?.givenName}</span>
             </SheetTitle>
           ) : (
             <SheetTitle className="h-72 flex flex-col items-start justify-center gap-4">

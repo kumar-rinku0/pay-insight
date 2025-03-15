@@ -14,6 +14,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>(null);
 type userInfoType = {
   _id: string;
+  givenName: string;
   username: string;
   email: string;
   role?: string;
