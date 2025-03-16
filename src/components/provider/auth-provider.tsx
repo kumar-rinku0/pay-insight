@@ -12,12 +12,19 @@ type AuthContextType = {
 } | null;
 
 const AuthContext = createContext<AuthContextType>(null);
+type roleInfoProp = {
+  _id: string;
+  company: {
+    companyName: string;
+  };
+  role: string;
+};
 type userInfoType = {
   _id: string;
   givenName: string;
   username: string;
   email: string;
-  role?: string;
+  roleInfo?: Array<roleInfoProp>;
 } | null;
 
 // Create a provider component

@@ -44,6 +44,7 @@ const Login = () => {
     forgetPassword: false,
     verifyUser: false,
     overlay: false,
+    selectCompany: false,
   });
   const router = useRouter();
   const auth = useAuth();
@@ -71,9 +72,15 @@ const Login = () => {
       .then((res) => {
         console.log(res.data);
         if (res.status === 200) {
-          const { username, _id, email, givenName } = res.data.user;
-          auth?.signIn({ username, _id, email, givenName });
-          toast(`${givenName} welcome to onvoid!`);
+          const { username, _id, email, givenName, roleInfo } = res.data.user;
+          auth?.signIn({ username, _id, email, givenName, roleInfo });
+          toast(`${givenName} welcome to onvoid!`, {
+            description: "remember password?",
+            action: {
+              label: "okay!",
+              onClick: () => console.log("okay!"),
+            },
+          });
         }
       })
       .catch((err) => {
