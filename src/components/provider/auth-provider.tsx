@@ -14,7 +14,9 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>(null);
 type roleInfoProp = {
   _id: string;
-  company: string;
+  company: {
+    companyName: string;
+  };
   role: string;
 };
 type userInfoType = {
