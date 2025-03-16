@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+
 import { ThemeToggle } from "@/components/partial/theme-toggle";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
@@ -31,6 +31,9 @@ import {
   // NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import axios from "axios";
+import SelcetComp from "./select-comp";
+import CreateComp from "./create-comp";
+import { toast } from "sonner";
 
 const Header = ({ root }: { root?: boolean }) => {
   const auth = useAuth();
@@ -39,9 +42,13 @@ const Header = ({ root }: { root?: boolean }) => {
       .get("/api/user")
       .then((res) => {
         console.log(res);
+        const { message } = res.data;
+        toast.success(message);
       })
       .catch((err) => {
         console.log(err);
+        const { message } = err.response.data;
+        toast.error(message);
       });
   };
   return (
@@ -69,8 +76,18 @@ const Header = ({ root }: { root?: boolean }) => {
         <div>
           <ThemeToggle />
         </div>
+        <div>
+          {auth?.user?.roleInfo && auth.user.roleInfo.length > 0 && (
+            <SelcetComp roleInfo={auth.user.roleInfo} />
+          )}
+        </div>
+        <div>
+          {auth?.user?.roleInfo && auth.user.roleInfo.length === 0 && (
+            <CreateComp userId={auth.user._id} />
+          )}
+        </div>
       </div>
-      <div className={`sm:hidden z-10`}>
+      <div className={`flex sm:hidden z-10 items-center`}>
         <MobileNav />
       </div>
     </header>
