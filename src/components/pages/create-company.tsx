@@ -158,7 +158,7 @@ const CreateCompany = () => {
                           value={field.value}
                           onValueChange={field.onChange}
                         >
-                          <SelectTrigger className="w-[180px]">
+                          <SelectTrigger className="w-[120px] sm:w-[180px]">
                             <SelectValue placeholder="Type" />
                           </SelectTrigger>
                           <SelectContent>

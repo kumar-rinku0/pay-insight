@@ -31,12 +31,10 @@ import {
   // NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import axios from "axios";
-import SelcetComp from "./select-comp";
-import CreateComp from "./create-comp";
 import { toast } from "sonner";
 
 const Header = ({ root }: { root?: boolean }) => {
-  const auth = useAuth();
+  const { isAuthenticated, signOut } = useAuth();
   const handleClick = () => {
     axios
       .get("/api/user")
@@ -58,8 +56,8 @@ const Header = ({ root }: { root?: boolean }) => {
           <DesktopNav />
           <div className="flex gap-4 items-center">
             <Button onClick={handleClick}>user</Button>
-            {auth?.isAuthenticated ? (
-              <Button onClick={auth?.signOut}>logout</Button>
+            {isAuthenticated ? (
+              <Button onClick={signOut}>logout</Button>
             ) : (
               <>
                 <Link href="/login"> login</Link>
@@ -75,16 +73,6 @@ const Header = ({ root }: { root?: boolean }) => {
         </div>
         <div>
           <ThemeToggle />
-        </div>
-        <div>
-          {auth?.user?.roleInfo && auth.user.roleInfo.length > 0 && (
-            <SelcetComp roleInfo={auth.user.roleInfo} />
-          )}
-        </div>
-        <div>
-          {auth?.user?.roleInfo && auth.user.roleInfo.length === 0 && (
-            <CreateComp userId={auth.user._id} />
-          )}
         </div>
       </div>
       <div className={`flex sm:hidden z-10 items-center`}>
@@ -157,7 +145,7 @@ export const DesktopNav = () => {
 };
 
 export const MobileNav = () => {
-  const auth = useAuth();
+  const { isAuthenticated, user, signOut } = useAuth();
   const mobileNavItems = MobileNavItems();
   return (
     <Sheet>
@@ -166,10 +154,10 @@ export const MobileNav = () => {
       </SheetTrigger>
       <SheetContent className="w-60 sm:w-96 bg-white dark:bg-zinc-700">
         <SheetHeader>
-          {auth?.isAuthenticated ? (
+          {isAuthenticated ? (
             <SheetTitle className="h-32 flex justify-start items-center gap-4">
               <Skeleton className="w-14 h-14 rounded-full" />
-              <span>{auth.user?.givenName}</span>
+              <span>{user?.givenName}</span>
             </SheetTitle>
           ) : (
             <SheetTitle className="h-72 flex flex-col items-start justify-center gap-4">
@@ -194,7 +182,7 @@ export const MobileNav = () => {
             </SheetTitle>
           )}
           <SheetDescription></SheetDescription>
-          {auth?.isAuthenticated &&
+          {isAuthenticated &&
             mobileNavItems.map((item, idx) => {
               return (
                 <Fragment key={idx}>
@@ -211,10 +199,10 @@ export const MobileNav = () => {
               );
             })}
         </SheetHeader>
-        {auth?.isAuthenticated && (
+        {isAuthenticated && (
           <SheetFooter className="absolute sm:flex-col sm:justify-center bottom-4 left-4 right-4">
             <Button
-              onClick={auth?.signOut}
+              onClick={signOut}
               variant={"secondary"}
               className={`h-full relative flex items-center whitespace-nowrap rounded-md hover:bg-neutral-200 hover:text-neutral-700 text-neutral-500 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white`}
             >
