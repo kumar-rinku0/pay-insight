@@ -1,12 +1,18 @@
-"use client"
+"use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import {
+  BookOpen,
+  Bot,
+  ChevronRight,
+  Settings2,
+  SquareTerminal,
+} from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -16,27 +22,104 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { useRoute } from "./provider/route-provider";
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
+const navMain = [
+  {
+    title: "Playground",
+    url: "/dashboard/company",
+    icon: SquareTerminal,
+    isActive: true,
+    items: [
+      {
+        title: "Company",
+        url: "company",
+      },
+      {
+        title: "Branch",
+        url: "branch",
+      },
+      {
+        title: "Staff",
+        url: "staff",
+      },
+    ],
+  },
+  {
+    title: "Models",
+    url: "#",
+    icon: Bot,
+    items: [
+      {
+        title: "Genesis",
+        url: "#",
+      },
+      {
+        title: "Explorer",
+        url: "#",
+      },
+      {
+        title: "Quantum",
+        url: "#",
+      },
+    ],
+  },
+  {
+    title: "Documentation",
+    url: "#",
+    icon: BookOpen,
+    items: [
+      {
+        title: "Introduction",
+        url: "#",
+      },
+      {
+        title: "Get Started",
+        url: "#",
+      },
+      {
+        title: "Tutorials",
+        url: "#",
+      },
+      {
+        title: "Changelog",
+        url: "#",
+      },
+    ],
+  },
+  {
+    title: "Settings",
+    url: "#",
+    icon: Settings2,
+    items: [
+      {
+        title: "General",
+        url: "#",
+      },
+      {
+        title: "Team",
+        url: "#",
+      },
+      {
+        title: "Billing",
+        url: "#",
+      },
+      {
+        title: "Limits",
+        url: "#",
+      },
+    ],
+  },
+];
+
+export function NavMain() {
+  const { resetRoute } = useRoute();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
+        {navMain.map((item) => (
           <Collapsible
             key={item.title}
             asChild
@@ -54,11 +137,17 @@ export function NavMain({
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
+                    <SidebarMenuSubItem
+                      key={subItem.title}
+                      className="cursor-pointer"
+                    >
+                      <SidebarMenuSubButton
+                        onClick={() => {
+                          resetRoute(subItem.url);
+                        }}
+                        title={subItem.title}
+                      >
+                        <span>{subItem.title}</span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
@@ -69,5 +158,5 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }
