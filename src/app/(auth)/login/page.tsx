@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import axios from "axios";
 import { z } from "zod";
@@ -47,10 +47,10 @@ const Login = () => {
     selectCompany: false,
   });
   const router = useRouter();
-  const auth = useAuth();
-  if (!auth?.loading && auth?.isAuthenticated) {
-    redirect("/");
-  }
+  const { signIn } = useAuth();
+  // if (!loading && isAuthenticated) {
+  //   redirect("/");
+  // }
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -72,8 +72,17 @@ const Login = () => {
       .then((res) => {
         console.log(res.data);
         if (res.status === 200) {
-          const { username, _id, email, givenName, roleInfo } = res.data.user;
-          auth?.signIn({ username, _id, email, givenName, roleInfo });
+          const { user, roleInfo, company } = res.data;
+          const { username, _id, email, givenName } = user;
+          signIn({
+            username,
+            _id,
+            email,
+            givenName,
+            roleInfo,
+            company,
+          });
+          router.push("/dashboard");
           toast(`${givenName} welcome to onvoid!`, {
             description: "remember password?",
             action: {
