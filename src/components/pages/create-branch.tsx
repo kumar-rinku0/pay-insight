@@ -28,20 +28,29 @@ import { useAuth } from "../provider/auth-provider";
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
   address: z.string().min(6, "Address is required"),
-  radius: z.number().min(1, "Count is required").max(2, "Max limit crossed!"),
+  isCoordinates: z.boolean(),
+  radius: z.coerce
+    .number()
+    .min(10, "Count is required")
+    .max(500, "Max limit crossed!"),
 });
 
 type CompanyFormData = z.infer<typeof companySchema>;
 
 const CreateBranch = () => {
   const { isAuthenticated, user, signIn } = useAuth();
+  const [geolocation, setGeolocation] = React.useState<{
+    type: "Point";
+    coordinates: [latitude: number, longitude: number];
+  } | null>(null);
   // React Hook Form setup with Zod validation
   const form = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
     defaultValues: {
       name: "",
       address: "", // Set default if needed
-      radius: undefined,
+      radius: 20,
+      isCoordinates: false,
     },
   });
 
@@ -54,9 +63,14 @@ const CreateBranch = () => {
   const onSubmit = async (data: CompanyFormData) => {
     // Handle the form data submission to the backend (e.g., API call)
     console.log(data);
-    if (isAuthenticated && user) {
+    if (isAuthenticated && user && user?.roleInfo) {
       axios
-        .post("/api/company/create", { ...data, _id: user._id })
+        .post("/api/branch/create", {
+          ...data,
+          _id: user._id,
+          company: user.roleInfo.company,
+          geolocation: geolocation,
+        })
         .then((res) => {
           console.log(res);
           const { company } = res.data;
@@ -66,6 +80,57 @@ const CreateBranch = () => {
         .catch((err) => {
           console.log(err);
         });
+    }
+  };
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+
+  interface Position {
+    coords: {
+      latitude: number;
+      longitude: number;
+    };
+  }
+
+  function showPosition(position: Position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const coordinates: [number, number] = [lat, lon];
+    const obj: { type: "Point"; coordinates: [number, number] } = {
+      type: "Point",
+      coordinates: coordinates,
+    };
+    setGeolocation(obj);
+    const coordinatesElement = document.getElementById("coordinates");
+    if (coordinatesElement) {
+      coordinatesElement.innerHTML = `Latitude: ${lat} <br>Longitude: ${lon}`;
+    }
+  }
+
+  function showError(error: GeolocationPositionError) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        alert("User denied the request for Geolocation.");
+        break;
+      case error.POSITION_UNAVAILABLE:
+        alert("Location information is unavailable.");
+        break;
+      case error.TIMEOUT:
+        alert("The request to get user location timed out.");
+        break;
+    }
+  }
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      getLocation();
     }
   };
 
@@ -112,20 +177,43 @@ const CreateBranch = () => {
                     </FormItem>
                   )}
                 />
+                {/* Coordiantes Select */}
+                <FormField
+                  control={control}
+                  name="isCoordinates"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-4">
+                      <FormControl>
+                        <Input
+                          type="checkbox"
+                          placeholder="Branch Address"
+                          className="w-6 h-6"
+                          {...field}
+                          value={field.value ? "true" : "false"}
+                          onChange={(e) => {
+                            field.onChange(e.target.checked);
+                            handleCheckboxChange(e);
+                          }}
+                        />
+                      </FormControl>
+                      <FormLabel>pick current location coordiantes?</FormLabel>
+                      <FormMessage>{errors.isCoordinates?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
 
-                {/* Company Address */}
+                {/* Branch Radius */}
                 <FormField
                   control={control}
                   name="radius"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Branch Counts</FormLabel>
+                      <FormLabel>Branch Radius</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Branch Radius"
                           type="number"
                           {...field}
-                          className="input"
                         />
                       </FormControl>
                       <FormMessage>{errors.radius?.message}</FormMessage>
