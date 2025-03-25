@@ -48,9 +48,6 @@ const Login = () => {
   });
   const router = useRouter();
   const { signIn } = useAuth();
-  // if (!loading && isAuthenticated) {
-  //   redirect("/");
-  // }
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({

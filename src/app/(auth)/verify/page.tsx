@@ -1,9 +1,8 @@
 "use client";
 
-import { useAuth } from "@/components/provider/auth-provider";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { useSearchParams, redirect, useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import React, { Suspense } from "react";
 import { toast } from "sonner";
 
@@ -11,10 +10,6 @@ const Varify = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("TOKEN");
-  const auth = useAuth();
-  if (!auth?.loading && auth?.isAuthenticated) {
-    redirect("/");
-  }
   const handleVarify = () => {
     axios
       .get(`/api/user/verify?TOKEN=${token}`)

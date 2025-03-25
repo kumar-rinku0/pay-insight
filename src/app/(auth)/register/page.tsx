@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,7 +24,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useAuth } from "@/components/provider/auth-provider";
 import { ArrowLeft } from "lucide-react";
 
 const formSchema = z.object({
@@ -35,11 +34,7 @@ const formSchema = z.object({
 });
 
 const Register = () => {
-  const auth = useAuth();
   const router = useRouter();
-  if (!auth?.loading && auth?.isAuthenticated) {
-    redirect("/");
-  }
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
