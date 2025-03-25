@@ -39,10 +39,9 @@ type CompanyFormData = z.infer<typeof companySchema>;
 
 const CreateBranch = () => {
   const { isAuthenticated, user, signIn } = useAuth();
-  const [geolocation, setGeolocation] = React.useState<{
-    type: "Point";
-    coordinates: [latitude: number, longitude: number];
-  } | null>(null);
+  const [geolocation, setGeolocation] = React.useState<[number, number] | null>(
+    null
+  );
   // React Hook Form setup with Zod validation
   const form = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
@@ -63,13 +62,14 @@ const CreateBranch = () => {
   const onSubmit = async (data: CompanyFormData) => {
     // Handle the form data submission to the backend (e.g., API call)
     console.log(data);
+    getLocation();
     if (isAuthenticated && user && user?.roleInfo) {
       axios
         .post("/api/branch/create", {
           ...data,
           _id: user._id,
           company: user.roleInfo.company,
-          geolocation: geolocation,
+          geometry: { type: "Point", coordinates: geolocation },
         })
         .then((res) => {
           console.log(res);
@@ -101,12 +101,7 @@ const CreateBranch = () => {
   function showPosition(position: Position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    const coordinates: [number, number] = [lat, lon];
-    const obj: { type: "Point"; coordinates: [number, number] } = {
-      type: "Point",
-      coordinates: coordinates,
-    };
-    setGeolocation(obj);
+    setGeolocation([lon, lat]);
     const coordinatesElement = document.getElementById("coordinates");
     if (coordinatesElement) {
       coordinatesElement.innerHTML = `Latitude: ${lat} <br>Longitude: ${lon}`;

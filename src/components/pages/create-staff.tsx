@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod"; // Import Zod for validation
@@ -47,7 +47,7 @@ const shiftSchema = z.object({
   type: z.string().min(2, "type is required"),
   startTime: z.string().min(2, "start time is required").optional(),
   endTime: z.string().min(2, "end time is required").optional(),
-  workDays: z.number().min(4, "work days is required"),
+  weekOffs: z.number().min(4, "work days is required"),
 });
 
 type StaffFormData = z.infer<typeof staffSchema>;
@@ -55,7 +55,8 @@ type ShiftFormData = z.infer<typeof shiftSchema>;
 
 const CreateStaff = () => {
   const { isAuthenticated, user, signIn } = useAuth();
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(!false);
+  const [selectedWeekOffs, setSelectedWeekOffs] = useState<string[]>([]);
   // React Hook Form setup with Zod validation
   const form1 = useForm<StaffFormData>({
     resolver: zodResolver(staffSchema),
@@ -73,7 +74,7 @@ const CreateStaff = () => {
       type: "",
       startTime: "09:00", // Set default if needed
       endTime: "16:00",
-      workDays: undefined,
+      weekOffs: undefined,
     },
   });
   const {
@@ -108,9 +109,14 @@ const CreateStaff = () => {
   const onShiftSubmit = async (data: ShiftFormData) => {
     // Handle the form data submission to the backend (e.g., API call)
     console.log(data);
+    console.log("Selected week off:", selectedWeekOffs); // Log the selected week off
     if (isAuthenticated && user) {
       axios
-        .post("/api/company/create", { ...data, _id: user._id })
+        .post("/api/company/create", {
+          ...data,
+          _id: user._id,
+          weekOffs: selectedWeekOffs,
+        })
         .then((res) => {
           console.log(res);
           const { company } = res.data;
@@ -121,6 +127,24 @@ const CreateStaff = () => {
           console.log(err);
         });
     }
+  };
+
+  const handleWeekOffChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDay = e.target.value; // Get selected day (e.g., 'mon', 'tue')
+    console.log("Selected week off day:", selectedDay);
+
+    // Update the selected day in state
+    setSelectedWeekOffs((prevSelected) => {
+      if (prevSelected.includes(selectedDay)) {
+        // If it's already selected, remove it (deselect)
+        return prevSelected.filter((day) => day !== selectedDay);
+      } else {
+        // Otherwise, add it to the selected days
+        return [...prevSelected, selectedDay];
+      }
+    });
+
+    // Additional logic like validation or API calls can go here
   };
 
   return (
@@ -288,21 +312,39 @@ const CreateStaff = () => {
                   </div>
 
                   {/* Company Email */}
+                  <FormLabel>Week Offs</FormLabel>
                   <FormField
                     control={control2}
-                    name="workDays"
+                    name="weekOffs"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Work Days</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="work days"
-                            type="number"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage>{errors1.email?.message}</FormMessage>
-                      </FormItem>
+                      <>
+                        {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map(
+                          (day) => (
+                            <FormItem
+                              key={day}
+                              className="flex items-center gap-4"
+                            >
+                              <FormControl>
+                                <Input
+                                  type="checkbox"
+                                  className="w-6 h-6"
+                                  {...field}
+                                  value={day}
+                                  checked={selectedWeekOffs.includes(day)}
+                                  onChange={(e) => {
+                                    field.onChange(e.target.value);
+                                    handleWeekOffChange(e); // Call the handler
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel>{day}</FormLabel>
+                              <FormMessage>
+                                {errors2.weekOffs?.message}
+                              </FormMessage>
+                            </FormItem>
+                          )
+                        )}
+                      </>
                     )}
                   />
                 </div>
