@@ -12,7 +12,7 @@ type userInfoType = {
   email: string;
   company?: {
     _id: string;
-    companyName: string;
+    name: string;
   };
   roleInfo?: {
     _id: string;
@@ -66,8 +66,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log(res.data.user);
         if (res.data.user) {
           signIn(res.data.user);
-        } else {
-          router.push("/");
         }
       })
       .catch((err) => {

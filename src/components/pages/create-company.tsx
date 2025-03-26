@@ -31,13 +31,15 @@ import {
 } from "../ui/select";
 import axios from "axios";
 import { useAuth } from "../provider/auth-provider";
+import { toast } from "sonner";
+import { useRoute } from "../provider/route-provider";
 
 // Zod schema for frontend validation
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
   phone: z.string().min(1, "Phone number is required"),
   email: z.string().email("Invalid email address").min(1, "Email is required"),
-  type: z.enum(["Private", "Public"]),
+  type: z.enum(["private", "public"]),
   branches: z.string().min(1, "Count is required").max(2, "Max limit crossed!"),
 });
 
@@ -45,6 +47,7 @@ type CompanyFormData = z.infer<typeof companySchema>;
 
 const CreateCompany = () => {
   const { isAuthenticated, user, signIn } = useAuth();
+  const { resetRoute } = useRoute();
   // React Hook Form setup with Zod validation
   const form = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
@@ -73,7 +76,8 @@ const CreateCompany = () => {
           console.log(res);
           const { company } = res.data;
           signIn({ ...user, company: company });
-          alert("Company created successfully!");
+          toast.success("Company created successfully!");
+          resetRoute("branch");
         })
         .catch((err) => {
           console.log(err);

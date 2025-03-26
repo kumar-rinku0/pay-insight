@@ -34,7 +34,7 @@ const logo = {
 type companiesType = {
   _id: string;
   role: keyof typeof logo;
-  company: { _id: string; companyName: string };
+  company: { _id: string; name: string };
 };
 
 export function TeamSwitcher() {
@@ -113,7 +113,7 @@ export function TeamSwitcher() {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {user.company?.companyName}
+                  {user.company?.name}
                 </span>
                 <span className="truncate text-xs">{user.roleInfo?.role}</span>
               </div>
@@ -141,7 +141,7 @@ export function TeamSwitcher() {
                   <div className="flex size-6 items-center justify-center rounded-sm border">
                     {logo[info.role]}
                   </div>
-                  {info.company.companyName}
+                  {info.company.name}
                   <DropdownMenuShortcut>{info.role}</DropdownMenuShortcut>
                 </DropdownMenuItem>
               ))}
