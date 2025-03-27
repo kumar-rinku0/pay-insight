@@ -66,12 +66,12 @@ const CreateBranch = () => {
     // Handle the form data submission to the backend (e.g., API call)
     console.log(data);
     getLocation();
-    if (isAuthenticated && user && user?.roleInfo) {
+    if (isAuthenticated && user && user.company) {
       axios
         .post("/api/branch/create", {
           ...data,
           _id: user._id,
-          company: user.roleInfo.company,
+          company: user.company._id,
           geometry: { type: "Point", coordinates: geolocation },
         })
         .then((res) => {

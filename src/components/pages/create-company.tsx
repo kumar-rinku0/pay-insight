@@ -71,7 +71,7 @@ const CreateCompany = () => {
     console.log(data);
     if (isAuthenticated && user) {
       axios
-        .post("/api/company/create", { ...data, _id: user._id })
+        .post("/api/company/create", { ...data })
         .then((res) => {
           console.log(res);
           const { company } = res.data;

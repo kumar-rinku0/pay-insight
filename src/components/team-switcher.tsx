@@ -59,8 +59,8 @@ export function TeamSwitcher() {
           .get(`/api/user/userId/${userId}`)
           .then((res) => {
             console.log(res);
-            const { companyWithRole } = res.data.user;
-            setCompanies(companyWithRole);
+            const { roleInfo } = res.data.user;
+            setCompanies(roleInfo);
           })
           .catch((err) => {
             console.log(err);
@@ -71,14 +71,14 @@ export function TeamSwitcher() {
   );
 
   const handleSelectOneCompany = React.useCallback(
-    (userId: string, companyId: string) => {
-      if (userId && companyId && user) {
+    (companyId: string) => {
+      if (companyId && user) {
         axios
-          .get(`/api/branch/userId/${userId}/companyId/${companyId}`)
+          .get(`/api/company/select?companyId=${companyId}`)
           .then((res) => {
             console.log(res);
-            const { company, roleInfo } = res.data;
-            signIn({ ...user, company: company, roleInfo: roleInfo });
+            const { company } = res.data;
+            signIn({ ...user, company: company });
           })
           .catch((err) => {
             console.log(err);
@@ -87,9 +87,12 @@ export function TeamSwitcher() {
     },
     [user, signIn]
   );
-  if (!user?.company) {
+  if (!user?.company?.name) {
     return (
-      <Button className="font-medium text-neutral-500 dark:text-neutral-400">
+      <Button
+        className="font-medium text-neutral-500 dark:text-neutral-400"
+        onClick={() => resetRoute("company")}
+      >
         Create Company
       </Button>
     );
@@ -115,7 +118,7 @@ export function TeamSwitcher() {
                 <span className="truncate font-semibold">
                   {user.company?.name}
                 </span>
-                <span className="truncate text-xs">{user.roleInfo?.role}</span>
+                <span className="truncate text-xs">{user.company.role}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -133,9 +136,7 @@ export function TeamSwitcher() {
               companies.map((info: companiesType) => (
                 <DropdownMenuItem
                   key={info._id}
-                  onClick={() =>
-                    handleSelectOneCompany(user._id, info.company._id)
-                  }
+                  onClick={() => handleSelectOneCompany(info.company._id)}
                   className="gap-2 p-2"
                 >
                   <div className="flex size-6 items-center justify-center rounded-sm border">

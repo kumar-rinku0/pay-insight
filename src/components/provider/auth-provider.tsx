@@ -14,11 +14,7 @@ type userInfoType = {
   company?: {
     _id: string;
     name: string;
-  };
-  roleInfo?: {
-    _id: string;
     role: string;
-    company: string;
     branch?: string;
   };
 };

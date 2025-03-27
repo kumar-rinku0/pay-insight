@@ -36,7 +36,7 @@ import { useRoute } from "../provider/route-provider";
 // Zod schema for frontend validation
 const staffSchema = z.object({
   givenName: z.string().min(2, "name is required"),
-  familyName: z.string().min(2, "name is required").optional(),
+  familyName: z.string().optional(),
   email: z
     .string()
     .email("Vailid email address?")
@@ -90,14 +90,14 @@ const CreateStaff = () => {
   //   }
   // }, [isAuthenticated, user]);
 
-  if (isAuthenticated && user && user?.roleInfo && user?.roleInfo?.branch) {
+  if (isAuthenticated && user && user.company && user.company.branch) {
     return (
       <main className="flex h-[90vh] sm:h-screen justify-center items-center">
         {/* Staff Form */}
         {!isOpen.overlay && (
           <EmpoyeeDetails
             handleSetIsOpen={handleSetIsOpen}
-            branchId={user.roleInfo.branch}
+            branchId={user.company.branch}
           />
         )}
         {isOpen.overlay && (
@@ -140,23 +140,21 @@ const ShowBranches = ({
       lng: number;
     };
   };
-  const { isAuthenticated, user } = useAuth();
   const [branches, setBranches] = useState<branchType[]>([]);
   useEffect(() => {
-    if (isAuthenticated && user && user?.roleInfo) {
-      axios
-        .get("/api/branch/companyId/" + user.roleInfo.company)
-        .then((res) => {
-          console.log(res.data);
-          const { branches } = res.data;
-          setBranches(branches);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error(err.response.data.error);
-        });
-    }
-  }, [isAuthenticated, user]);
+    axios
+      .get("/api/branch/company")
+      .then((res) => {
+        console.log(res.data);
+        const { branches } = res.data;
+        setBranches(branches);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.error);
+      });
+    return;
+  }, []);
 
   return (
     <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
@@ -208,12 +206,12 @@ const EmpoyeeDetails = ({
     // Handle the form data submission to the backend (e.g., API call)
     console.log(data);
     setIsLoading(true);
-    if (isAuthenticated && user && user.roleInfo) {
+    if (isAuthenticated && user && user.company) {
       axios
         .post("/api/user/registerbyrole", {
           ...data,
-          companyId: user.roleInfo?.company,
-          branchId: branchId || user.roleInfo?.branch,
+          companyId: user.company._id,
+          branchId: branchId || user.company.branch,
         })
         .then((res) => {
           console.log(res);
@@ -309,7 +307,9 @@ const EmpoyeeDetails = ({
                         <SelectValue placeholder="Staff Role" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="admin">Admin</SelectItem>
+                        {user?.company?.role === "admin" && (
+                          <SelectItem value="admin">Admin</SelectItem>
+                        )}
                         <SelectItem value="manager">Manager</SelectItem>
                         <SelectItem value="employee">Employee</SelectItem>
                       </SelectContent>
