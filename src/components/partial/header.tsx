@@ -30,32 +30,15 @@ import {
   NavigationMenuTrigger,
   // NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
-import axios from "axios";
-import { toast } from "sonner";
 
 const Header = ({ root }: { root?: boolean }) => {
   const { isAuthenticated, signOut } = useAuth();
-  const handleClick = () => {
-    axios
-      .get("/api/user")
-      .then((res) => {
-        console.log(res);
-        const { message } = res.data;
-        toast.success(message);
-      })
-      .catch((err) => {
-        console.log(err);
-        const { message } = err.response.data;
-        toast.error(message);
-      });
-  };
   return (
     <header className="flex items-center h-16 px-4 border-b border-b-neutral-200 dark:border-b-neutral-800 shrink-0 md:px-6 justify-between">
       {root && (
         <div className="hidden sm:flex sm:w-[50%] justify-center z-10">
           <DesktopNav />
           <div className="flex gap-4 items-center">
-            <Button onClick={handleClick}>user</Button>
             {isAuthenticated ? (
               <Button onClick={signOut}>logout</Button>
             ) : (
@@ -157,7 +140,7 @@ export const MobileNav = () => {
           {isAuthenticated ? (
             <SheetTitle className="h-32 flex justify-start items-center gap-4">
               <Skeleton className="w-14 h-14 rounded-full" />
-              <span>{user?.givenName}</span>
+              <span>{user?.name}</span>
             </SheetTitle>
           ) : (
             <SheetTitle className="h-72 flex flex-col items-start justify-center gap-4">

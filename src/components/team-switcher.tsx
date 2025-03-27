@@ -22,8 +22,8 @@ import {
 import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 import { useAuth } from "./provider/auth-provider";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useRoute } from "./provider/route-provider";
 
 const logo = {
   admin: <GalleryVerticalEnd className="size-4 shrink-0" />,
@@ -48,7 +48,7 @@ export function TeamSwitcher() {
   //   }[];
   // }
   const { user, signIn } = useAuth();
-  const router = useRouter();
+  const { resetRoute } = useRoute();
   const { isMobile } = useSidebar();
   const [companies, setCompanies] = React.useState<companiesType[]>([]);
 
@@ -146,14 +146,14 @@ export function TeamSwitcher() {
                 </DropdownMenuItem>
               ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onClick={() => resetRoute("company")}
+            >
               <div className="flex size-6 items-center justify-center rounded-md border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
                 <Plus className="size-4" />
               </div>
-              <div
-                className="font-medium text-neutral-500 dark:text-neutral-400"
-                onClick={() => router.push("/dashboard/company")}
-              >
+              <div className="font-medium text-neutral-500 dark:text-neutral-400">
                 Create Company
               </div>
             </DropdownMenuItem>

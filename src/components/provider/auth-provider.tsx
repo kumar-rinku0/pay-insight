@@ -7,9 +7,10 @@ import axios from "axios";
 // Define the types for the user and the AuthContext
 type userInfoType = {
   _id: string;
-  givenName: string;
+  name: string;
   username: string;
   email: string;
+  picture: string;
   company?: {
     _id: string;
     name: string;

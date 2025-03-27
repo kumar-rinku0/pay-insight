@@ -17,15 +17,13 @@ const Varify = () => {
         console.log(res);
         if (res.status === 200) {
           const { email } = res.data.user;
-          toast(`${email} verified!`);
+          toast.success(`${email} has been verified!`);
           router.push("/login");
         }
       })
       .catch((err) => {
         console.log(err.status);
-        const { message } = err.response.data;
-        console.log(message);
-        toast(message);
+        toast.error(err.response.data.error);
       });
   };
   return (

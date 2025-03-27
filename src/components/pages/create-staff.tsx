@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { toast } from "sonner";
+import { useRoute } from "../provider/route-provider";
 
 // Zod schema for frontend validation
 const staffSchema = z.object({
@@ -149,6 +150,10 @@ const ShowBranches = ({
           console.log(res.data);
           const { branches } = res.data;
           setBranches(branches);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(err.response.data.error);
         });
     }
   }, [isAuthenticated, user]);
@@ -157,7 +162,7 @@ const ShowBranches = ({
     <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
       <CardHeader>
         <CardTitle className="text-xl">Select Branch</CardTitle>
-        <CardDescription>Enter your branch information!</CardDescription>
+        <CardDescription>Select a branch to add!</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
@@ -183,6 +188,7 @@ const EmpoyeeDetails = ({
   branchId: string;
 }) => {
   const { isAuthenticated, user } = useAuth();
+  const [isLoading, setIsLoading] = React.useState(false);
   const form1 = useForm<StaffFormData>({
     resolver: zodResolver(staffSchema),
     defaultValues: {
@@ -201,6 +207,7 @@ const EmpoyeeDetails = ({
   const onStaffSubmit = async (data: StaffFormData) => {
     // Handle the form data submission to the backend (e.g., API call)
     console.log(data);
+    setIsLoading(true);
     if (isAuthenticated && user && user.roleInfo) {
       axios
         .post("/api/user/registerbyrole", {
@@ -215,6 +222,10 @@ const EmpoyeeDetails = ({
         })
         .catch((err) => {
           console.log(err);
+          toast.error(err.response.data.error);
+        })
+        .finally(() => {
+          setIsLoading(false); // Reset loading state after API call
         });
     }
   };
@@ -310,8 +321,8 @@ const EmpoyeeDetails = ({
             />
 
             {/* Submit Button */}
-            <Button type="submit" className="w-full">
-              Add Staff
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Creating..." : "Create Staff"}
             </Button>
           </form>
         </Form>
@@ -322,6 +333,7 @@ const EmpoyeeDetails = ({
 
 const ShiftDetails = () => {
   const { isAuthenticated, user } = useAuth();
+  const { resetRoute } = useRoute();
   const [selectedWeekOffs, setSelectedWeekOffs] = useState<string[]>([]);
   // React Hook Form setup with Zod validation
 
@@ -353,10 +365,12 @@ const ShiftDetails = () => {
         })
         .then((res) => {
           console.log(res);
-          toast.success("shift created!");
+          toast.success(res.data.message);
+          resetRoute("dashboard");
         })
         .catch((err) => {
           console.log(err);
+          toast.error(err.response.data.error);
         });
     }
   };
@@ -379,7 +393,7 @@ const ShiftDetails = () => {
   return (
     <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
       <CardHeader>
-        <CardTitle className="text-xl">Add Shift</CardTitle>
+        <CardTitle className="text-xl">Add Staff Shift</CardTitle>
         <CardDescription>Enter staff shift!</CardDescription>
       </CardHeader>
       <CardContent>

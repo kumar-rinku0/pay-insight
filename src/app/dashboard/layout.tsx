@@ -12,14 +12,26 @@ import { useAuth } from "@/components/provider/auth-provider";
 import { Loader } from "lucide-react";
 import { RouteProvider } from "@/components/provider/route-provider";
 import BreadCrumb from "@/components/partial/bread-curmb";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) {
+  const { isAuthenticated, loading } = useAuth();
+  // if (!loading && !isAuthenticated) {
+  //   redirect("/login");
+  // }
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      redirect("/login");
+    }
+  }, [loading, isAuthenticated]);
+
+  if (loading) {
     return (
       <div className="h-[90vh] flex items-center justify-center">
         <Loader className="animate-spin h-10 w-10" />

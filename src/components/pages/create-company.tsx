@@ -81,6 +81,7 @@ const CreateCompany = () => {
         })
         .catch((err) => {
           console.log(err);
+          toast.error(err.response.data.error);
         });
     }
   };
