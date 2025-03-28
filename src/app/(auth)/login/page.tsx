@@ -69,18 +69,18 @@ const Login = () => {
       .then((res) => {
         console.log(res.data);
         if (res.status === 200) {
-          const { user, roleInfo, company } = res.data;
-          const { username, _id, email, givenName } = user;
+          const { user, company } = res.data;
+          const { username, _id, email, givenName, familyName, picture } = user;
           signIn({
             username,
             _id,
             email,
-            givenName,
-            roleInfo,
+            name: `${givenName} ${familyName}`,
+            picture,
             company,
           });
           router.push("/dashboard");
-          toast(`${givenName} welcome to onvoid!`, {
+          toast(`${givenName} ${familyName} welcome to onvoid!`, {
             description: "remember password?",
             action: {
               label: "okay!",
@@ -92,8 +92,8 @@ const Login = () => {
       .catch((err) => {
         if (err.status === 401) {
           console.log(err.response.data);
-          const { status, message } = err.response.data;
-          toast(message);
+          const { status, error } = err.response.data;
+          toast.error(error);
           if (status === 401) {
             setLoading((values) => ({
               ...values,

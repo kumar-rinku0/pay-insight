@@ -7,17 +7,14 @@ import axios from "axios";
 // Define the types for the user and the AuthContext
 type userInfoType = {
   _id: string;
-  givenName: string;
+  name: string;
   username: string;
   email: string;
+  picture: string;
   company?: {
     _id: string;
-    companyName: string;
-  };
-  roleInfo?: {
-    _id: string;
+    name: string;
     role: string;
-    company: string;
     branch?: string;
   };
 };
@@ -66,8 +63,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.log(res.data.user);
         if (res.data.user) {
           signIn(res.data.user);
-        } else {
-          router.push("/");
         }
       })
       .catch((err) => {

@@ -22,8 +22,8 @@ import {
 import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react";
 import { useAuth } from "./provider/auth-provider";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useRoute } from "./provider/route-provider";
 
 const logo = {
   admin: <GalleryVerticalEnd className="size-4 shrink-0" />,
@@ -34,7 +34,7 @@ const logo = {
 type companiesType = {
   _id: string;
   role: keyof typeof logo;
-  company: { _id: string; companyName: string };
+  company: { _id: string; name: string };
 };
 
 export function TeamSwitcher() {
@@ -48,7 +48,7 @@ export function TeamSwitcher() {
   //   }[];
   // }
   const { user, signIn } = useAuth();
-  const router = useRouter();
+  const { resetRoute } = useRoute();
   const { isMobile } = useSidebar();
   const [companies, setCompanies] = React.useState<companiesType[]>([]);
 
@@ -59,8 +59,8 @@ export function TeamSwitcher() {
           .get(`/api/user/userId/${userId}`)
           .then((res) => {
             console.log(res);
-            const { companyWithRole } = res.data.user;
-            setCompanies(companyWithRole);
+            const { roleInfo } = res.data.user;
+            setCompanies(roleInfo);
           })
           .catch((err) => {
             console.log(err);
@@ -71,14 +71,14 @@ export function TeamSwitcher() {
   );
 
   const handleSelectOneCompany = React.useCallback(
-    (userId: string, companyId: string) => {
-      if (userId && companyId && user) {
+    (companyId: string) => {
+      if (companyId && user) {
         axios
-          .get(`/api/branch/userId/${userId}/companyId/${companyId}`)
+          .get(`/api/company/select?companyId=${companyId}`)
           .then((res) => {
             console.log(res);
-            const { company, roleInfo } = res.data;
-            signIn({ ...user, company: company, roleInfo: roleInfo });
+            const { company } = res.data;
+            signIn({ ...user, company: company });
           })
           .catch((err) => {
             console.log(err);
@@ -87,9 +87,12 @@ export function TeamSwitcher() {
     },
     [user, signIn]
   );
-  if (!user?.company) {
+  if (!user?.company?.name) {
     return (
-      <Button className="font-medium text-neutral-500 dark:text-neutral-400">
+      <Button
+        className="font-medium text-neutral-500 dark:text-neutral-400"
+        onClick={() => resetRoute("company")}
+      >
         Create Company
       </Button>
     );
@@ -113,9 +116,9 @@ export function TeamSwitcher() {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {user.company?.companyName}
+                  {user.company?.name}
                 </span>
-                <span className="truncate text-xs">{user.roleInfo?.role}</span>
+                <span className="truncate text-xs">{user.company.role}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -133,27 +136,25 @@ export function TeamSwitcher() {
               companies.map((info: companiesType) => (
                 <DropdownMenuItem
                   key={info._id}
-                  onClick={() =>
-                    handleSelectOneCompany(user._id, info.company._id)
-                  }
+                  onClick={() => handleSelectOneCompany(info.company._id)}
                   className="gap-2 p-2"
                 >
                   <div className="flex size-6 items-center justify-center rounded-sm border">
                     {logo[info.role]}
                   </div>
-                  {info.company.companyName}
+                  {info.company.name}
                   <DropdownMenuShortcut>{info.role}</DropdownMenuShortcut>
                 </DropdownMenuItem>
               ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              onClick={() => resetRoute("company")}
+            >
               <div className="flex size-6 items-center justify-center rounded-md border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
                 <Plus className="size-4" />
               </div>
-              <div
-                className="font-medium text-neutral-500 dark:text-neutral-400"
-                onClick={() => router.push("/dashboard/company")}
-              >
+              <div className="font-medium text-neutral-500 dark:text-neutral-400">
                 Create Company
               </div>
             </DropdownMenuItem>

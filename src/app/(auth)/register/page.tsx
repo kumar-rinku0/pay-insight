@@ -56,14 +56,13 @@ const Register = () => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          toast("mail sent. verify email adderess!");
+          toast.success(res.data.message);
           router.push("/login");
         }
       })
       .catch((err) => {
         console.log(err);
-        const { message } = err.response.data;
-        toast(message);
+        toast.error(err.response.data.error);
       });
   }
 
