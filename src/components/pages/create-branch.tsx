@@ -40,7 +40,7 @@ const companySchema = z.object({
 type CompanyFormData = z.infer<typeof companySchema>;
 
 const CreateBranch = () => {
-  const { isAuthenticated, user, signIn } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { resetRoute } = useRoute();
   const [geolocation, setGeolocation] = React.useState<[number, number] | null>(
     null
@@ -76,8 +76,6 @@ const CreateBranch = () => {
         })
         .then((res) => {
           console.log(res);
-          const { company } = res.data;
-          signIn({ ...user, company: company });
           toast.success(res.data.message);
           resetRoute("staff");
         })
