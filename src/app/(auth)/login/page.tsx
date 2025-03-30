@@ -69,7 +69,7 @@ const Login = () => {
       .then((res) => {
         console.log(res.data);
         if (res.status === 200) {
-          const { user, roleInfo, company } = res.data;
+          const { user, company } = res.data;
           const { username, _id, email, givenName, familyName, picture } = user;
           signIn({
             username,
@@ -77,7 +77,6 @@ const Login = () => {
             email,
             name: `${givenName} ${familyName}`,
             picture,
-            roleInfo,
             company,
           });
           router.push("/dashboard");
