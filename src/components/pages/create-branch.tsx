@@ -88,7 +88,11 @@ const CreateBranch = () => {
 
   function getLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError);
+      navigator.geolocation.getCurrentPosition(showPosition, showError, {
+        enableHighAccuracy: true, // Request high accuracy
+        timeout: 1000, // Timeout after 1 seconds if no location is found
+        maximumAge: 0, // Do not use a cached position
+      });
     } else {
       alert("Geolocation is not supported by this browser.");
     }
@@ -98,17 +102,19 @@ const CreateBranch = () => {
     coords: {
       latitude: number;
       longitude: number;
+      accuracy: number;
     };
   }
 
   function showPosition(position: Position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    setGeolocation([lon, lat]);
-    const coordinatesElement = document.getElementById("coordinates");
-    if (coordinatesElement) {
-      coordinatesElement.innerHTML = `Latitude: ${lat} <br>Longitude: ${lon}`;
+    const acc = position.coords.accuracy;
+    console.log("lat:", lat, "lon:", lon, "acc:", acc);
+    if (acc > 50) {
+      return alert(`accuracy is too large ${acc}`);
     }
+    setGeolocation([lon, lat]);
   }
 
   function showError(error: GeolocationPositionError) {
@@ -129,6 +135,9 @@ const CreateBranch = () => {
     const isChecked = event.target.checked;
     if (isChecked) {
       getLocation();
+      if (!geolocation) {
+        event.target.checked = false;
+      }
     }
   };
 

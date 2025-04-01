@@ -24,11 +24,12 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { useRoute } from "./provider/route-provider";
+import { useRouter } from "next/navigation";
 
 const navMain = [
   {
-    title: "Playground",
-    url: "/dashboard/company",
+    title: "Dashboard",
+    url: "dashboard",
     icon: SquareTerminal,
     isActive: true,
     items: [
@@ -115,6 +116,7 @@ const navMain = [
 
 export function NavMain() {
   const { resetRoute } = useRoute();
+  const router = useRouter();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -128,7 +130,13 @@ export function NavMain() {
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  onClick={() => {
+                    router.push(`/${item.url}`);
+                    resetRoute(item.url);
+                  }}
+                >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
