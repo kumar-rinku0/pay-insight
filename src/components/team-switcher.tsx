@@ -70,23 +70,21 @@ export function TeamSwitcher() {
     [companies]
   );
 
-  const handleSelectOneCompany = React.useCallback(
-    (companyId: string) => {
-      if (companyId && user) {
-        axios
-          .get(`/api/company/select?companyId=${companyId}`)
-          .then((res) => {
-            console.log(res);
-            const { company } = res.data;
-            signIn({ ...user, company: company });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    },
-    [user, signIn]
-  );
+  const handleSelectOneCompany = (companyId: string) => {
+    if (companyId && user) {
+      axios
+        .get(`/api/company/select?companyId=${companyId}`)
+        .then((res) => {
+          console.log(res);
+          const { company } = res.data;
+          signIn({ ...user, company: company });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   if (!user?.company?.name) {
     return (
       <Button
