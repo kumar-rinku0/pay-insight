@@ -136,7 +136,7 @@ export function TeamSwitcher() {
               companies.map((info: companiesType) => (
                 <DropdownMenuItem
                   key={info._id}
-                  onClick={() => handleSelectOneCompany(info.company._id)}
+                  onSelect={() => handleSelectOneCompany(info.company._id)}
                   className="gap-2 p-2"
                 >
                   <div className="flex size-6 items-center justify-center rounded-sm border">
