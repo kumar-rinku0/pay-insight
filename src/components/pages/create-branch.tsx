@@ -90,7 +90,7 @@ const CreateBranch = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, showError, {
         enableHighAccuracy: true, // Request high accuracy
-        timeout: 1000, // Timeout after 1 seconds if no location is found
+        timeout: 10000, // Timeout after 10 seconds if no location is found
         maximumAge: 0, // Do not use a cached position
       });
     } else {
