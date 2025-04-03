@@ -8,6 +8,7 @@ type routeType = {
   company: boolean;
   branch: boolean;
   staff: boolean;
+  attendance: boolean;
 };
 
 type RouteContextType = {
@@ -27,6 +28,7 @@ export const RouteProvider = ({ children }: { children: React.ReactNode }) => {
     company: false,
     branch: false,
     staff: false,
+    attendance: false,
   });
   const [activeRoute, setActiveRoute] = useState<string>("dashboard");
 
