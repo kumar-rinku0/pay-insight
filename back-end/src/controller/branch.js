@@ -44,4 +44,18 @@ const handleCreateBranch = async (req, res) => {
   return res.status(200).send({ message: "branch created.", branch: branch });
 };
 
+export const handleGetBranchInfo = async (req, res) => {
+  const { branch: branchId } = req.user.company;
+  const branch = await Branch.findById(branchId);
+  if (!branch) {
+    return res.status(400).json({ message: "don't have any branch!" });
+  }
+  return res.status(200).json({
+    message: "goood.",
+    branch: branch,
+    radius: branch.radius,
+    coordinates: branch.geometry.coordinates,
+  });
+};
+
 export { handleCreateBranch, handleFetchBranches };

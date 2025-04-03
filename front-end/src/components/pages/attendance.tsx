@@ -92,7 +92,7 @@ const Attendance = () => {
     const lon = position.coords.longitude;
     const acc = position.coords.accuracy;
     console.log("lat:", lat, "lon:", lon, "acc:", acc);
-    if (acc > 50) {
+    if (acc > 100) {
       alert("GPS signal is weak, Try moving to an open area.");
       return;
     }
