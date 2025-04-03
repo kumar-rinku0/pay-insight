@@ -126,7 +126,7 @@ const Attendance = () => {
   const handlePunchIn = async () => {
     await getLocation();
     const coordinates = inputs?.punchInGeometry?.coordinates;
-    if (!coordinates || coordinates.length <= 2) {
+    if (!coordinates || coordinates.length <= 1) {
       return;
     }
     if (!branch.coordinates || !branch.radius) {
@@ -171,7 +171,7 @@ const Attendance = () => {
   const handlePunchOut = async () => {
     await getLocation();
     const coordinates = inputs?.punchOutGeometry?.coordinates;
-    if (!coordinates || coordinates.length <= 2) {
+    if (!coordinates || coordinates.length <= 1) {
       return;
     }
     if (!branch.coordinates || !branch.radius) {
