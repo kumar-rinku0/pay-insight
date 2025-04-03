@@ -1,5 +1,6 @@
 "use client";
 
+import Attendance from "@/components/pages/attendance";
 import CreateBranch from "@/components/pages/create-branch";
 import CreateCompany from "@/components/pages/create-company";
 import CreateStaff from "@/components/pages/create-staff";
@@ -15,7 +16,8 @@ const Dashboard = () => {
       {route.company && <CreateCompany />}
       {route.branch && <CreateBranch />}
       {route.staff && <CreateStaff />}
-      {route.dashboard && <Skeleton />}
+      {route.dashboard && <Attendance />}
+      {route.attendance && <Skeleton />}
     </div>
   );
 };

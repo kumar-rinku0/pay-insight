@@ -63,7 +63,7 @@ const CreateBranch = () => {
   } = form;
 
   const onSubmit = async (data: CompanyFormData) => {
-    // Handle the form data submission to the backend (e.g., API call)
+    // Handle the form data submission to the backend
     console.log(data);
     getLocation();
     if (isAuthenticated && user && user.company) {
@@ -86,16 +86,23 @@ const CreateBranch = () => {
     }
   };
 
-  function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError, {
-        enableHighAccuracy: true, // Request high accuracy
-        timeout: 10000, // Timeout after 10 seconds if no location is found
-        maximumAge: 0, // Do not use a cached position
-      });
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
+  function getLocation(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        getCurrentPositionAsync()
+          .then((position) => {
+            showPosition(position);
+            resolve();
+          })
+          .catch((error) => {
+            showError(error);
+            reject();
+          });
+      } else {
+        alert("Geolocation is not supported by this browser.");
+        reject();
+      }
+    });
   }
 
   interface Position {
@@ -106,15 +113,27 @@ const CreateBranch = () => {
     };
   }
 
-  function showPosition(position: Position) {
+  function getCurrentPositionAsync(): Promise<Position> {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      });
+    });
+  }
+
+  async function showPosition(position: Position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
     const acc = position.coords.accuracy;
     console.log("lat:", lat, "lon:", lon, "acc:", acc);
+
     if (acc > 50) {
-      return alert(`accuracy is too large ${acc}`);
+      alert(`Accuracy is too large: ${acc}`);
+    } else {
+      setGeolocation([lon, lat]);
     }
-    setGeolocation([lon, lat]);
   }
 
   function showError(error: GeolocationPositionError) {
@@ -128,15 +147,24 @@ const CreateBranch = () => {
       case error.TIMEOUT:
         alert("The request to get user location timed out.");
         break;
+      default:
+        alert("An unknown error occurred.");
+        break;
     }
   }
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle checkbox change event
+  const handleCheckboxChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const isChecked = event.target.checked;
     if (isChecked) {
-      getLocation();
+      event.target.checked = false;
+      await getLocation();
       if (!geolocation) {
         event.target.checked = false;
+      } else {
+        event.target.checked = true;
       }
     }
   };
