@@ -31,8 +31,8 @@ const handleUserSignUp = async (req, res) => {
 };
 
 const handleUserSignUpWithRoles = async (req, res) => {
-  const { familyName, givenName, email, role } = req.body;
-  const { _id, branch, role: companyRole } = req.user.company;
+  const { familyName, givenName, email, role, branchId } = req.body;
+  const { _id, role: companyRole } = req.user.company;
   if (companyRole === "manager" && role === "admin") {
     return res
       .status(401)
@@ -40,14 +40,14 @@ const handleUserSignUpWithRoles = async (req, res) => {
   }
   const userbyemail = await User.findOne({ email });
   if (userbyemail) {
-    const info = userbyemail.roleInfo.filter((item) => {
-      return item.company === _id && item.branch === branch;
+    const info = userbyemail.roleInfo.find((item) => {
+      return item.company === _id && item.branch === branchId;
     });
-    if (!info[0]) {
+    if (!info) {
       userbyemail.roleInfo.push({
         role,
         company: _id,
-        branch,
+        branch: branchId,
       });
     } else {
       const obj = info[0];
@@ -67,7 +67,7 @@ const handleUserSignUpWithRoles = async (req, res) => {
     password,
   });
   console.log(password);
-  user.roleInfo.push({ role, company: _id, branch });
+  user.roleInfo.push({ role, company: _id, branch: branchId });
   await user.save();
   await createMailSystemForEmployee({
     address: user.email,

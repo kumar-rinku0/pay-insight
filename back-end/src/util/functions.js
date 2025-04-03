@@ -28,7 +28,7 @@ export const isRightUser = async function (email, password) {
 };
 
 export function generateRandomString(length, includeNumeric = true) {
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
   const numeric = "0123456789";
 
   let characters = alphabet;
