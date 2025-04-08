@@ -123,8 +123,8 @@ const Attendance = () => {
     }
   }
 
-  const handlePunchIn = async () => {
-    await getLocation();
+  const handlePunchIn = () => {
+    setLoading(true);
     const coordinates = inputs?.punchInGeometry?.coordinates;
     if (!coordinates || coordinates.length <= 1) {
       return;
@@ -146,7 +146,6 @@ const Attendance = () => {
         }m`
       );
     }
-    setLoading(true);
     if (isAuthenticated && user && user.company) {
       axios
         .post("/api/attendance/mark", {
@@ -158,6 +157,11 @@ const Attendance = () => {
         .then((res) => {
           console.log(res.data);
           setHasPunchedIn(true);
+          setInputs({
+            punchInGeometry: null,
+            punchOutGeometry: null,
+          });
+          setAllowLocation(false);
         })
         .catch((err) => {
           console.log(err);
@@ -168,8 +172,8 @@ const Attendance = () => {
     }
   };
 
-  const handlePunchOut = async () => {
-    await getLocation();
+  const handlePunchOut = () => {
+    setLoading(true);
     const coordinates = inputs?.punchOutGeometry?.coordinates;
     if (!coordinates || coordinates.length <= 1) {
       return;
@@ -191,7 +195,6 @@ const Attendance = () => {
         ).toLocaleString()}m should be less then ${branch.radius}m`
       );
     }
-    setLoading(true);
     if (isAuthenticated && user && user.company) {
       axios
         .put("/api/attendance/mark", {
@@ -202,6 +205,11 @@ const Attendance = () => {
         })
         .then((res) => {
           console.log(res.data);
+          setInputs({
+            punchInGeometry: null,
+            punchOutGeometry: null,
+          });
+          setAllowLocation(false);
         })
         .catch((err) => {
           console.log(err);
@@ -237,28 +245,16 @@ const Attendance = () => {
               Allow Access!
             </button>
           )}
-          {allowLocation && !hasPunchedIn && !loading && (
+          {allowLocation && (
             <button
-              onClick={handlePunchIn}
+              disabled={loading}
+              onClick={hasPunchedIn ? handlePunchOut : handlePunchIn}
               className="px-4 py-2 bg-[#3ded97] text-white rounded-lg cursor-pointer hover:bg-[#028a0f] focus:outline-none focus:ring-2 focus:ring-[#e94560] focus:ring-offset-2"
             >
-              Punch In
-            </button>
-          )}
-          {allowLocation && hasPunchedIn && !loading && (
-            <button
-              onClick={handlePunchOut}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            >
-              Punch Out
-            </button>
-          )}
-          {loading && (
-            <button
-              disabled
-              className="px-4 py-2 bg-gray-500 text-white rounded-lg cursor-not-allowed"
-            >
-              Processing...
+              {!loading && !hasPunchedIn && "Punch In"}
+              {!loading && hasPunchedIn && "Punch Out"}
+              {loading && hasPunchedIn && "Punching Out..."}
+              {loading && !hasPunchedIn && "Punching In..."}
             </button>
           )}
         </div>
