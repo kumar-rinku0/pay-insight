@@ -123,7 +123,8 @@ const Attendance = () => {
     }
   }
 
-  const handlePunchIn = async () => {
+  const handlePunchIn = () => {
+    setLoading(true);
     const coordinates = inputs?.punchInGeometry?.coordinates;
     if (!coordinates || coordinates.length <= 1) {
       return;
@@ -145,7 +146,6 @@ const Attendance = () => {
         }m`
       );
     }
-    setLoading(true);
     if (isAuthenticated && user && user.company) {
       axios
         .post("/api/attendance/mark", {
@@ -172,7 +172,8 @@ const Attendance = () => {
     }
   };
 
-  const handlePunchOut = async () => {
+  const handlePunchOut = () => {
+    setLoading(true);
     const coordinates = inputs?.punchOutGeometry?.coordinates;
     if (!coordinates || coordinates.length <= 1) {
       return;
@@ -194,7 +195,6 @@ const Attendance = () => {
         ).toLocaleString()}m should be less then ${branch.radius}m`
       );
     }
-    setLoading(true);
     if (isAuthenticated && user && user.company) {
       axios
         .put("/api/attendance/mark", {
@@ -251,9 +251,10 @@ const Attendance = () => {
               onClick={hasPunchedIn ? handlePunchOut : handlePunchIn}
               className="px-4 py-2 bg-[#3ded97] text-white rounded-lg cursor-pointer hover:bg-[#028a0f] focus:outline-none focus:ring-2 focus:ring-[#e94560] focus:ring-offset-2"
             >
-              {loading && !hasPunchedIn && "Punching In..."}
+              {!loading && !hasPunchedIn && "Punch In"}
+              {!loading && hasPunchedIn && "Punch Out"}
               {loading && hasPunchedIn && "Punching Out..."}
-              {!loading && hasPunchedIn ? "Punch Out" : "Punch In"}
+              {loading && !hasPunchedIn && "Punching In..."}
             </button>
           )}
         </div>
