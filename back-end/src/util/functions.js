@@ -45,7 +45,7 @@ export function generateRandomString(length, includeNumeric = true) {
   return randomString;
 }
 
-export const currntTimeInFixedFomat = (currDate, delay) => {
+export const currntTimeInFixedFomat = (currDate, delay = 0) => {
   const currentDate = new Date(currDate + delay * 60 * 1000);
   const hours = String(currentDate.getHours()).padStart(2, "0");
   const minutes = String(currentDate.getMinutes()).padStart(2, "0");
