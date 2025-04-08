@@ -240,7 +240,7 @@ const Attendance = () => {
           {!allowLocation && (
             <button
               onClick={() => getLocation()}
-              className="px-4 py-2 bg-[#e94560] text-white rounded-lg cursor-pointer hover:bg-[#d8344f] focus:outline-none focus:ring-2 focus:ring-[#e94560] focus:ring-offset-2"
+              className="px-4 py-2 bg-[#ff4444] text-white rounded-lg cursor-pointer focus:outline-none disabled:bg-[#ff4444]/40"
             >
               Allow Access!
             </button>
@@ -249,7 +249,7 @@ const Attendance = () => {
             <button
               disabled={loading}
               onClick={hasPunchedIn ? handlePunchOut : handlePunchIn}
-              className="px-4 py-2 bg-[#3ded97] text-white rounded-lg cursor-pointer hover:bg-[#028a0f] focus:outline-none focus:ring-2 focus:ring-[#e94560] focus:ring-offset-2"
+              className="px-4 py-2 text-white bg-[#028a0f] rounded-lg cursor-pointer focus:outline-none disabled:bg-[#028a0f]/40"
             >
               {!loading && !hasPunchedIn && "Punch In"}
               {!loading && hasPunchedIn && "Punch Out"}
