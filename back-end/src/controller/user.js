@@ -1,6 +1,5 @@
 import Company from "../model/company.js";
 import User from "../model/user.js";
-import Shift from "../model/shift.js";
 import { setUser } from "../util/jwt.js";
 import bcrypt from "bcryptjs";
 import { createMailSystem, createMailSystemForEmployee } from "../util/mail.js";
@@ -96,6 +95,13 @@ const handleUserSignIn = async (req, res) => {
       };
     }
   }
+  res.cookie("JWT_TOKEN", "", {
+    expires: new Date(0), // Sets the expiration date to a past date to delete the cookie
+    httpOnly: true,
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict", // Prevent CSRF
+  });
   const token = setUser(user);
   res.cookie("JWT_TOKEN", token, {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -113,7 +119,13 @@ const handleUserSignIn = async (req, res) => {
 };
 
 const handleUserLogout = async (req, res) => {
-  res.cookie("JWT_TOKEN", "");
+  res.cookie("JWT_TOKEN", "", {
+    expires: new Date(0), // Sets the expiration date to a past date to delete the cookie
+    httpOnly: true,
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict", // Prevent CSRF
+  });
   return res.status(200).json({ message: "logout successful" });
 };
 

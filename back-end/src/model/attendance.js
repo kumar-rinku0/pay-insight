@@ -99,7 +99,10 @@ attendanceSchema.pre("save", async function (next) {
     const lastObj = this.punchingInfo.pop();
     const currDate = lastObj.punchInInfo.getTimestamp;
     const currTime = currntTimeInFixedFomat(currDate);
-    const shift = await Shift.findOne({ employeeId: this.userId });
+    const shift = await Shift.findOne({ createdFor: this.userId });
+    if (!shift) {
+      return next(new Error("shift not found!"));
+    }
     const delay = currntTimeInFixedFomat(currDate, shift.halfDayLateBy);
     if (shift.shiftStartTime >= currTime) {
       this.status = "on time";

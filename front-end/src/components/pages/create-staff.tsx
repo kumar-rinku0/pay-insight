@@ -59,13 +59,17 @@ const CreateStaff = () => {
   const [isOpen, setIsOpen] = React.useState<{
     overlay: boolean;
     branch: string | null;
-  }>({ overlay: false, branch: null });
-  const handleSetIsOpen = (value: boolean) => {
+    user: string | null;
+  }>({ overlay: false, branch: null, user: null });
+  const handleSetIsOpenOverlay = (value: boolean) => {
     setIsOpen((prev) => ({ ...prev, overlay: value }));
   };
 
   const handleSetIsOpenBranch = (value: string | null) => {
-    setIsOpen({ overlay: false, branch: value });
+    setIsOpen((prev) => ({ ...prev, branch: value }));
+  };
+  const handleSetIsOpenUser = (value: string | null) => {
+    setIsOpen((prev) => ({ ...prev, user: value }));
   };
 
   // const [isLoading, setIsLoading] = React.useState(false);
@@ -96,12 +100,13 @@ const CreateStaff = () => {
         {/* Staff Form */}
         {!isOpen.overlay && (
           <EmpoyeeDetails
-            handleSetIsOpen={handleSetIsOpen}
+            handleSetIsOpenOverlay={handleSetIsOpenOverlay}
+            handleSetIsOpenUser={handleSetIsOpenUser}
             branchId={user.company.branch}
           />
         )}
         {isOpen.overlay && (
-          <ShiftDetails /> // Show shift form when overlay is open
+          <ShiftDetails user={isOpen.user} /> // Show shift form when overlay is open
         )}
       </main>
     );
@@ -115,12 +120,13 @@ const CreateStaff = () => {
       )}
       {isOpen.branch && !isOpen.overlay && (
         <EmpoyeeDetails
-          handleSetIsOpen={handleSetIsOpen}
+          handleSetIsOpenOverlay={handleSetIsOpenOverlay}
+          handleSetIsOpenUser={handleSetIsOpenUser}
           branchId={isOpen.branch}
         />
       )}
       {isOpen.branch && isOpen.overlay && (
-        <ShiftDetails /> // Show shift form when overlay is open
+        <ShiftDetails user={isOpen.user} /> // Show shift form when overlay is open
       )}
     </main>
   );
@@ -179,10 +185,12 @@ const ShowBranches = ({
 };
 
 const EmpoyeeDetails = ({
-  handleSetIsOpen,
+  handleSetIsOpenOverlay,
+  handleSetIsOpenUser,
   branchId,
 }: {
-  handleSetIsOpen: (value: boolean) => void;
+  handleSetIsOpenOverlay: (value: boolean) => void;
+  handleSetIsOpenUser: (value: string | null) => void;
   branchId: string;
 }) => {
   const { isAuthenticated, user } = useAuth();
@@ -215,8 +223,9 @@ const EmpoyeeDetails = ({
         })
         .then((res) => {
           console.log(res);
-          toast.success("role created, create a shift!");
-          handleSetIsOpen(true); // Open the shift form after staff creation
+          handleSetIsOpenUser(res.data.user._id); // Set the user ID for the shift form
+          toast.success(res.data.message);
+          handleSetIsOpenOverlay(true); // Open the shift form after staff creation
         })
         .catch((err) => {
           console.log(err);
@@ -331,8 +340,7 @@ const EmpoyeeDetails = ({
   );
 };
 
-const ShiftDetails = () => {
-  const { isAuthenticated, user } = useAuth();
+const ShiftDetails = ({ user }: { user: string | null }) => {
   const { resetRoute } = useRoute();
   const [selectedWeekOffs, setSelectedWeekOffs] = useState<string[]>([]);
   // React Hook Form setup with Zod validation
@@ -356,11 +364,11 @@ const ShiftDetails = () => {
     // Handle the form data submission to the backend (e.g., API call)
     console.log(data);
     console.log("Selected week off:", selectedWeekOffs); // Log the selected week off
-    if (isAuthenticated && user) {
+    if (user) {
       axios
         .post("/api/shift/create", {
           ...data,
-          userId: user._id,
+          userId: user,
           weekOffs: selectedWeekOffs,
         })
         .then((res) => {

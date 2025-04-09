@@ -56,6 +56,15 @@ const handleSelectCompany = async (req, res) => {
     role: roleInfo.role,
     branch: roleInfo.branch,
   };
+  // Clear the existing JWT_TOKEN cookie before setting a new one
+  // This ensures that the old token is invalidated and a new one is set with the updated user info
+  res.cookie("JWT_TOKEN", "", {
+    expires: new Date(0), // Sets the expiration date to a past date to delete the cookie
+    httpOnly: true,
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict", // Prevent CSRF
+  });
   const token = setUser(user);
   res.cookie("JWT_TOKEN", token, {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
