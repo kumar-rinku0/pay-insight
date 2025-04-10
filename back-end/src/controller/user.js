@@ -124,7 +124,7 @@ const handleUserLogout = async (req, res) => {
     httpOnly: true,
     path: "/",
     secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict", // Prevent CSRF
+    sameSite: "None", // Prevent CSRF
   });
   return res.status(200).json({ message: "logout successful" });
 };

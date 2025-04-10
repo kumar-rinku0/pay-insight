@@ -63,7 +63,7 @@ const handleSelectCompany = async (req, res) => {
     httpOnly: true,
     path: "/",
     secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict", // Prevent CSRF
+    sameSite: "None", // Prevent CSRF
   });
   const token = setUser(user);
   res.cookie("JWT_TOKEN", token, {
@@ -71,7 +71,7 @@ const handleSelectCompany = async (req, res) => {
     httpOnly: true,
     path: "/",
     secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict", // Prevent CSRF
+    sameSite: "None", // Prevent CSRF
   });
 
   return res.status(200).send({
