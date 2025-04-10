@@ -54,20 +54,16 @@ export function TeamSwitcher() {
 
   const handleGetCompanies = React.useCallback(
     (userId: string) => {
-      if (companies.length === 0) {
-        axios
-          .get(`/api/user/userId/${userId}`)
-          .then((res) => {
-            console.log(res);
-            const { roleInfo } = res.data.user;
-            setCompanies(roleInfo);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+      if (!userId || companies.length > 0) return;
+      axios
+        .get(`/api/user/userId/${userId}`)
+        .then((res) => {
+          const { roleInfo } = res.data.user;
+          setCompanies(roleInfo);
+        })
+        .catch(console.error);
     },
-    [companies]
+    [companies.length]
   );
 
   const handleSelectOneCompany = (companyId: string) => {
@@ -99,15 +95,17 @@ export function TeamSwitcher() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
+        <DropdownMenu
+          onOpenChange={(open) => {
+            if (open) {
+              handleGetCompanies(user._id);
+            }
+          }}
+        >
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              onMouseEnter={() => handleGetCompanies(user._id)}
-              onFocus={() => handleGetCompanies(user._id)}
-              // onPointerEnter={() => handleGetCompanies(user._id)}
-              // onSelect={() => handleGetCompanies(user._id)}
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <GalleryVerticalEnd className="size-4" />
