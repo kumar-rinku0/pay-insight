@@ -25,6 +25,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ArrowLeft } from "lucide-react";
+import { authorizeUrl } from "@/components/partial/google-auth";
+import { useAuth } from "@/components/provider/auth-provider";
 
 const formSchema = z.object({
   givenName: z.string().min(2, "at least 2 characters!").max(20),
@@ -35,6 +37,7 @@ const formSchema = z.object({
 
 const Register = () => {
   const router = useRouter();
+  const { isAuthenticated } = useAuth(); // Assuming you have a useAuth hook to check authentication status
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -150,11 +153,23 @@ const Register = () => {
                 <Button type="submit" className="w-full">
                   Create an account
                 </Button>
-                <Button variant="outline" type="button" className="w-full">
-                  Sign up with Google
-                </Button>
               </form>
             </Form>
+          </div>
+          <div className="flex items-center justify-between mt-4">
+            <div className="h-[1px] mx-4 w-full bg-slate-500" />
+            <span className="text-sm text-slate-500">or</span>
+            <div className="h-[1px] mx-4 w-full bg-slate-500" />
+          </div>
+          <div className="flex flex-col gap-2 mt-4">
+            <Button
+              variant="outline"
+              className="w-full"
+              disabled={isAuthenticated}
+              onClick={() => router.push(authorizeUrl)}
+            >
+              Login with Google
+            </Button>
           </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}

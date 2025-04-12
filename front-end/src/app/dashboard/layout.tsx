@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/sidebar";
 
 import { useAuth } from "@/components/provider/auth-provider";
-import { Loader } from "lucide-react";
 import { RouteProvider } from "@/components/provider/route-provider";
 import BreadCrumb from "@/components/partial/bread-curmb";
 import { redirect } from "next/navigation";
@@ -34,7 +33,9 @@ export default function RootLayout({
   if (loading) {
     return (
       <div className="h-[90vh] flex items-center justify-center">
-        <Loader className="animate-spin h-10 w-10" />
+        <div className="flex items-center justify-center min-h-[200px]">
+          <div className="w-8 h-8 border-4 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
+        </div>
       </div>
     );
   }
