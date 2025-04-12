@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/form";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { authorizeUrl } from "@/components/partial/google-auth";
 
 const formSchema = z.object({
   email: z.string().min(2).max(50).email(),
@@ -47,7 +48,7 @@ const Login = () => {
     selectCompany: false,
   });
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { isAuthenticated, signIn } = useAuth();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -252,23 +253,23 @@ const Login = () => {
                   >
                     {loading.button ? "Loading..." : "Login to App"}
                   </Button>
-                  {/* <div>
-                    <script
-                      src="https://accounts.google.com/gsi/client"
-                      async
-                    ></script>
-                    <div
-                      id="g_id_onload"
-                      data-client_id="589945850717-s6ihorkmuagsbmai49cur3bbb3psc8se.apps.googleusercontent.com"
-                      data-context="signin"
-                      data-ux_mode="popup"
-                      data-login_uri={`${DOMAIN}/api/user`}
-                      data-auto_select="true"
-                      data-itp_support="true"
-                    ></div>
-                  </div> */}
                 </form>
               </Form>
+            </div>
+            <div className="flex items-center justify-between mt-4">
+              <div className="h-[1px] mx-4 w-full bg-slate-500" />
+              <span className="text-sm text-slate-500">or</span>
+              <div className="h-[1px] mx-4 w-full bg-slate-500" />
+            </div>
+            <div className="flex flex-col gap-2 mt-4">
+              <Button
+                variant="outline"
+                className="w-full"
+                disabled={isAuthenticated}
+                onClick={() => router.push(authorizeUrl)}
+              >
+                Login with Google
+              </Button>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}

@@ -3,7 +3,13 @@ import User from "../model/user.js";
 import { setUser } from "../util/jwt.js";
 import bcrypt from "bcryptjs";
 import { createMailSystem, createMailSystemForEmployee } from "../util/mail.js";
-import { generateRandomString, isRightUser } from "../util/functions.js";
+import {
+  generateRandomString,
+  isRightUser,
+  cookieOptions,
+} from "../util/functions.js";
+import { getToken } from "../util/auth.js";
+import { getInfo } from "../util/jwt.js";
 
 // login, logout & create user
 const handleUserSignUp = async (req, res) => {
@@ -100,16 +106,10 @@ const handleUserSignIn = async (req, res) => {
     httpOnly: true,
     path: "/",
     secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict", // Prevent CSRF
+    sameSite: "None", // Prevent CSRF
   });
   const token = setUser(user);
-  res.cookie("JWT_TOKEN", token, {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    httpOnly: true,
-    path: "/",
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict", // Prevent CSRF
-  });
+  res.cookie("JWT_TOKEN", token, cookieOptions());
 
   return res.status(200).json({
     user: user,
@@ -119,13 +119,7 @@ const handleUserSignIn = async (req, res) => {
 };
 
 const handleUserLogout = async (req, res) => {
-  res.cookie("JWT_TOKEN", "", {
-    expires: new Date(0), // Sets the expiration date to a past date to delete the cookie
-    httpOnly: true,
-    path: "/",
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "None", // Prevent CSRF
-  });
+  res.cookie("JWT_TOKEN", "", cookieOptions());
   return res.status(200).json({ message: "logout successful" });
 };
 
@@ -228,6 +222,68 @@ const handleGetUserByCompanyId = async (req, res) => {
   return res.status(400).send({ error: "invalid company id!" });
 };
 
+const handleGoogleCallback = async (req, res) => {
+  const { code } = req.body;
+  const tokens = await getToken(code);
+  if (!tokens) {
+    return res.status(400).send({ type: "error", msg: "Invalid token!" });
+  }
+  if (tokens.error) {
+    return res.status(400).send({ type: "error", msg: tokens.error });
+  }
+  const { email, email_verified, given_name, family_name, picture } = getInfo(
+    tokens.id_token
+  );
+  if (!email_verified) {
+    return res.status(400).send({ type: "error", msg: "Email not verified!" });
+  }
+  const userCheck = await User.findOne({ email: email });
+  if (userCheck) {
+    req.user = userCheck;
+    if (userCheck.roleInfo.length !== 0) {
+      const company = await Company.findById(userCheck.roleInfo[0].company);
+      if (company) {
+        const roleInfo = userCheck.roleInfo[0];
+        userCheck.company = {
+          _id: company._id,
+          name: company.name,
+          role: roleInfo.role,
+          branch: roleInfo.branch,
+        };
+      }
+    }
+    const token = setUser(userCheck);
+    res.cookie("JWT_TOKEN", token, cookieOptions());
+    return res.status(200).send({
+      type: "success",
+      msg: `${given_name} welcome to pay-insight!`,
+      user: userCheck,
+    });
+  }
+  const password = generateRandomString(8, true);
+  const user = new User({
+    givenName: given_name,
+    familyName: family_name,
+    email: email,
+    isVerified: email_verified,
+    password: password,
+    picture: picture,
+  });
+  await user.save();
+  const token = setUser(user);
+  res.cookie("JWT_TOKEN", token, cookieOptions());
+  await createMailSystemForEmployee({
+    address: user.email,
+    _id: user._id,
+    password,
+  });
+  return res.status(200).send({
+    type: "success",
+    msg: `${given_name} welcome to pay-insight!`,
+    user: user,
+  });
+};
+
 export {
   handleUserSignUp,
   handleUserSignIn,
@@ -239,4 +295,5 @@ export {
   handleGetOneUser,
   handleGetUserByCompanyId,
   handleUserSignUpWithRoles,
+  handleGoogleCallback,
 };
