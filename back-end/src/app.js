@@ -1,6 +1,6 @@
 import { configDotenv } from "dotenv";
 import cookieParser from "cookie-parser";
-
+console.log("dotenv loaded", process.env.NODE_ENV);
 if (process.env.NODE_ENV != "development") {
   configDotenv();
 }
