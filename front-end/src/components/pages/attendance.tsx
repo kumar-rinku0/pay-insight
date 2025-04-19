@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../provider/auth-provider";
 // import { currntTimeInFixedFomat } from "../functions/DateFixer";
 import axios from "axios";
 import haversine from "../../util/haversine";
 
 const Attendance = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const { isAuthenticated, user } = useAuth();
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hasPunchedIn, setHasPunchedIn] = useState(false);
   const [allowLocation, setAllowLocation] = useState(false);
   const [branch, setBranch] = useState<{
@@ -20,6 +22,8 @@ const Attendance = () => {
     punchOutGeometry: null,
   });
   const [loading, setLoading] = useState(false);
+  const [allowCamera, setAllowCamera] = useState(false);
+  const [disableBtn, setDisableBtn] = useState(false);
 
   useEffect(() => {
     if (user && user?.company) {
@@ -50,21 +54,21 @@ const Attendance = () => {
     }
   }, [user]);
 
-  function getLocation(): Promise<void> {
+  function getLocation(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         getCurrentPositionAsync()
           .then((position) => {
             showPosition(position);
-            resolve();
+            resolve(true);
           })
           .catch((error) => {
             showError(error);
-            reject();
+            reject(false);
           });
       } else {
         alert("Geolocation is not supported by this browser.");
-        reject();
+        reject(false);
       }
     });
   }
@@ -92,10 +96,10 @@ const Attendance = () => {
     const lon = position.coords.longitude;
     const acc = position.coords.accuracy;
     console.log("lat:", lat, "lon:", lon, "acc:", acc);
-    if (acc > 100) {
-      alert("GPS signal is weak, Try moving to an open area.");
-      return;
-    }
+    // if (acc > 100) {
+    //   alert("GPS signal is weak, Try moving to an open area.");
+    //   return;
+    // }
     setAllowLocation(true);
     const coordinates = [lon, lat];
     const obj = { type: "Point", coordinates: coordinates };
@@ -104,6 +108,7 @@ const Attendance = () => {
     } else {
       setInputs((prev) => ({ ...prev, punchOutGeometry: obj }));
     }
+    // setAllowCamera(true);
   }
 
   function showError(error: GeolocationPositionError) {
@@ -122,6 +127,80 @@ const Attendance = () => {
         break;
     }
   }
+
+  function startCamera() {
+    return new Promise((resolve, reject) => {
+      navigator.mediaDevices
+        .getUserMedia({ video: { facingMode: "user" }, audio: false })
+        .then((stream) => {
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+          setAllowCamera(true);
+          console.log("Camera stream started:", stream);
+          resolve(stream);
+        })
+        .catch((err) => {
+          console.error("Error accessing camera:", err);
+          alert("Could not access the camera. Please check permissions.");
+          reject(err);
+        });
+    });
+  }
+
+  // function stopCamera() {
+  //   if (videoRef.current && videoRef.current.srcObject) {
+  //     videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+  //   }
+  // }
+
+  function capturePhoto() {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      if (context) {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      }
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+
+        const formData = new FormData();
+        formData.append("image", blob, "capture.jpg");
+        console.log(formData.get("image"));
+        if (!hasPunchedIn) {
+          setInputs((prev) => ({
+            ...prev,
+            punchInPhoto: formData.get("image"),
+          }));
+        } else {
+          setInputs((prev) => ({
+            ...prev,
+            punchOutPhoto: formData.get("image"),
+          }));
+        }
+      });
+      setAllowCamera(false);
+    }
+  }
+
+  const handleAllowAccess = async () => {
+    setDisableBtn(true);
+    try {
+      const isLocation = await getLocation();
+      if (isLocation) {
+        const stream = await startCamera(); // show camera only after location is fetched
+        console.log(stream);
+      }
+    } catch (error) {
+      console.error("Error in location/camera access:", error);
+    }
+    setDisableBtn(false);
+  };
 
   const handlePunchIn = () => {
     setLoading(true);
@@ -235,17 +314,65 @@ const Attendance = () => {
         <h2 id="coordinates" className="text-white/80 text-center mt-4">
           coordinates
         </h2>
-
+        {/* Hidden canvas for photo capture */}
+        <canvas ref={canvasRef} style={{ display: "none" }} />
+        {/* Hidden video element for camera stream */}
         <div className="mt-4 flex flex-col gap-4">
           {!allowLocation && (
             <button
-              onClick={() => getLocation()}
+              onClick={() => handleAllowAccess()}
+              disabled={disableBtn}
               className="px-4 py-2 bg-[#ff4444] text-white rounded-lg cursor-pointer focus:outline-none disabled:bg-[#ff4444]/40"
             >
               Allow Access!
             </button>
           )}
-          {allowLocation && (
+          {allowLocation && allowCamera && (
+            <div className="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center">
+              <div className="relative w-full max-w-md">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  className="w-full rounded-lg"
+                />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-64 h-64 rounded-full border-4 border-white/50"></div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex gap-4">
+                <button
+                  onClick={() => {
+                    setAllowCamera(false);
+                    setAllowLocation(false);
+                  }}
+                  className="px-6 py-3 bg-red-500 text-white rounded-full"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={capturePhoto}
+                  disabled={disableBtn}
+                  className="px-6 py-3 bg-green-500 text-white rounded-full"
+                >
+                  Capture
+                </button>
+              </div>
+            </div>
+          )}
+          {allowLocation && !allowCamera && (
+            <button
+              onClick={() => {
+                setAllowCamera(true);
+              }}
+              disabled={disableBtn}
+              className="px-4 py-2 bg-[#ff4444] text-white rounded-lg cursor-pointer focus:outline-none disabled:bg-[#ff4444]/40"
+            >
+              Allow Camera!
+            </button>
+          )}
+          {allowLocation && allowCamera && (
             <button
               disabled={loading}
               onClick={hasPunchedIn ? handlePunchOut : handlePunchIn}

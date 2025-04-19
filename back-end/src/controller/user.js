@@ -104,9 +104,8 @@ const handleUserSignIn = async (req, res) => {
   res.cookie("JWT_TOKEN", "", {
     expires: new Date(0), // Sets the expiration date to a past date to delete the cookie
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS in production
     path: "/",
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "None", // Prevent CSRF
   });
   const token = setUser(user);
   res.cookie("JWT_TOKEN", token, cookieOptions());

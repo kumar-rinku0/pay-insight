@@ -1,13 +1,12 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import { configDotenv } from "dotenv";
-import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding.js";
+import axios from "axios";
 
 if (process.env.NODE_ENV != "development") {
   configDotenv();
 }
 const mapToken = process.env.MAPBOX_DEFAULT_TOKEN;
-const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 export const isRightUser = async function (email, password) {
   const user = await User.findOne({ email: email.trim() });
@@ -60,30 +59,35 @@ export const formatDateForComparison = (dateObj) => {
   return `${day}/${month}/${year}`;
 };
 
+export function getTodayTimestamp(timeStr, extraMinutes = 0) {
+  const [hours, minutes] = timeStr.split(":").map(Number);
+
+  // Get today's date
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth(); // 0-based
+  const day = now.getDate();
+
+  const dateWithTime = new Date(year, month, day, hours, minutes, 0, 0);
+
+  dateWithTime.setMinutes(dateWithTime.getMinutes() + extraMinutes);
+
+  return Date.parse(new Date(dateWithTime.getTime()));
+}
+
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {
-  try {
-    const response = await geocodingClient
-      .reverseGeocode({ query: [longitude, latitude] })
-      .send();
-    const result = response.body;
-
-    if (result && result.features && result.features.length > 0) {
-      console.log("Address:", result.features[0].place_name);
-      return result.features[0].place_name;
-    } else {
-      console.log("No address found for these coordinates.");
-    }
-  } catch (error) {
-    console.error("Error during reverse geocoding:", error);
-  }
-  return null;
+  const response = await axios.get(
+    `https://api.mapbox.com/search/geocode/v6/reverse?longitude=${longitude}&latitude=${latitude}&access_token=${mapToken}`
+  );
+  return response.data.features[0].properties.place_formatted
+    ? response.data.features[0].properties.place_formatted
+    : null;
 };
 
 export const cookieOptions = () => ({
   httpOnly: true,
   path: "/",
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+  secure: process.env.NODE_ENV === "production", // Set to true in production
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
