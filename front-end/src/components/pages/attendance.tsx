@@ -96,10 +96,10 @@ const Attendance = () => {
     const lon = position.coords.longitude;
     const acc = position.coords.accuracy;
     console.log("lat:", lat, "lon:", lon, "acc:", acc);
-    // if (acc > 100) {
-    //   alert("GPS signal is weak, Try moving to an open area.");
-    //   return;
-    // }
+    if (acc > 100) {
+      alert("GPS signal is weak, Try moving to an open area.");
+      return;
+    }
     setAllowLocation(true);
     const coordinates = [lon, lat];
     const obj = { type: "Point", coordinates: coordinates };
@@ -108,7 +108,7 @@ const Attendance = () => {
     } else {
       setInputs((prev) => ({ ...prev, punchOutGeometry: obj }));
     }
-    // setAllowCamera(true);
+    setAllowCamera(true);
   }
 
   function showError(error: GeolocationPositionError) {
