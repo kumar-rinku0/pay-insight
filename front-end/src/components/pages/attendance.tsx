@@ -17,10 +17,15 @@ const Attendance = () => {
   const [inputs, setInputs] = useState<{
     punchInGeometry: { type: string; coordinates: number[] } | null;
     punchOutGeometry: { type: string; coordinates: number[] } | null;
+    punchInPhoto?: Blob | null;
+    punchOutPhoto?: Blob | null;
   }>({
     punchInGeometry: null,
     punchOutGeometry: null,
+    punchInPhoto: null,
+    punchOutPhoto: null,
   });
+
   const [loading, setLoading] = useState(false);
   const [allowCamera, setAllowCamera] = useState(false);
   const [disableBtn, setDisableBtn] = useState(false);
@@ -148,11 +153,13 @@ const Attendance = () => {
     });
   }
 
-  // function stopCamera() {
-  //   if (videoRef.current && videoRef.current.srcObject) {
-  //     videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-  //   }
-  // }
+  function stopCamera() {
+    if (videoRef.current?.srcObject) {
+      const stream = videoRef.current.srcObject as MediaStream;
+      stream.getTracks().forEach((track) => track.stop());
+      videoRef.current.srcObject = null;
+    }
+  }
 
   function capturePhoto() {
     if (videoRef.current && canvasRef.current) {
@@ -166,25 +173,19 @@ const Attendance = () => {
       if (context) {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
       }
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
 
-        const formData = new FormData();
-        formData.append("image", blob, "capture.jpg");
-        console.log(formData.get("image"));
-        if (!hasPunchedIn) {
-          setInputs((prev) => ({
-            ...prev,
-            punchInPhoto: formData.get("image"),
-          }));
-        } else {
-          setInputs((prev) => ({
-            ...prev,
-            punchOutPhoto: formData.get("image"),
-          }));
-        }
-      });
-      setAllowCamera(false);
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const photoKey = hasPunchedIn ? "punchOutPhoto" : "punchInPhoto";
+
+        setInputs((prev) => ({
+          ...prev,
+          [photoKey]: blob,
+        }));
+
+        stopCamera();
+        setAllowCamera(false);
+      }, "image/jpeg");
     }
   }
 
