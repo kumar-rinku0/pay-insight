@@ -9,10 +9,28 @@ import {
   handleGetAttendanceCount,
 } from "../controller/attendance.js";
 
+import { handleUploadImage } from "../util/cloud-init.js";
+import multer from "multer";
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 const router = express.Router();
 
-router.route("/mark").post(wrapAsync(handlemarkPunchIn));
-router.route("/mark").put(wrapAsync(handlemarkPunchOut));
+router
+  .route("/mark")
+  .post(
+    upload.single("punchInPhoto"),
+    wrapAsync(handleUploadImage),
+    wrapAsync(handlemarkPunchIn)
+  );
+router
+  .route("/mark")
+  .put(
+    upload.single("punchOutPhoto"),
+    wrapAsync(handleUploadImage),
+    wrapAsync(handlemarkPunchOut)
+  );
+
 router
   .route("/users/information/today")
   .post(wrapAsync(handleGetOneSpecificUserAttendance));

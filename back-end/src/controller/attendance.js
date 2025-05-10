@@ -4,6 +4,10 @@ import { reverseGeocode } from "../util/functions.js";
 
 const handlemarkPunchIn = async (req, res) => {
   const { userId, companyId, branchId, punchInGeometry } = req.body;
+  if (!req.url) {
+    return res.json({ message: "file not found." });
+  }
+  const punchInPhoto = req.url;
   const date = formatDateForComparison(new Date());
   const month = new Date().toLocaleString("en-IN", {
     month: "long",
@@ -15,6 +19,7 @@ const handlemarkPunchIn = async (req, res) => {
   const punchIn = new PunchIn({
     punchInGeometry,
     punchInAddress,
+    punchInPhoto,
   });
   await punchIn.save();
   const prevAttendance = await Attendance.findOne({
@@ -43,6 +48,10 @@ const handlemarkPunchIn = async (req, res) => {
 
 const handlemarkPunchOut = async (req, res) => {
   const { userId, companyId, branchId, punchOutGeometry } = req.body;
+  if (!req.url) {
+    return res.json({ message: "file not found." });
+  }
+  const punchOutPhoto = req.url;
   const punchOutAddress = await reverseGeocode(
     punchOutGeometry.coordinates[1],
     punchOutGeometry.coordinates[0]
@@ -50,6 +59,7 @@ const handlemarkPunchOut = async (req, res) => {
   const punchOut = new PunchOut({
     punchOutGeometry,
     punchOutAddress,
+    punchOutPhoto,
   });
   await punchOut.save();
   const date = formatDateForComparison(new Date());
@@ -64,7 +74,11 @@ const handlemarkPunchOut = async (req, res) => {
   attendance.punchingInfo.push(lastPunchInInfo);
   await attendance.save();
 
-  res.status(201).json({ message: "punched out!", attendance: attendance });
+  res.status(201).json({
+    message: "punched out!",
+    punchOut: punchOut,
+    attendance: attendance,
+  });
 };
 
 // Get All Attendance Records

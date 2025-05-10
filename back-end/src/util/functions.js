@@ -58,6 +58,22 @@ export const formatDateForComparison = (dateObj) => {
   return `${day}/${month}/${year}`;
 };
 
+export function getTodayTimestamp(timeStr, extraMinutes = 0) {
+  const [hours, minutes] = timeStr.split(":").map(Number);
+
+  // Get today's date
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth(); // 0-based
+  const day = now.getDate();
+
+  const dateWithTime = new Date(year, month, day, hours, minutes, 0, 0);
+
+  dateWithTime.setMinutes(dateWithTime.getMinutes() + extraMinutes);
+
+  return Date.parse(new Date(dateWithTime.getTime()));
+}
+
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {
   return null;
@@ -66,7 +82,6 @@ export const reverseGeocode = async (latitude, longitude) => {
 export const cookieOptions = () => ({
   httpOnly: true,
   path: "/",
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+  secure: process.env.NODE_ENV === "production", // Set to true in production
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });
