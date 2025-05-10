@@ -11,9 +11,10 @@ type userInfoType = {
   username: string;
   email: string;
   picture: string;
-  company?: {
+  role?: {
     _id: string;
     name: string;
+    company: string;
     role: string;
     branch?: string;
   };

@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { toast } from "sonner";
-import { useRoute } from "../provider/route-provider";
+import { useRouter } from "next/navigation";
 
 // Zod schema for frontend validation
 const staffSchema = z.object({
@@ -94,7 +94,7 @@ const CreateStaff = () => {
   //   }
   // }, [isAuthenticated, user]);
 
-  if (isAuthenticated && user && user.company && user.company.branch) {
+  if (isAuthenticated && user && user.role && user.role.branch) {
     return (
       <main className="flex h-[90vh] sm:h-screen justify-center items-center">
         {/* Staff Form */}
@@ -102,7 +102,7 @@ const CreateStaff = () => {
           <EmpoyeeDetails
             handleSetIsOpenOverlay={handleSetIsOpenOverlay}
             handleSetIsOpenUser={handleSetIsOpenUser}
-            branchId={user.company.branch}
+            branchId={user.role.branch}
           />
         )}
         {isOpen.overlay && (
@@ -214,12 +214,12 @@ const EmpoyeeDetails = ({
     // Handle the form data submission to the backend (e.g., API call)
     console.log(data);
     setIsLoading(true);
-    if (isAuthenticated && user && user.company) {
+    if (isAuthenticated && user && user.role) {
       axios
         .post("/api/user/registerbyrole", {
           ...data,
-          companyId: user.company._id,
-          branchId: branchId || user.company.branch,
+          companyId: user.role.company,
+          branchId: branchId || user.role.branch,
         })
         .then((res) => {
           console.log(res);
@@ -316,7 +316,7 @@ const EmpoyeeDetails = ({
                         <SelectValue placeholder="Staff Role" />
                       </SelectTrigger>
                       <SelectContent>
-                        {user?.company?.role === "admin" && (
+                        {user?.role?.role === "admin" && (
                           <SelectItem value="admin">Admin</SelectItem>
                         )}
                         <SelectItem value="manager">Manager</SelectItem>
@@ -341,10 +341,9 @@ const EmpoyeeDetails = ({
 };
 
 const ShiftDetails = ({ user }: { user: string | null }) => {
-  const { resetRoute } = useRoute();
   const [selectedWeekOffs, setSelectedWeekOffs] = useState<string[]>([]);
   // React Hook Form setup with Zod validation
-
+  const router = useRouter();
   const form2 = useForm<ShiftFormData>({
     resolver: zodResolver(shiftSchema),
     defaultValues: {
@@ -374,7 +373,7 @@ const ShiftDetails = ({ user }: { user: string | null }) => {
         .then((res) => {
           console.log(res);
           toast.success(res.data.message);
-          resetRoute("dashboard");
+          router.push("/dashboard");
         })
         .catch((err) => {
           console.log(err);
