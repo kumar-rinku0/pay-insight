@@ -7,9 +7,11 @@ import {
   generateRandomString,
   isRightUser,
   cookieOptions,
+  cookieOptionsForRemember,
 } from "../util/functions.js";
 import { getToken } from "../util/auth.js";
 import { getInfo } from "../util/jwt.js";
+import Role from "../model/role.js";
 
 // login, logout & create user
 const handleUserSignUp = async (req, res) => {
@@ -37,32 +39,36 @@ const handleUserSignUp = async (req, res) => {
 
 const handleUserSignUpWithRoles = async (req, res) => {
   const { familyName, givenName, email, role, branchId } = req.body;
-  const { _id, role: companyRole } = req.user.company;
-  if (companyRole === "manager" && role === "admin") {
+  const { company, name, role: userRole } = req.user.role;
+  if (userRole === "manager" && role === "admin") {
     return res
       .status(401)
       .send({ error: "you are not allowed to create admin!" });
   }
   const userbyemail = await User.findOne({ email });
   if (userbyemail) {
-    const info = userbyemail.roleInfo.find((item) => {
-      return item.company === _id && item.branch === branchId;
+    const role = await Role.find({ user: userbyemail._id });
+    const info = role.find((item) => {
+      return item.company === company && item.branch === branchId;
     });
     if (!info) {
-      userbyemail.roleInfo.push({
-        role,
-        company: _id,
+      const newRole = new Role({
+        user: userbyemail._id,
+        company: company,
         branch: branchId,
+        name,
+        role,
       });
-    } else {
-      const obj = info[0];
-      obj.role = role;
-      userbyemail.roleInfo.push(obj);
+      await newRole.save();
+      userbyemail.roles.push(newRole);
+      await userbyemail.save();
+      return res
+        .status(200)
+        .send({ message: "staff assigned a role!", user: userbyemail });
     }
-    await userbyemail.save();
     return res
       .status(200)
-      .send({ message: "user role updated!", user: userbyemail });
+      .send({ message: "already assigned a role!", user: userbyemail });
   }
   const password = generateRandomString(8, true);
   const user = new User({
@@ -72,7 +78,15 @@ const handleUserSignUpWithRoles = async (req, res) => {
     password,
   });
   console.log(password);
-  user.roleInfo.push({ role, company: _id, branch: branchId });
+  const newRole = new Role({
+    user: user._id,
+    company: company,
+    name,
+    branch: branchId,
+    role,
+  });
+  await newRole.save();
+  user.roles.push(newRole);
   await user.save();
   await createMailSystemForEmployee({
     address: user.email,
@@ -88,32 +102,28 @@ const handleUserSignIn = async (req, res) => {
   if (user?.message) {
     return res.status(401).json({ error: user.message, status: user.status });
   }
-
-  if (user.roleInfo.length !== 0) {
-    const company = await Company.findById(user.roleInfo[0].company);
-    if (company) {
-      const roleInfo = user.roleInfo[0];
-      user.company = {
-        _id: company._id,
-        name: company.name,
-        role: roleInfo.role,
-        branch: roleInfo.branch,
-      };
-    }
-  }
-  res.cookie("JWT_TOKEN", "", {
-    expires: new Date(0), // Sets the expiration date to a past date to delete the cookie
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // Set to true if using HTTPS in production
-    path: "/",
-  });
-  const token = setUser(user);
+  const role = await Role.findOne({ user: user._id });
+  const token = setUser(user, role);
   res.cookie("JWT_TOKEN", token, cookieOptions());
 
   return res.status(200).json({
     user: user,
     company: user.company,
     message: "login successful. if user have company it will be in user!",
+  });
+};
+
+const handleRememberMe = async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(400).json({ error: "user not found." });
+  }
+  const token = setUser(user, 7);
+  res.cookie("JWT_TOKEN", token, cookieOptionsForRemember());
+  return res.status(200).json({
+    user: user,
+    message: "session extended for 7 days.",
   });
 };
 
@@ -192,15 +202,6 @@ const handleUserResetPassword = async (req, res) => {
   return res
     .status(200)
     .json({ message: "Password reset successful.", user: info });
-};
-
-const handleGetOneUser = async (req, res) => {
-  const { userId } = req.params;
-  const user = await User.findById(userId).populate("roleInfo.company");
-  if (!user) {
-    return res.status(400).json({ error: "invailid user id." });
-  }
-  return res.status(200).json({ user: user, message: "user populated!" });
 };
 
 const handleGetUserByCompanyId = async (req, res) => {
@@ -291,8 +292,8 @@ export {
   handleUserSendVerifyEmail,
   handleUserSendResetEmail,
   handleUserResetPassword,
-  handleGetOneUser,
   handleGetUserByCompanyId,
   handleUserSignUpWithRoles,
   handleGoogleCallback,
+  handleRememberMe,
 };

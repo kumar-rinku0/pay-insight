@@ -3,7 +3,7 @@ import Company from "../model/company.js";
 import User from "../model/user.js";
 
 const handleFetchBranches = async (req, res) => {
-  const companyId = req.user.company._id;
+  const companyId = req.user.role.company;
   const comp = await Company.findById(companyId);
   const branches = await Branch.find({ company: companyId });
   if (branches.length === 0) {

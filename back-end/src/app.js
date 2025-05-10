@@ -1,8 +1,7 @@
-import { configDotenv } from "dotenv";
+import { config } from "dotenv";
 import cookieParser from "cookie-parser";
-console.log("dotenv loaded", process.env.NODE_ENV);
 if (process.env.NODE_ENV != "development") {
-  configDotenv();
+  config();
 }
 import express from "express";
 import { connectDatabase } from "./util/db-con.js";
@@ -14,6 +13,7 @@ import branchRouter from "./route/branch.js";
 import attendanceRouter from "./route/attendance.js";
 import shiftRouter from "./route/shift.js";
 import contectRouter from "./route/contact.js";
+import roleRouter from "./route/role.js";
 
 //middlewares
 import { isLoggedInCheck, onlyLoggedInUser } from "./middleware/auth.js";
@@ -44,6 +44,7 @@ app.use("/api/company", onlyLoggedInUser, companyRouter);
 app.use("/api/branch", onlyLoggedInUser, branchRouter);
 app.use("/api/attendance", onlyLoggedInUser, attendanceRouter);
 app.use("/api/shift", onlyLoggedInUser, shiftRouter);
+app.use("/api/role", onlyLoggedInUser, roleRouter);
 app.use("/api/contact", contectRouter);
 
 app.use((err, req, res, next) => {

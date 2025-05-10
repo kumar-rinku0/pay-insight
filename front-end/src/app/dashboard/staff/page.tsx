@@ -1,7 +1,8 @@
+import CreateStaff from "@/components/pages/create-staff";
 import React from "react";
 
 const Staff = () => {
-  return <div>Staff</div>;
+  return <CreateStaff />;
 };
 
 export default Staff;

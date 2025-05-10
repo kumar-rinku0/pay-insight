@@ -56,10 +56,10 @@ export function TeamSwitcher() {
     (userId: string) => {
       if (!userId || companies.length > 0) return;
       axios
-        .get(`/api/user/userId/${userId}`)
+        .get(`/api/role/userId/${userId}`)
         .then((res) => {
-          const { roleInfo } = res.data.user;
-          setCompanies(roleInfo);
+          const { roles } = res.data;
+          setCompanies(roles);
         })
         .catch(console.error);
     },
@@ -72,8 +72,8 @@ export function TeamSwitcher() {
         .get(`/api/company/select?companyId=${companyId}`)
         .then((res) => {
           console.log(res);
-          const { company } = res.data;
-          signIn({ ...user, company: company });
+          const { role } = res.data;
+          signIn({ ...user, role: role });
         })
         .catch((err) => {
           console.log(err);
@@ -81,7 +81,7 @@ export function TeamSwitcher() {
     }
   };
 
-  if (!user?.company?.name) {
+  if (!user?.role?.name) {
     return (
       <Link
         className="font-medium text-neutral-500 dark:text-neutral-400"
@@ -112,9 +112,9 @@ export function TeamSwitcher() {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {user.company?.name}
+                  {user.role?.name}
                 </span>
-                <span className="truncate text-xs">{user.company.role}</span>
+                <span className="truncate text-xs">{user.role.role}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>

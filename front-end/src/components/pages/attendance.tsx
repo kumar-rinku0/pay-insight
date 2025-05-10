@@ -33,12 +33,12 @@ const Attendance = () => {
   });
 
   useEffect(() => {
-    if (isAuthenticated && user && user?.company) {
+    if (isAuthenticated && user && user?.role) {
       axios
         .post("/api/attendance/users/information/today", {
           userId: user?._id ?? "",
-          companyId: user?.company?._id ?? "",
-          branchId: user?.company?.branch ?? "",
+          companyId: user?.role?.company ?? "",
+          branchId: user?.role?.branch ?? "",
         })
         .then((res) => {
           setHasPunchedIn(!res.data.lastPuchedOut);
@@ -235,8 +235,8 @@ const Attendance = () => {
         ? { punchOutGeometry: geo, punchOutPhoto: photo }
         : { punchInGeometry: geo, punchInPhoto: photo }),
       userId: user?._id ?? "",
-      companyId: user?.company?._id ?? "",
-      branchId: user?.company?.branch ?? "",
+      companyId: user?.role?.company ?? "",
+      branchId: user?.role?.branch ?? "",
     })
       .then((res) => {
         console.log("Punch successful:", res.data);

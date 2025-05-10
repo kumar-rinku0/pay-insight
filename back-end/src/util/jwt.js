@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 const KEY = process.env.SESSION_SECRET || "sdf548ijdsjf";
 // KEY =
 
-const setUser = (user) => {
+const setUser = (user, role, days) => {
   return jwt.sign(
     {
       _id: user._id,
@@ -11,19 +11,12 @@ const setUser = (user) => {
       name: `${user.givenName} ${user.familyName}`,
       picture: user.picture,
       email: user.email,
-      role: user.role,
-      company: {
-        _id: user.company?._id,
-        name: user.company?.name,
-        role: user.company?.role,
-        branch: user.company?.branch,
-        code: user.company?.code,
-      },
       status: user.status,
+      role: role,
     },
     KEY,
     {
-      expiresIn: "7d",
+      expiresIn: days ? `${days}d` : `2h`,
       algorithm: "HS512",
     }
   );

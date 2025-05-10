@@ -24,7 +24,7 @@ import {
 import axios from "axios";
 import { useAuth } from "../provider/auth-provider";
 import { toast } from "sonner";
-import { useRoute } from "../provider/route-provider";
+import { useRouter } from "next/navigation";
 
 // Zod schema for frontend validation
 const companySchema = z.object({
@@ -41,7 +41,7 @@ type CompanyFormData = z.infer<typeof companySchema>;
 
 const CreateBranch = () => {
   const { isAuthenticated, user } = useAuth();
-  const { resetRoute } = useRoute();
+  const router = useRouter();
   const [geolocation, setGeolocation] = React.useState<[number, number] | null>(
     null
   );
@@ -66,18 +66,18 @@ const CreateBranch = () => {
     // Handle the form data submission to the backend
     console.log(data);
     getLocation();
-    if (isAuthenticated && user && user.company) {
+    if (isAuthenticated && user && user.role) {
       axios
         .post("/api/branch/create", {
           ...data,
           _id: user._id,
-          company: user.company._id,
+          company: user.role.company,
           geometry: { type: "Point", coordinates: geolocation },
         })
         .then((res) => {
           console.log(res);
           toast.success(res.data.message);
-          resetRoute("staff");
+          router.push("/dashboard/staff");
         })
         .catch((err) => {
           console.log(err);

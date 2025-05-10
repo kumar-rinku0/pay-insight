@@ -74,8 +74,8 @@ const CreateCompany = () => {
         .post("/api/company/create", { ...data })
         .then((res) => {
           console.log(res);
-          const { company } = res.data;
-          signIn({ ...user, company: company });
+          const { role } = res.data;
+          signIn({ ...user, role: role });
           toast.success("Company created successfully!");
           router.push("/dashboard/branch");
         })

@@ -31,22 +31,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    roleInfo: {
-      type: [
-        {
-          role: {
-            type: String,
-          },
-          company: {
-            type: Schema.Types.ObjectId,
-            ref: "Company",
-          },
-          branch: {
-            type: Schema.Types.ObjectId,
-            ref: "Branch",
-          },
-        },
-      ],
+    roles: {
+      type: [Schema.Types.ObjectId],
+      ref: "Role",
     },
     status: {
       type: String,

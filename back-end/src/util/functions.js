@@ -80,8 +80,9 @@ export const reverseGeocode = async (latitude, longitude) => {
 };
 
 export const cookieOptions = () => ({
-  httpOnly: true,
   path: "/",
-  secure: process.env.NODE_ENV === "production", // Set to true in production
+});
+export const cookieOptionsForRemember = () => ({
+  path: "/",
   maxAge: 7 * 24 * 60 * 60 * 1000,
 });

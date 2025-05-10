@@ -1,7 +1,8 @@
+import CreateBranch from "@/components/pages/create-branch";
 import React from "react";
 
 const Branch = () => {
-  return <div>Branch</div>;
+  return <CreateBranch />;
 };
 
 export default Branch;
