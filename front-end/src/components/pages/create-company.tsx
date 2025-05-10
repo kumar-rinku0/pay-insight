@@ -32,7 +32,7 @@ import {
 import axios from "axios";
 import { useAuth } from "../provider/auth-provider";
 import { toast } from "sonner";
-import { useRoute } from "../provider/route-provider";
+import { useRouter } from "next/navigation";
 
 // Zod schema for frontend validation
 const companySchema = z.object({
@@ -46,8 +46,8 @@ const companySchema = z.object({
 type CompanyFormData = z.infer<typeof companySchema>;
 
 const CreateCompany = () => {
+  const router = useRouter();
   const { isAuthenticated, user, signIn } = useAuth();
-  const { resetRoute } = useRoute();
   // React Hook Form setup with Zod validation
   const form = useForm<CompanyFormData>({
     resolver: zodResolver(companySchema),
@@ -77,7 +77,7 @@ const CreateCompany = () => {
           const { company } = res.data;
           signIn({ ...user, company: company });
           toast.success("Company created successfully!");
-          resetRoute("branch");
+          router.push("/dashboard/branch");
         })
         .catch((err) => {
           console.log(err);
