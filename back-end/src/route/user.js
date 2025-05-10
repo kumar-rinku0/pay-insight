@@ -8,10 +8,10 @@ import {
   handleUserSendVerifyEmail,
   handleUserSendResetEmail,
   handleUserResetPassword,
-  handleGetOneUser,
   handleGetUserByCompanyId,
   handleUserSignUpWithRoles,
   handleGoogleCallback,
+  handleRememberMe,
 } from "../controller/user.js";
 import {
   onlyLoggedInUser,
@@ -45,7 +45,9 @@ route
     wrapAsync(handleUserSignUpWithRoles)
   );
 
-route.route("/userId/:userId").get(wrapAsync(handleGetOneUser));
+route
+  .route("/remember/userId/:userId")
+  .patch(onlyLoggedInUser, wrapAsync(handleRememberMe));
 
 route
   .route("/companyId/:companyId")

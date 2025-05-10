@@ -1,5 +1,7 @@
 import Company from "../model/company.js";
+import Role from "../model/role.js";
 import User from "../model/user.js";
+import { cookieOptions } from "../util/functions.js";
 import { setUser } from "../util/jwt.js";
 
 const handleFetchCompanies = async (req, res) => {
@@ -15,69 +17,50 @@ const handleCreateCompany = async (req, res) => {
   const obj = req.body;
   const user = await User.findById(req.user._id);
   const company = new Company(obj);
-  user.roleInfo.push({ role: "admin", company: company._id });
-  await company.save();
-  await user.save();
-
-  const roleInfo = user.roleInfo.pop();
-  user.company = {
-    _id: company._id,
+  const role = new Role({
+    user: user._id,
+    company: company._id,
     name: company.name,
-    role: roleInfo.role,
-    branch: roleInfo.branch,
-  };
-  const token = setUser(user);
-  res.cookie("JWT_TOKEN", token, {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
+    branch: null,
+    role: "admin",
   });
+  user.roles.push(role);
+  await company.save();
+  await role.save();
+  await user.save();
+  const token = setUser(user, role);
+  res.cookie("JWT_TOKEN", token, cookieOptions());
   return res.status(200).send({
     message: "company created.",
     company: company,
+    role: role,
   });
 };
 
 const handleSelectCompany = async (req, res) => {
-  const { _id } = req.user;
+  const user = req.user;
   const { companyId } = req.query;
-  const user = await User.findById(_id);
   const comp = await Company.findById(companyId);
   if (!comp) {
     return res.status(400).send({ error: "company not found!" });
   }
-  const desiredComp = user.roleInfo.filter((item) => {
-    return item.company.toString() === companyId.toString();
+  const role = await Role.findOne({
+    user: user._id,
+    company: comp._id,
   });
-  const roleInfo = desiredComp[0];
-  user.company = {
-    _id: comp._id,
-    name: comp.name,
-    role: roleInfo.role,
-    branch: roleInfo.branch,
-  };
-  // Clear the existing JWT_TOKEN cookie before setting a new one
-  // This ensures that the old token is invalidated and a new one is set with the updated user info
-  res.cookie("JWT_TOKEN", "", {
-    expires: new Date(0), // Sets the expiration date to a past date to delete the cookie
-    httpOnly: true,
-    path: "/",
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "None", // Prevent CSRF
-  });
-  const token = setUser(user);
-  res.cookie("JWT_TOKEN", token, {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    httpOnly: true,
-    path: "/",
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "None", // Prevent CSRF
-  });
+  if (!role) {
+    return res
+      .status(400)
+      .send({ error: "you are not a member of this company!" });
+  }
+  const token = setUser(user, role);
+  res.cookie("JWT_TOKEN", token, cookieOptions());
 
   return res.status(200).send({
     message: "ok!",
     user: user,
-    company: user.company,
+    company: comp,
+    role: role,
   });
 };
 
