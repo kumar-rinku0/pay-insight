@@ -61,29 +61,29 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-userSchema.pre("save", async function (next) {
-  if (this.roleInfo && Array.isArray(this.roleInfo)) {
-    const values = new Set();
-    for (const roleObj of this.roleInfo) {
-      // If company is missing, handle it based on your requirement.
-      if (!roleObj.company) {
-        return next(
-          new Error("company is required to assign a role to a user.")
-        );
-      }
-      // If company is already in the Set, throw an error for uniqueness
-      if (values.has(roleObj.company.toString())) {
-        return next(
-          new Error("company must be unique along with employee role.")
-        );
-      }
-      // Add the company to the Set to track uniqueness
-      values.add(roleObj.company.toString());
-    }
-  }
-  // Proceed to the next middleware if no error was thrown
-  return next();
-});
+// userSchema.pre("save", async function (next) {
+//   if (this.roleInfo && Array.isArray(this.roleInfo)) {
+//     const values = new Set();
+//     for (const roleObj of this.roleInfo) {
+//       // If company is missing, handle it based on your requirement.
+//       if (!roleObj.company) {
+//         return next(
+//           new Error("company is required to assign a role to a user.")
+//         );
+//       }
+//       // If company is already in the Set, throw an error for uniqueness
+//       if (values.has(roleObj.company.toString())) {
+//         return next(
+//           new Error("company must be unique along with employee role.")
+//         );
+//       }
+//       // Add the company to the Set to track uniqueness
+//       values.add(roleObj.company.toString());
+//     }
+//   }
+//   // Proceed to the next middleware if no error was thrown
+//   return next();
+// });
 
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {

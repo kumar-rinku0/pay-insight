@@ -16,7 +16,9 @@ const onlyLoggedInUser = (req, res, next) => {
     req.user = user;
   }
   if (!user) {
-    return res.status(400).send({ type: "error", error: "login to access!" });
+    return res
+      .status(400)
+      .send({ origin: "middleware", type: "error", error: "login to access!" });
   }
   return next();
 };
@@ -27,11 +29,18 @@ const onlyAdminUser = (req, res, next) => {
     user = getUser(req.cookies?.JWT_TOKEN);
     req.user = user;
   }
-  if (!user.company) {
-    return res.status(400).send({ type: "error", error: "company not found!" });
+  console.log(user);
+  if (!user.role) {
+    return res.status(400).send({
+      origin: "middleware",
+      type: "error",
+      error: "company not found!",
+    });
   }
-  if (user.company.role !== "admin") {
-    return res.status(400).send({ type: "error", error: "not an admin!" });
+  if (user.role.role !== "admin") {
+    return res
+      .status(400)
+      .send({ origin: "middleware", type: "error", error: "not an admin!" });
   }
   return next();
 };
@@ -42,15 +51,21 @@ const onlyAdminOrManagerUser = (req, res, next) => {
     user = getUser(req.cookies?.JWT_TOKEN);
     req.user = user;
   }
-  if (!user.company) {
-    return res.status(400).send({ type: "error", error: "company not found!" });
+  if (!user.role) {
+    return res.status(400).send({
+      origin: "middleware",
+      type: "error",
+      error: "company not found!",
+    });
   }
 
   // check if the user is admin or manager
-  if (user.company.role === "employee") {
-    return res
-      .status(400)
-      .send({ type: "error", error: "not an admin or manager!" });
+  if (user.role.role === "employee") {
+    return res.status(400).send({
+      origin: "middleware",
+      type: "error",
+      error: "not an admin or manager!",
+    });
   }
   return next();
 };

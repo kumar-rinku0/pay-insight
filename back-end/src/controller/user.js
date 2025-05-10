@@ -45,30 +45,37 @@ const handleUserSignUpWithRoles = async (req, res) => {
       .status(401)
       .send({ error: "you are not allowed to create admin!" });
   }
-  const userbyemail = await User.findOne({ email });
+  const userbyemail = await User.findOne({ email }).exec();
   if (userbyemail) {
-    const role = await Role.find({ user: userbyemail._id });
-    const info = role.find((item) => {
+    const roleInfos = await Role.find({ user: userbyemail._id });
+
+    const info = roleInfos.find((item) => {
       return item.company === company && item.branch === branchId;
     });
     if (!info) {
       const newRole = new Role({
         user: userbyemail._id,
         company: company,
+        name: name,
         branch: branchId,
-        name,
-        role,
+        role: role,
       });
-      await newRole.save();
       userbyemail.roles.push(newRole);
+      await newRole.save();
       await userbyemail.save();
-      return res
-        .status(200)
-        .send({ message: "staff assigned a role!", user: userbyemail });
+
+      return res.status(200).send({
+        message: "staff assigned a role!",
+        user: userbyemail,
+        role: newRole,
+      });
     }
-    return res
-      .status(200)
-      .send({ message: "already assigned a role!", user: userbyemail });
+
+    return res.status(200).send({
+      message: "already assigned a role!",
+      user: userbyemail,
+      role: info,
+    });
   }
   const password = generateRandomString(8, true);
   const user = new User({
@@ -81,9 +88,9 @@ const handleUserSignUpWithRoles = async (req, res) => {
   const newRole = new Role({
     user: user._id,
     company: company,
-    name,
+    name: name,
     branch: branchId,
-    role,
+    role: role,
   });
   await newRole.save();
   user.roles.push(newRole);
