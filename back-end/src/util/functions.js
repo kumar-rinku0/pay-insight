@@ -1,13 +1,11 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import { configDotenv } from "dotenv";
-import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding.js";
 
 if (process.env.NODE_ENV != "development") {
   configDotenv();
 }
-const mapToken = process.env.MAPBOX_DEFAULT_TOKEN;
-const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+// const mapToken = process.env.MAPBOX_DEFAULT_TOKEN;
 
 export const isRightUser = async function (email, password) {
   const user = await User.findOne({ email: email.trim() });
@@ -62,21 +60,6 @@ export const formatDateForComparison = (dateObj) => {
 
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {
-  try {
-    const response = await geocodingClient
-      .reverseGeocode({ query: [longitude, latitude] })
-      .send();
-    const result = response.body;
-
-    if (result && result.features && result.features.length > 0) {
-      console.log("Address:", result.features[0].place_name);
-      return result.features[0].place_name;
-    } else {
-      console.log("No address found for these coordinates.");
-    }
-  } catch (error) {
-    console.error("Error during reverse geocoding:", error);
-  }
   return null;
 };
 
