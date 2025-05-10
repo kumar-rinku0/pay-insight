@@ -23,7 +23,6 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { useRoute } from "./provider/route-provider";
 import { useRouter } from "next/navigation";
 
 const navMain = [
@@ -115,7 +114,6 @@ const navMain = [
 ];
 
 export function NavMain() {
-  const { resetRoute } = useRoute();
   const router = useRouter();
   return (
     <SidebarGroup>
@@ -134,7 +132,6 @@ export function NavMain() {
                   tooltip={item.title}
                   onClick={() => {
                     router.push(`/${item.url}`);
-                    resetRoute(item.url);
                   }}
                 >
                   {item.icon && <item.icon />}
@@ -151,7 +148,7 @@ export function NavMain() {
                     >
                       <SidebarMenuSubButton
                         onClick={() => {
-                          resetRoute(subItem.url);
+                          router.push(`/${item.url}/${subItem.url}`);
                         }}
                         title={subItem.title}
                       >

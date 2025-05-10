@@ -1,12 +1,11 @@
 import User from "../model/user.js";
 import bcrypt from "bcryptjs";
 import { configDotenv } from "dotenv";
-import axios from "axios";
 
 if (process.env.NODE_ENV != "development") {
   configDotenv();
 }
-const mapToken = process.env.MAPBOX_DEFAULT_TOKEN;
+// const mapToken = process.env.MAPBOX_DEFAULT_TOKEN;
 
 export const isRightUser = async function (email, password) {
   const user = await User.findOne({ email: email.trim() });
@@ -77,12 +76,7 @@ export function getTodayTimestamp(timeStr, extraMinutes = 0) {
 
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {
-  const response = await axios.get(
-    `https://api.mapbox.com/search/geocode/v6/reverse?longitude=${longitude}&latitude=${latitude}&access_token=${mapToken}`
-  );
-  return response.data.features[0].properties.place_formatted
-    ? response.data.features[0].properties.place_formatted
-    : null;
+  return null;
 };
 
 export const cookieOptions = () => ({

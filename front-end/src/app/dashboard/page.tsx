@@ -1,23 +1,13 @@
 "use client";
 
-import Attendance from "@/components/pages/attendance";
-import CreateBranch from "@/components/pages/create-branch";
-import CreateCompany from "@/components/pages/create-company";
-import CreateStaff from "@/components/pages/create-staff";
-import { useRoute } from "@/components/provider/route-provider";
 import React from "react";
 // import { useAuth } from "@/components/provider/auth-provider";
 
 const Dashboard = () => {
   // const { user } = useAuth();
-  const { route } = useRoute();
   return (
     <div>
-      {route.company && <CreateCompany />}
-      {route.branch && <CreateBranch />}
-      {route.staff && <CreateStaff />}
-      {route.dashboard && <Attendance />}
-      {route.attendance && <Skeleton />}
+      <Skeleton />
     </div>
   );
 };
