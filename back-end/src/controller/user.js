@@ -16,12 +16,12 @@ import Role from "../model/role.js";
 // login, logout & create user
 const handleUserSignUp = async (req, res) => {
   const { givenName, familyName, email, password } = req.body;
-  const userbyemail = await User.findOne({ email });
-  if (userbyemail) {
-    return res
-      .status(400)
-      .send({ error: "user already exist.", user: userbyemail });
-  }
+  // const userbyemail = await User.findOne({ email });
+  // if (userbyemail) {
+  //   return res
+  //     .status(400)
+  //     .send({ error: "user already exist.", user: userbyemail });
+  // }
   const user = new User({
     givenName,
     familyName,
