@@ -8,7 +8,7 @@ const setUser = (user, role, days) => {
     {
       _id: user._id,
       username: user.username,
-      name: `${user.givenName} ${user.familyName}`,
+      name: user.name || `${user.givenName} ${user.familyName}`,
       picture: user.picture,
       email: user.email,
       status: user.status,

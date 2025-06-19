@@ -39,15 +39,8 @@ const handleCreateCompany = async (req, res) => {
 
 const handleSelectCompany = async (req, res) => {
   const user = req.user;
-  const { companyId } = req.query;
-  const comp = await Company.findById(companyId);
-  if (!comp) {
-    return res.status(400).send({ error: "company not found!" });
-  }
-  const role = await Role.findOne({
-    user: user._id,
-    company: comp._id,
-  });
+  const { roleid } = req.params;
+  const role = await Role.findById(roleid);
   if (!role) {
     return res
       .status(400)
@@ -59,7 +52,6 @@ const handleSelectCompany = async (req, res) => {
   return res.status(200).send({
     message: "ok!",
     user: user,
-    company: comp,
     role: role,
   });
 };
