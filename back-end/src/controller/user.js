@@ -115,7 +115,7 @@ const handleUserSignIn = async (req, res) => {
 
   return res.status(200).json({
     user: user,
-    company: user.company,
+    role: role,
     message: "login successful. if user have company it will be in user!",
   });
 };

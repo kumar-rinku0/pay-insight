@@ -15,7 +15,9 @@ route.route("/").get((req, res) => {
 });
 
 route.route("/create").post(wrapAsync(handleCreateCompany));
-route.route("/select").get(wrapAsync(handleSelectCompany));
+route
+  .route("/select-rolebased-company/roleid/:roleid")
+  .get(wrapAsync(handleSelectCompany));
 
 route
   .route("/getOneByCompanyId/:companyId")

@@ -21,7 +21,7 @@ const userSchema = new Schema(
     },
     familyName: {
       type: String,
-      default: null,
+      default: "",
     },
     picture: {
       type: String,

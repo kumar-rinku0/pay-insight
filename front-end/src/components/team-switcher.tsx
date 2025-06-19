@@ -69,7 +69,7 @@ export function TeamSwitcher() {
   const handleSelectOneCompany = (companyId: string) => {
     if (companyId && user) {
       axios
-        .get(`/api/company/select?companyId=${companyId}`)
+        .get(`/api/company/select/companyid/${companyId}`)
         .then((res) => {
           console.log(res);
           const { role } = res.data;
