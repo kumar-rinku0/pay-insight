@@ -47,10 +47,8 @@ const handleUserSignUpWithRoles = async (req, res) => {
   }
   const userbyemail = await User.findOne({ email }).exec();
   if (userbyemail) {
-    const roleInfos = await Role.find({ user: userbyemail._id });
-
-    const info = roleInfos.find((item) => {
-      return item.company === company && item.branch === branchId;
+    const info = await Role.find({
+      $and: [{ user: userbyemail._id }, { company: company }],
     });
     if (!info) {
       const newRole = new Role({
@@ -290,6 +288,16 @@ const handleGoogleCallback = async (req, res) => {
     user: user,
   });
 };
+
+export const handleUserDelete = async (req, res) => {
+  const { userid } = req.params;
+  const user = await User.findByIdAndDelete(userid);
+  return res
+    .status(200)
+    .json({ message: "User deleted successfully.", user: user });
+};
+
+// Exporting all the functions
 
 export {
   handleUserSignUp,

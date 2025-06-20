@@ -12,6 +12,7 @@ import {
   handleUserSignUpWithRoles,
   handleGoogleCallback,
   handleRememberMe,
+  handleUserDelete,
 } from "../controller/user.js";
 import {
   onlyLoggedInUser,
@@ -34,6 +35,10 @@ route.route("/reset").put(wrapAsync(handleUserResetPassword));
 route.route("/login").post(wrapAsync(handleUserSignIn));
 route.route("/register").post(wrapAsync(handleUserSignUp));
 route.route("/logout").get(onlyLoggedInUser, wrapAsync(handleUserLogout));
+
+route
+  .route("/delete/userid/:userid")
+  .delete(onlyLoggedInUser, wrapAsync(handleUserDelete));
 
 route.post("/google/callback", wrapAsync(handleGoogleCallback));
 

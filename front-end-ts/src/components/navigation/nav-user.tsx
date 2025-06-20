@@ -7,6 +7,7 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
+  Trash,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,12 +26,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import axios from "axios";
 
 export function NavUser({
   user,
   logoutHandler,
 }: {
   user: {
+    _id: string;
     name: string;
     email: string;
     avatar: string;
@@ -38,6 +41,18 @@ export function NavUser({
   logoutHandler?: () => void;
 }) {
   const { isMobile } = useSidebar();
+
+  const handleDeleteAccount = () => {
+    axios
+      .delete(`/api/user/delete/userid/${user._id}`)
+      .then((res) => {
+        console.log(res);
+        logoutHandler?.();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   return (
     <SidebarMenu>
@@ -97,6 +112,10 @@ export function NavUser({
               <DropdownMenuItem>
                 <Bell />
                 Notifications
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDeleteAccount}>
+                <Trash />
+                Delete Account
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
