@@ -1,6 +1,9 @@
 import { Schema, model } from "mongoose";
 import Shift from "../model/shift.js";
-import { currntTimeInFixedFomat } from "../util/functions.js";
+import {
+  getTimeStempByTimeStemp,
+  getTodayTimestamp,
+} from "../util/functions.js";
 
 // branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch", required: true },
 
@@ -73,9 +76,10 @@ const attendanceSchema = new Schema({
   status: {
     type: String,
     enum: {
-      values: ["on time", "late", "half day"],
+      values: ["on time", "late", "half day", "holiday", "absent"],
       message: "invailid status!",
     },
+    default: "absent",
   },
   punchingInfo: {
     type: [
@@ -95,27 +99,41 @@ const attendanceSchema = new Schema({
 });
 
 attendanceSchema.pre("save", async function (next) {
+  // if (this.isModified("punchingInfo")) {
   if (this.punchingInfo) {
+    if (this.punchingInfo.length === 0) {
+      return next();
+    }
     const lastObj = this.punchingInfo.pop();
-    const currDate = lastObj.punchInInfo.getTimestamp;
-    const currTime = currntTimeInFixedFomat(currDate);
+    if (lastObj?.punchOutInfo) {
+      this.punchingInfo.push(lastObj);
+      return next();
+    }
+    const currTime = getTimeStempByTimeStemp(lastObj?.punchInInfo.createdAt);
+    console.log(currTime);
     const shift = await Shift.findOne({ createdFor: this.user });
     if (!shift) {
-      return next(new Error("shift not found!"));
+      return next(new Error("doesn't assigned any shift!"));
     }
-    const delay = currntTimeInFixedFomat(currDate, shift.halfDayLateBy);
-    if (shift.shiftStartTime >= currTime) {
+    const shiftStartTime = getTodayTimestamp(shift.startTime);
+    const shiftStartTimeWithDelay = getTodayTimestamp(
+      shift.shiftStartTime,
+      shift.halfDayLateBy
+    );
+    console.log(shiftStartTime, shiftStartTimeWithDelay);
+    if (shiftStartTime >= currTime) {
       this.status = "on time";
     } else if (
-      shift.shiftStartTime < currTime &&
-      shift.shiftStartTime >= delay
+      shiftStartTime < currTime &&
+      shiftStartTimeWithDelay >= currTime
     ) {
       this.status = "late";
-    } else if (shift.shiftStartTime < delay) {
+    } else if (shiftStartTimeWithDelay < currTime) {
       this.status = "half day";
     }
     this.punchingInfo.push(lastObj);
   }
+  // }
   return next();
 });
 

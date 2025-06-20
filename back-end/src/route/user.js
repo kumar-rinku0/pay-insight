@@ -8,7 +8,6 @@ import {
   handleUserSendVerifyEmail,
   handleUserSendResetEmail,
   handleUserResetPassword,
-  handleGetUserByCompanyId,
   handleUserSignUpWithRoles,
   handleGoogleCallback,
   handleRememberMe,
@@ -16,7 +15,6 @@ import {
 } from "../controller/user.js";
 import {
   onlyLoggedInUser,
-  onlyAdminUser,
   onlyAdminOrManagerUser,
 } from "../middleware/auth.js";
 
@@ -53,9 +51,5 @@ route
 route
   .route("/remember/userId/:userId")
   .patch(onlyLoggedInUser, wrapAsync(handleRememberMe));
-
-route
-  .route("/companyId/:companyId")
-  .get(onlyLoggedInUser, onlyAdminUser, wrapAsync(handleGetUserByCompanyId));
 
 export default route;

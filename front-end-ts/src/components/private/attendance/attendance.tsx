@@ -52,19 +52,17 @@ const Attendance = () => {
     }
   }, [isAuthenticated, user]);
 
-  const getLocation = async (): Promise<
-    GeolocationPosition | GeolocationPositionError
-  > => {
+  const getLocation = async (): Promise<GeolocationPosition> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         alert("Geolocation is not supported by this browser.");
-        reject(new Error("Geolocation not supported"));
+        reject();
         return;
       }
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          resolve(position);
+          return resolve(position);
         },
         (error) => {
           let message = "";
@@ -83,7 +81,7 @@ const Attendance = () => {
               break;
           }
           alert(message);
-          reject(error);
+          return reject();
         },
         {
           enableHighAccuracy: true,
@@ -166,13 +164,14 @@ const Attendance = () => {
 
   const handleAllowAccess = async () => {
     setDisableBtn(true);
-    const position = await getLocation();
-    if (position instanceof GeolocationPositionError) {
+    try {
+      const position = await getLocation();
+      showPosition(position);
+    } catch (error) {
+      console.error("Error getting location:", error);
+    } finally {
       setDisableBtn(false);
-      return;
     }
-    showPosition(position);
-    setDisableBtn(false);
   };
 
   const handlePunch = async () => {
@@ -305,6 +304,11 @@ const Attendance = () => {
               variant="outline"
               onClick={async () => {
                 setPhotoCaptured(false);
+                setInputs((prev) => ({
+                  ...prev,
+                  punchInPhoto: null,
+                  punchOutPhoto: null,
+                }));
                 await startCamera();
               }}
             >

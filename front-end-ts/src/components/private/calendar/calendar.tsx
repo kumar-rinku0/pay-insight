@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 interface AttendanceData {
   _id: string;
@@ -52,6 +53,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
   const currentYear = today.getFullYear();
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
   const [content, setContent] = useState<AttendanceData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [attendance, setAttendance] = useState<AttendanceSummary>({
     present: 0,
     absent: 0,
@@ -68,15 +70,14 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
       const currentDate = new Date(currentYear, selectedMonth, day);
       const dayOfWeek = currentDate.getDay();
       const formattedDate = formatDateForComparison(currentDate);
-
       if (
         selectedMonth === today.getMonth() &&
         currentDate.getDate() > today.getDate()
       ) {
         return { color: "bg-gray-300", status: "future" };
       }
-
       const info = content.find((item) => item.date === formattedDate);
+      console.log("Formatted Date:", day, formattedDate, info);
       if (info) {
         switch (info.status) {
           case "on time":
@@ -104,6 +105,8 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
               status: "absent",
               attendanceId: info._id,
             };
+          default:
+            return { color: "bg-gray-500", status: "absent", attendanceId: "" };
         }
       }
 
@@ -118,6 +121,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
 
   const fetchMonthAttendance = React.useCallback(
     (monthIndex: number) => {
+      setLoading(true);
       const monthName = getMonthName(currentYear, monthIndex);
       axios
         .post("/api/attendance/month/information", {
@@ -130,7 +134,10 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
           console.log("Attendance data:", res.data);
           setContent(res.data.attendance);
         })
-        .catch((err) => console.error("Error fetching attendance:", err));
+        .catch((err) => console.error("Error fetching attendance:", err))
+        .finally(() => {
+          setLoading(false);
+        });
     },
     [userId, branchId, companyId, currentYear]
   );
@@ -179,6 +186,13 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
     });
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[80vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
   return (
     <div className="px-4 py-8 md:mx-40 lg:mx-60">
       <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-4 font-bold flex justify-between items-center rounded-t-lg">
@@ -262,13 +276,15 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
           const day = i + 1;
           const { color, status } = getDayStatus(day);
           return (
-            <div
+            <Button
               key={day}
-              className={`p-1 py-4 text-xs relative rounded-md text-white font-bold cursor-pointer ${color} hover:opacity-80`}
+              className={`p-1 h-12 text-xs relative rounded-md text-white font-bold cursor-pointer ${color} hover:opacity-80`}
               title={status}
               onClick={() => handleDayClick(day)}
             >
-              {day}
+              <span className="absolute top-1 left-0 right-0 text-[0.8rem]">
+                {day}
+              </span>
               <span
                 className={`absolute bottom-1 left-0 right-0 text-[0.6rem] ${
                   ["late", "half day"].includes(status) ? "" : "opacity-0"
@@ -276,7 +292,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
               >
                 {status}
               </span>
-            </div>
+            </Button>
           );
         })}
       </div>

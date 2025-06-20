@@ -23,8 +23,7 @@ const handleUserSignUp = async (req, res) => {
   //     .send({ error: "user already exist.", user: userbyemail });
   // }
   const user = new User({
-    givenName,
-    familyName,
+    name: `${givenName} ${familyName}`,
     email,
     password,
   });
@@ -77,8 +76,7 @@ const handleUserSignUpWithRoles = async (req, res) => {
   }
   const password = generateRandomString(8, true);
   const user = new User({
-    givenName,
-    familyName,
+    name: `${givenName} ${familyName}`,
     email,
     password,
   });
@@ -211,18 +209,29 @@ const handleUserResetPassword = async (req, res) => {
 
 const handleGetUserByCompanyId = async (req, res) => {
   const { companyId } = req.params;
-  const users = await User.find({
-    roleInfo: {
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
+  console.log(companyId, page, limit, skip);
+  const query = {
+    roles: {
       $elemMatch: {
         company: companyId,
         role: { $in: ["employee", "manager"] },
       },
     },
-  });
+  };
+  const totalUsers = await User.countDocuments(query).populate("roles");
+  const users = await User.find(query)
+    .populate("roles")
+    .limit(limit)
+    .skip(skip);
+
   if (users.length > 0) {
-    return res
-      .status(200)
-      .send({ message: "employee & manager in company!", users: users });
+    return res.status(200).send({
+      message: "employee & manager in company!",
+      users: users,
+      totalUsers: totalUsers,
+    });
   }
   return res.status(400).send({ error: "invalid company id!" });
 };

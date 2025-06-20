@@ -59,21 +59,41 @@ export const formatDateForComparison = (dateObj) => {
 };
 
 export function getTodayTimestamp(timeStr, extraMinutes = 0) {
+  console.log(timeStr);
   const [hours, minutes] = timeStr.split(":").map(Number);
 
-  // Get today's date
   const now = new Date();
   const year = now.getFullYear();
-  const month = now.getMonth(); // 0-based
+  const month = now.getMonth(); // Note: 0-based (0 = January)
   const day = now.getDate();
 
-  const dateWithTime = new Date(year, month, day, hours, minutes, 0, 0);
+  const localDate = new Date(
+    year,
+    month,
+    day,
+    hours,
+    minutes + extraMinutes,
+    0,
+    0
+  );
 
-  dateWithTime.setMinutes(dateWithTime.getMinutes() + extraMinutes);
+  const timezoneOffsetMs = localDate.getTimezoneOffset() * 60 * 1000;
+  const utcDate = new Date(localDate.getTime() - timezoneOffsetMs);
 
-  return Date.parse(new Date(dateWithTime.getTime()));
+  return utcDate.toISOString(); // Returns UTC timestamp
 }
 
+export function getTimeStempByTimeStemp(time) {
+  const localDate = new Date(time);
+
+  // IST is UTC + 5:30 => 5.5 * 60 * 60 * 1000 = 19800000 ms
+  const istOffset = 5.5 * 60 * 60 * 1000;
+
+  const istDate = new Date(localDate.getTime() + istOffset);
+
+  // Format to ISO string but remove the 'Z' to indicate it's not UTC
+  return istDate.toISOString();
+}
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {
   return null;
