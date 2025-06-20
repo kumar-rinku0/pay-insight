@@ -24,9 +24,7 @@ const handlemarkPunchIn = async (req, res) => {
   });
   await punchIn.save();
   const prevAttendance = await Attendance.findOne({
-    $and: [
-      { date: date, companyId: companyId, userId: userId, branchId: branchId },
-    ],
+    $and: [{ date: date, company: companyId, user: userId, branch: branchId }],
   });
   if (prevAttendance) {
     prevAttendance.punchingInfo.push({ punchInInfo: punchIn });
@@ -35,9 +33,9 @@ const handlemarkPunchIn = async (req, res) => {
     return res.status(201).json({ message: "punched in!", punchIn: punchIn });
   }
   const attendance = new Attendance({
-    userId,
-    companyId,
-    branchId,
+    user: userId,
+    company: companyId,
+    branch: branchId,
     date,
     month,
   });
@@ -66,9 +64,7 @@ const handlemarkPunchOut = async (req, res) => {
   const date = formatDateForComparison(new Date());
 
   const attendance = await Attendance.findOne({
-    $and: [
-      { date: date, companyId: companyId, userId: userId, branchId: branchId },
-    ],
+    $and: [{ date: date, company: companyId, user: userId, branch: branchId }],
   });
   const lastPunchInInfo = attendance.punchingInfo.pop();
   lastPunchInInfo.punchOutInfo = punchOut;
