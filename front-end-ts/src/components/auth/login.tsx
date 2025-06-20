@@ -27,7 +27,15 @@ import {
 } from "@/components/ui/form";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import type { RoleType } from "@/types/res-type";
+import type { UserType } from "@/types/auth";
 // import { authorizeUrl } from "@/components/partial/google-auth";
+
+type ResponseProp = {
+  user: UserType;
+  role: RoleType;
+  message: string;
+};
 
 const formSchema = z.object({
   email: z.string().min(2).max(50).email(),
@@ -219,28 +227,20 @@ const LoginOverlay = ({
     changeLoading({ button: true });
     console.log(values);
     axios
-      .post("/api/user/login", values)
+      .post<ResponseProp>("/api/user/login", values)
       .then((res) => {
         console.log(res.data);
         if (res.status === 200) {
-          const { user, role } = res.data;
-          const { username, _id, email, givenName, familyName, picture } = user;
-          signIn({
-            username,
-            _id,
-            email,
-            name: `${givenName} ${familyName}`,
-            picture,
-            role: role,
-          });
+          const { user, role, message } = res.data;
+          signIn({ ...user, role: role });
           router("/");
-          toast(`${givenName} ${familyName} welcome to onvoid!`, {
+          toast(message, {
             description: "remember password?",
             action: {
               label: "okay!",
               onClick: () => {
                 axios
-                  .patch(`/api/user/remember/userId/${_id}`)
+                  .patch(`/api/user/remember/userId/${user._id}`)
                   .then((res) => {
                     console.log(res.data);
                   })

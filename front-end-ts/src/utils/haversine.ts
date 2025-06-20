@@ -33,21 +33,3 @@ export default function haversine(
 function degToRad(deg: number) {
   return deg * (Math.PI / 180);
 }
-
-// Coordinates of the target point (latitude, longitude)
-const targetLat = 26.8271616;
-const targetLon = 75.8185984;
-
-// Coordinates of the user (latitude, longitude)
-const userLat = 26.8275; // Example user coordinates
-const userLon = 75.8189;
-
-// Calculate the distance
-const distance = haversine(targetLat, targetLon, userLat, userLon);
-
-// Check if the user is within 50 meters
-if (distance <= 50) {
-  console.log("User is within 50 meters of the target location.");
-} else {
-  console.log("User is outside of the 50-meter radius.");
-}

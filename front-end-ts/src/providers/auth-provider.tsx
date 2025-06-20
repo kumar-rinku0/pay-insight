@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 
 // import types
-import type { UserType } from "@/types/auth";
+import type { UserRoleType } from "@/types/auth";
 import { AuthContext } from "./use-auth";
 
 // Create the Context with default value as null
@@ -15,9 +15,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<UserType | null>(null);
+  const [user, setUser] = useState<UserRoleType | null>(null);
 
-  const signIn = (userInfo: UserType) => {
+  const signIn = (userInfo: UserRoleType) => {
     if (userInfo) {
       setUser(userInfo);
       setIsAuthenticated(true);

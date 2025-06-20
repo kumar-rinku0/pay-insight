@@ -18,12 +18,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import type { CompanyRoleType } from "@/types/company";
+import type { RoleType } from "@/types/res-type";
 import axios from "axios";
 
-export function NavSwitcher({ company }: { company: CompanyRoleType | null }) {
+export function NavSwitcher({ company }: { company: RoleType | null }) {
   const { isMobile } = useSidebar();
-  const [companies, setCompanies] = React.useState<CompanyRoleType[]>([]);
+  const [companies, setCompanies] = React.useState<RoleType[]>([]);
 
   const handleGetCompanies = React.useCallback(
     (userId: string) => {
