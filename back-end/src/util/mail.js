@@ -44,7 +44,7 @@ export const createMailSystem = async ({ address, type, _id }) => {
   }
 
   const token = randomUUID();
-  const DOMAIN = process.env.DOMAIN || "http://localhost:3000";
+  const DOMAIN = process.env.DOMAIN || "http://localhost:5173";
   const user = await User.findByIdAndUpdate(_id, {
     [`${type}Token`]: token, // generate a random token
     [`${type}TokenExpire`]: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes

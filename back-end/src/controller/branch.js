@@ -45,7 +45,7 @@ const handleCreateBranch = async (req, res) => {
 };
 
 export const handleGetBranchInfo = async (req, res) => {
-  const { branch: branchId } = req.user.company;
+  const { branch: branchId } = req.user.role;
   const branch = await Branch.findById(branchId);
   if (!branch) {
     return res.status(400).json({ message: "don't have any branch!" });
