@@ -52,7 +52,7 @@ const Attendance = () => {
     }
   }, [isAuthenticated, user]);
 
-  function getLocation(): Promise<boolean> {
+  const getLocation = async (): Promise<boolean> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         alert("Geolocation is not supported by this browser.");
@@ -75,7 +75,7 @@ const Attendance = () => {
         }
       );
     });
-  }
+  };
 
   function showPosition(position: GeolocationPosition) {
     const lat = position.coords.latitude;
@@ -287,7 +287,6 @@ const Attendance = () => {
               variant="outline"
               onClick={() => {
                 setAllowLocation(false);
-                stopCamera();
               }}
             >
               Cancel
