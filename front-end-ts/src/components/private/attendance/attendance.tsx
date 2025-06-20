@@ -52,11 +52,13 @@ const Attendance = () => {
     }
   }, [isAuthenticated, user]);
 
-  const getLocation = async (): Promise<GeolocationPosition> => {
+  const getLocation = async (): Promise<
+    GeolocationPosition | GeolocationPositionError
+  > => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         alert("Geolocation is not supported by this browser.");
-        reject(null);
+        reject(new Error("Geolocation not supported"));
         return;
       }
 
@@ -81,11 +83,11 @@ const Attendance = () => {
               break;
           }
           alert(message);
-          reject(null);
+          reject(error);
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
+          timeout: 20000,
           maximumAge: 0,
         }
       );
@@ -165,7 +167,7 @@ const Attendance = () => {
   const handleAllowAccess = async () => {
     setDisableBtn(true);
     const position = await getLocation();
-    if (!position) {
+    if (position instanceof GeolocationPositionError) {
       setDisableBtn(false);
       return;
     }
@@ -298,15 +300,26 @@ const Attendance = () => {
             </Button>
           </div>
         ) : (
-          <Button variant="outline" disabled={loading} onClick={handlePunch}>
-            {loading
-              ? hasPunchedIn
-                ? "Punching Out..."
-                : "Punching In..."
-              : hasPunchedIn
-              ? "Punch Out"
-              : "Punch In"}
-          </Button>
+          <div className="mt-8 flex gap-4">
+            <Button
+              variant="outline"
+              onClick={async () => {
+                setPhotoCaptured(false);
+                await startCamera();
+              }}
+            >
+              Recapture
+            </Button>
+            <Button disabled={loading} onClick={handlePunch}>
+              {loading
+                ? hasPunchedIn
+                  ? "Punching Out..."
+                  : "Punching In..."
+                : hasPunchedIn
+                ? "Punch Out"
+                : "Punch In"}
+            </Button>
+          </div>
         )}
       </div>
     </div>

@@ -15,6 +15,11 @@ import ResetPage from "./components/auth/reset-password";
 import CreateBranch from "./components/private/create/create-branch";
 import CreateStaff from "./components/private/create/create-staff";
 import Attendance from "./components/private/attendance/attendance";
+import Search from "./components/private/search/search";
+import Dashboard from "./components/private/dashboard/dashboard";
+import Users from "./components/private/users/users";
+import Profile from "./components/private/profile/profile";
+import Calendar from "./components/private/calendar/calendar";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -43,6 +48,12 @@ function App() {
             <Route path="/branch" element={<CreateBranch />} />
             <Route path="/staff" element={<CreateStaff />} />
             <Route path="/attendance" element={<Attendance />} />
+            <Route path="/calendar" element={<Calendar />} />
+
+            <Route path="/search" element={<Search />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/profile" element={<Profile />} />
             <>
               {/* <Route path="/settings" element={<Settings />} />
               <Route path="/select" element={<SelectCompany />} />
