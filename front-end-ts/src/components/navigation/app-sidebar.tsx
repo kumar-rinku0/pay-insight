@@ -22,7 +22,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   if (!user) {
     return null; // or a loading state, or redirect to login
   }
-  data.user = { email: user.email, name: user.name, avatar: user?.picture };
+  data.user = {
+    _id: user._id,
+    email: user.email,
+    name: user.name,
+    avatar: user?.picture,
+  };
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>

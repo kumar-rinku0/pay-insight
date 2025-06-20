@@ -11,7 +11,7 @@ const Attendance = () => {
 
   const [hasPunchedIn, setHasPunchedIn] = useState(false);
   const [allowLocation, setAllowLocation] = useState(false);
-  const [allowCamera, setAllowCamera] = useState(false);
+  const [photoCaptured, setPhotoCaptured] = useState(false);
   const [disableBtn, setDisableBtn] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -100,7 +100,6 @@ const Attendance = () => {
         ? { punchOutGeometry: geoPoint }
         : { punchInGeometry: geoPoint }),
     }));
-    setAllowCamera(true);
   }
 
   function showError(error: GeolocationPositionError) {
@@ -127,7 +126,6 @@ const Attendance = () => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
-        setAllowCamera(true);
       })
       .catch((err) => {
         console.error("Camera error:", err);
@@ -164,9 +162,8 @@ const Attendance = () => {
           ...prev,
           ...(hasPunchedIn ? { punchOutPhoto: blob } : { punchInPhoto: blob }),
         }));
-
         stopCamera();
-        setAllowCamera(false);
+        setPhotoCaptured(true);
       }, "image/jpeg");
     }
   }
@@ -257,91 +254,61 @@ const Attendance = () => {
 
   return (
     <div className="min-w-full h-[100vh] cap flex items-center justify-center bg-gradient-to-r from-[#1a1a2e] to-[#16213e]">
-      <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl shadow-lg w-full max-w-sm z-10 border border-white/10">
-        <h1 className="text-3xl font-bold text-white text-center">
-          Attendance
-        </h1>
-        <p className="mt-4 text-lg text-white/80 text-center">
-          {new Date().toDateString()}
-        </p>
-        <h2 className="text-white/80 text-center mt-4">
-          {user && `${user.name}`}
-        </h2>
-
-        <canvas ref={canvasRef} style={{ display: "none" }} />
-
-        <div className="mt-4 flex flex-col gap-4">
-          {!allowLocation && (
-            <button
-              onClick={handleAllowAccess}
-              disabled={disableBtn}
-              className="px-4 py-2 bg-[#ff4444] text-white rounded-lg"
-            >
-              Allow Access!
-            </button>
-          )}
-
-          {allowLocation && allowCamera && (
-            <div className="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center">
-              <div className="relative w-full max-w-md">
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  className="w-full rounded-lg"
-                />
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-64 h-64 rounded-full border-4 border-white/50"></div>
-                </div>
-              </div>
-
-              <div className="mt-8 flex gap-4">
-                <button
-                  onClick={() => {
-                    setAllowCamera(false);
-                    setAllowLocation(false);
-                    stopCamera();
-                  }}
-                  className="px-6 py-3 bg-red-500 text-white rounded-full"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={capturePhoto}
-                  disabled={disableBtn}
-                  className="px-6 py-3 bg-green-500 text-white rounded-full"
-                >
-                  Capture
-                </button>
-              </div>
-            </div>
-          )}
-
-          {allowLocation && !allowCamera && (
-            <button
-              onClick={() => setAllowCamera(true)}
-              className="px-4 py-2 bg-[#ff4444] text-white rounded-lg"
-            >
-              Allow Camera!
-            </button>
-          )}
-
-          {allowLocation && !allowCamera && (
-            <button
-              disabled={loading}
-              onClick={handlePunch}
-              className="px-4 py-2 text-white bg-[#028a0f] rounded-lg"
-            >
-              {loading
-                ? hasPunchedIn
-                  ? "Punching Out..."
-                  : "Punching In..."
-                : hasPunchedIn
-                ? "Punch Out"
-                : "Punch In"}
-            </button>
-          )}
+      <canvas ref={canvasRef} style={{ display: "none" }} />
+      <div className="flex flex-col items-center justify-center">
+        <div className="relative w-full max-w-md">
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            className="w-full rounded-lg"
+          />
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            {/* <div className="w-64 h-64 rounded-full border-4 border-white/50"></div> */}
+          </div>
         </div>
+        {!allowLocation ? (
+          <button
+            onClick={handleAllowAccess}
+            disabled={disableBtn}
+            className="px-4 py-2 bg-[#ff4444] text-white rounded-lg"
+          >
+            Allow Access!
+          </button>
+        ) : !photoCaptured ? (
+          <div className="mt-8 flex gap-4">
+            <button
+              onClick={() => {
+                setAllowLocation(false);
+                stopCamera();
+              }}
+              className="px-6 py-3 bg-red-500 text-white rounded-full"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={capturePhoto}
+              disabled={disableBtn}
+              className="px-6 py-3 bg-green-500 text-white rounded-full"
+            >
+              Capture
+            </button>
+          </div>
+        ) : (
+          <button
+            disabled={loading}
+            onClick={handlePunch}
+            className="px-4 py-2 text-white bg-[#028a0f] rounded-lg"
+          >
+            {loading
+              ? hasPunchedIn
+                ? "Punching Out..."
+                : "Punching In..."
+              : hasPunchedIn
+              ? "Punch Out"
+              : "Punch In"}
+          </button>
+        )}
       </div>
     </div>
   );

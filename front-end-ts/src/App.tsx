@@ -12,6 +12,9 @@ import NoPage from "./components/root/no-page";
 import CreateCompany from "./components/private/create/create-company";
 import VerifyPage from "./components/auth/verify-user";
 import ResetPage from "./components/auth/reset-password";
+import CreateBranch from "./components/private/create/create-branch";
+import CreateStaff from "./components/private/create/create-staff";
+import Attendance from "./components/private/attendance/attendance";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -25,18 +28,21 @@ function App() {
   return (
     <div>
       <Routes>
+        <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/reset" element={<ResetPage />} />
         {!isAuthenticated && (
           <>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/verify" element={<VerifyPage />} />
-            <Route path="/reset" element={<ResetPage />} />
           </>
         )}
         {isAuthenticated && (
           <Route path="/" element={<Header />}>
             <Route path="/company" element={<CreateCompany />} />
+            <Route path="/branch" element={<CreateBranch />} />
+            <Route path="/staff" element={<CreateStaff />} />
+            <Route path="/attendance" element={<Attendance />} />
             <>
               {/* <Route path="/settings" element={<Settings />} />
               <Route path="/select" element={<SelectCompany />} />

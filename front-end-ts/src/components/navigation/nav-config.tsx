@@ -6,7 +6,7 @@ import {
   Pill,
   User,
   Users,
-  LogOut,
+  AlertTriangle,
 } from "lucide-react";
 import { useLocation } from "react-router";
 
@@ -27,6 +27,7 @@ export const NavItems = () => {
       },
     ],
     user: {
+      _id: "12345",
       name: "shadcn",
       email: "m@example.com",
       avatar: "/avatars/shadcn.jpg",
@@ -39,44 +40,48 @@ export const NavItems = () => {
         isActive: isNavItemActive(pathname, `/dashboard`),
       },
       {
-        title: "Search",
-        url: "/dashboard/search",
-        icon: Search,
-        isActive: isNavItemActive(pathname, `/dashboard/search`),
+        title: "Attandance",
+        url: "/attendance",
+        icon: AlertTriangle,
+        isActive: isNavItemActive(pathname, `/attendance`),
       },
       {
-        title: "Pharmacy Manager",
-        url: "/dashboard/create-pharmacy",
+        title: "Search",
+        url: "/search",
+        icon: Search,
+        isActive: isNavItemActive(pathname, `/search`),
+      },
+      {
+        title: "Company Manager",
+        url: "/company",
         icon: Pill,
-        isActive: isNavItemActive(pathname, `/dashboard/create-pharmacy`),
+        isActive: isNavItemActive(pathname, `/company`),
         items: [
           {
-            title: "Create Pharmacy",
-            url: "/dashboard/create-pharmacy",
+            title: "Create Company",
+            url: "/company",
           },
           {
-            title: "Pharmacies",
-            url: "/dashboard/list-pharmacy",
+            title: "Create Branch",
+            url: "/branch",
+          },
+          {
+            title: "Create staff",
+            url: "/staff",
           },
         ],
       },
       {
         title: "Users",
-        url: "/dashboard/users",
+        url: "/users",
         icon: Users,
-        isActive: isNavItemActive(pathname, `/dashboard/users`),
+        isActive: isNavItemActive(pathname, `/users`),
       },
       {
         title: "Profile",
-        url: "/dashboard/profile",
+        url: "/profile",
         icon: User,
-        isActive: isNavItemActive(pathname, `/dashboard/profile`),
-      },
-      {
-        title: "Logout",
-        url: "/logout",
-        icon: LogOut,
-        isActive: isNavItemActive(pathname, `/logout`),
+        isActive: isNavItemActive(pathname, `/profile`),
       },
     ],
   };
