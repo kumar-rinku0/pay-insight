@@ -52,21 +52,36 @@ const Attendance = () => {
     }
   }, [isAuthenticated, user]);
 
-  const getLocation = async (): Promise<boolean> => {
+  const getLocation = async (): Promise<GeolocationPosition> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         alert("Geolocation is not supported by this browser.");
-        return reject(false);
+        reject(new Error("Geolocation not supported"));
+        return;
       }
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          showPosition(position);
-          resolve(true);
+          resolve(position);
         },
         (error) => {
-          showError(error);
-          reject(false);
+          let message = "";
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              message = "User denied the request for Geolocation.";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              message = "Location information is unavailable.";
+              break;
+            case error.TIMEOUT:
+              message = "The request to get user location timed out.";
+              break;
+            default:
+              message = "An unknown error occurred.";
+              break;
+          }
+          alert(message);
+          reject(error);
         },
         {
           enableHighAccuracy: true,
@@ -98,24 +113,6 @@ const Attendance = () => {
         : { punchInGeometry: geoPoint }),
     }));
   }
-
-  function showError(error: GeolocationPositionError) {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        alert("User denied the request for Geolocation.");
-        break;
-      case error.POSITION_UNAVAILABLE:
-        alert("Location information is unavailable.");
-        break;
-      case error.TIMEOUT:
-        alert("The request to get user location timed out.");
-        break;
-      default:
-        alert("An unknown error occurred.");
-        break;
-    }
-  }
-
   const startCamera = async () => {
     return navigator.mediaDevices
       .getUserMedia({ video: { facingMode: "user" }, audio: false })
@@ -167,7 +164,12 @@ const Attendance = () => {
 
   const handleAllowAccess = async () => {
     setDisableBtn(true);
-    await getLocation();
+    const position = await getLocation();
+    if (!position) {
+      setDisableBtn(false);
+      return;
+    }
+    showPosition(position);
     setDisableBtn(false);
   };
 
