@@ -51,13 +51,13 @@ punchOutSchema.index({ punchOutGeometry: "2dsphere" });
 const PunchOut = model("PunchOut", punchOutSchema);
 
 const attendanceSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  companyId: {
+  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  company: {
     type: Schema.Types.ObjectId,
     ref: "Company",
     required: true,
   },
-  branchId: {
+  branch: {
     type: Schema.Types.ObjectId,
     ref: "Branch",
     required: true,
@@ -99,7 +99,7 @@ attendanceSchema.pre("save", async function (next) {
     const lastObj = this.punchingInfo.pop();
     const currDate = lastObj.punchInInfo.getTimestamp;
     const currTime = currntTimeInFixedFomat(currDate);
-    const shift = await Shift.findOne({ createdFor: this.userId });
+    const shift = await Shift.findOne({ createdFor: this.user });
     if (!shift) {
       return next(new Error("shift not found!"));
     }

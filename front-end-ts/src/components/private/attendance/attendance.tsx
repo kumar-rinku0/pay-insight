@@ -41,15 +41,11 @@ const Attendance = () => {
           branchId: user?.role?.branch ?? "",
         })
         .then((res) => {
-          setHasPunchedIn(!res.data.lastPuchedOut);
-        })
-        .catch((err) => console.error(err));
-
-      axios
-        .get("/api/branch/info")
-        .then((res) => {
+          console.log("Attendance info:", res.data);
+          startCamera();
           const { coordinates, radius } = res.data;
           setBranch({ coordinates, radius });
+          setHasPunchedIn(!res.data.lastPuchedOut);
         })
         .catch((err) => console.error(err));
     }
@@ -170,14 +166,7 @@ const Attendance = () => {
 
   const handleAllowAccess = async () => {
     setDisableBtn(true);
-    try {
-      const gotLocation = await getLocation();
-      if (gotLocation) {
-        await startCamera();
-      }
-    } catch (err) {
-      console.error("Error during permission access:", err);
-    }
+    await getLocation();
     setDisableBtn(false);
   };
 

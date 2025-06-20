@@ -1,4 +1,5 @@
 import { PunchIn, PunchOut, Attendance } from "../model/attendance.js";
+import Branch from "../model/branch.js";
 import { formatDateForComparison } from "../util/functions.js";
 import { reverseGeocode } from "../util/functions.js";
 
@@ -87,20 +88,25 @@ const handleGetOneSpecificUserAttendance = async (req, res) => {
   const date = formatDateForComparison(new Date());
 
   const attendance = await Attendance.findOne({
-    $and: [
-      { date: date, companyId: companyId, userId: userId, branchId: branchId },
-    ],
+    $and: [{ date: date, company: companyId, user: userId, branch: branchId }],
   });
+  const branch = await Branch.findById(branchId);
   if (!attendance) {
     return res.status(200).json({
       message: "user isn't punched in yet!",
       lastPuchedOut: true,
+      branch: branch,
+      radius: branch.radius,
+      coordinates: branch.geometry.coordinates,
     });
   }
   if (attendance && attendance.punchingInfo.length === 0) {
     return res.status(200).json({
       message: "info doesnt exist!",
       lastPuchedOut: true,
+      branch: branch,
+      radius: branch.radius,
+      coordinates: branch.geometry.coordinates,
     });
   }
   const lastPunchingInfo = attendance.punchingInfo.pop();
@@ -113,6 +119,9 @@ const handleGetOneSpecificUserAttendance = async (req, res) => {
     lastPunchingInfo: lastPunchingInfo,
     lastPuchedOut: lastPuchedOut,
     attendance: attendance,
+    branch: branch,
+    radius: branch.radius,
+    coordinates: branch.geometry.coordinates,
   });
 };
 
