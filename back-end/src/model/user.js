@@ -15,13 +15,16 @@ const userSchema = new Schema(
       trim: true,
       default: generateUsername,
     },
-    givenName: {
+    name: {
       type: String,
-      required: [true, "givenName is required."],
-    },
-    familyName: {
-      type: String,
-      default: "",
+      required: [true, "name is required."],
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return /^[a-zA-Z\s]+$/.test(v);
+        },
+        message: (props) => `${props.value} is not a valid name!`,
+      },
     },
     picture: {
       type: String,
@@ -101,20 +104,20 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.statics.isRightUser = async function (email, password) {
-  const user = await User.findOne({ email }).exec();
-  if (!user) {
-    return { message: "wrong email." };
-  }
-  const isOk = await bcrypt.compare(password, user.password);
-  if (!isOk) {
-    return { message: "wrong password." };
-  }
-  if (user.role !== "admin" && user.status !== "active") {
-    return { message: "blocked by admin!!" };
-  }
-  return user;
-};
+// userSchema.statics.isRightUser = async function (email, password) {
+//   const user = await User.findOne({ email }).exec();
+//   if (!user) {
+//     return { message: "wrong email." };
+//   }
+//   const isOk = await bcrypt.compare(password, user.password);
+//   if (!isOk) {
+//     return { message: "wrong password." };
+//   }
+//   if (user.role !== "admin" && user.status !== "active") {
+//     return { message: "blocked by admin!!" };
+//   }
+//   return user;
+// };
 
 const User = model("User", userSchema);
 

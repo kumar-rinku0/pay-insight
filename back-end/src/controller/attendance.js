@@ -122,17 +122,14 @@ const handleGetOneSpecificUserAttendance = async (req, res) => {
 };
 
 const handleGetOneSpecificMonthAttendance = async (req, res) => {
-  const { userId, companyId, branchId } = req.body;
-  const currentMonth = new Date().toLocaleString("en-IN", {
-    month: "long",
-  });
+  const { userId, companyId, branchId, month } = req.body;
   const attendance = await Attendance.find({
     $and: [
       {
-        month: currentMonth,
-        companyId: companyId,
-        userId: userId,
-        branchId: branchId,
+        month: month,
+        company: companyId,
+        user: userId,
+        branch: branchId,
       },
     ],
   }).populate("punchingInfo.punchInInfo");
@@ -166,7 +163,7 @@ const handleGetAttendanceCount = async (req, res) => {
     $and: [
       {
         date: formatDateForComparison(new Date()),
-        companyId: user.roleInfo.company,
+        company: user.role.company,
       },
     ],
     // branchId: user.roleInfo.branch,
