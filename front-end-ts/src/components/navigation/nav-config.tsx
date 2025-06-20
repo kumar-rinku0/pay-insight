@@ -7,6 +7,7 @@ import {
   User,
   Users,
   AlertTriangle,
+  Calendar,
 } from "lucide-react";
 import { useLocation } from "react-router";
 
@@ -50,6 +51,12 @@ export const NavItems = () => {
         url: "/search",
         icon: Search,
         isActive: isNavItemActive(pathname, `/search`),
+      },
+      {
+        title: "Calendar",
+        url: "/calendar",
+        icon: Calendar,
+        isActive: isNavItemActive(pathname, `/calendar`),
       },
       {
         title: "Company Manager",
