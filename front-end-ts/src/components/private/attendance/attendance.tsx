@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import haversine from "@/utils/haversine";
 import { useAuth } from "@/providers/use-auth";
+import { Button } from "@/components/ui/button";
 
 const Attendance = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -33,12 +34,12 @@ const Attendance = () => {
   });
 
   useEffect(() => {
-    if (isAuthenticated && user && user?.role) {
+    if (isAuthenticated && user && user.role) {
       axios
         .post("/api/attendance/users/information/today", {
-          userId: user?._id ?? "",
-          companyId: user?.role?.company ?? "",
-          branchId: user?.role?.branch ?? "",
+          userId: user._id,
+          companyId: user.role.company,
+          branchId: user.role.branch,
         })
         .then((res) => {
           console.log("Attendance info:", res.data);
@@ -115,7 +116,7 @@ const Attendance = () => {
     }
   }
 
-  function startCamera() {
+  const startCamera = async () => {
     return navigator.mediaDevices
       .getUserMedia({ video: { facingMode: "user" }, audio: false })
       .then((stream) => {
@@ -128,7 +129,7 @@ const Attendance = () => {
         alert("Could not access the camera. Please check permissions.");
         throw err;
       });
-  }
+  };
 
   function stopCamera() {
     if (videoRef.current?.srcObject) {
@@ -242,7 +243,7 @@ const Attendance = () => {
   };
 
   return (
-    <div className="min-w-full h-[100vh] cap flex items-center justify-center bg-gradient-to-r from-[#1a1a2e] to-[#16213e]">
+    <div className="min-w-full h-[100vh] cap flex items-center justify-center">
       <canvas ref={canvasRef} style={{ display: "none" }} />
       <div className="flex flex-col items-center justify-center">
         <div className="relative w-full max-w-md">
@@ -255,40 +256,48 @@ const Attendance = () => {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             {/* <div className="w-64 h-64 rounded-full border-4 border-white/50"></div> */}
           </div>
+          {/* Display captured photos if available */}
+          {inputs.punchInPhoto && !hasPunchedIn && (
+            <div className="mt-4 flex justify-center">
+              <img
+                src={URL.createObjectURL(inputs.punchInPhoto)}
+                alt="Punch-in photo"
+                className="w-32 h-32 rounded-full object-cover border-2 border-green-500"
+              />
+            </div>
+          )}
+
+          {inputs.punchOutPhoto && hasPunchedIn && (
+            <div className="mt-4 flex justify-center">
+              <img
+                src={URL.createObjectURL(inputs.punchOutPhoto)}
+                alt="Punch-out photo"
+                className="w-32 h-32 rounded-full object-cover border-2 border-red-500"
+              />
+            </div>
+          )}
         </div>
         {!allowLocation ? (
-          <button
-            onClick={handleAllowAccess}
-            disabled={disableBtn}
-            className="px-4 py-2 bg-[#ff4444] text-white rounded-lg"
-          >
+          <Button onClick={handleAllowAccess} disabled={disableBtn}>
             Allow Access!
-          </button>
+          </Button>
         ) : !photoCaptured ? (
           <div className="mt-8 flex gap-4">
-            <button
+            <Button
+              variant="outline"
               onClick={() => {
                 setAllowLocation(false);
                 stopCamera();
               }}
-              className="px-6 py-3 bg-red-500 text-white rounded-full"
             >
               Cancel
-            </button>
-            <button
-              onClick={capturePhoto}
-              disabled={disableBtn}
-              className="px-6 py-3 bg-green-500 text-white rounded-full"
-            >
+            </Button>
+            <Button onClick={capturePhoto} disabled={disableBtn}>
               Capture
-            </button>
+            </Button>
           </div>
         ) : (
-          <button
-            disabled={loading}
-            onClick={handlePunch}
-            className="px-4 py-2 text-white bg-[#028a0f] rounded-lg"
-          >
+          <Button variant="outline" disabled={loading} onClick={handlePunch}>
             {loading
               ? hasPunchedIn
                 ? "Punching Out..."
@@ -296,7 +305,7 @@ const Attendance = () => {
               : hasPunchedIn
               ? "Punch Out"
               : "Punch In"}
-          </button>
+          </Button>
         )}
       </div>
     </div>
