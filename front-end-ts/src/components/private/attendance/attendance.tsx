@@ -56,7 +56,7 @@ const Attendance = () => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         alert("Geolocation is not supported by this browser.");
-        reject(new Error("Geolocation not supported"));
+        reject(null);
         return;
       }
 
@@ -81,7 +81,7 @@ const Attendance = () => {
               break;
           }
           alert(message);
-          reject(error);
+          reject(null);
         },
         {
           enableHighAccuracy: true,
@@ -247,7 +247,7 @@ const Attendance = () => {
   return (
     <div className="min-w-full h-[100vh] cap flex items-center justify-center">
       <canvas ref={canvasRef} style={{ display: "none" }} />
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center gap-4 p-4">
         <div className="relative w-full max-w-md">
           <video
             ref={videoRef}
