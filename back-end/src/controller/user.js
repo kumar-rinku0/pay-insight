@@ -207,35 +207,6 @@ const handleUserResetPassword = async (req, res) => {
     .json({ message: "Password reset successful.", user: info });
 };
 
-const handleGetUserByCompanyId = async (req, res) => {
-  const { companyId } = req.params;
-  const { page = 1, limit = 10 } = req.query;
-  const skip = (page - 1) * limit;
-  console.log(companyId, page, limit, skip);
-  const query = {
-    roles: {
-      $elemMatch: {
-        company: companyId,
-        role: { $in: ["employee", "manager"] },
-      },
-    },
-  };
-  const totalUsers = await User.countDocuments(query).populate("roles");
-  const users = await User.find(query)
-    .populate("roles")
-    .limit(limit)
-    .skip(skip);
-
-  if (users.length > 0) {
-    return res.status(200).send({
-      message: "employee & manager in company!",
-      users: users,
-      totalUsers: totalUsers,
-    });
-  }
-  return res.status(400).send({ error: "invalid company id!" });
-};
-
 const handleGoogleCallback = async (req, res) => {
   const { code } = req.body;
   const tokens = await getToken(code);
@@ -316,7 +287,6 @@ export {
   handleUserSendVerifyEmail,
   handleUserSendResetEmail,
   handleUserResetPassword,
-  handleGetUserByCompanyId,
   handleUserSignUpWithRoles,
   handleGoogleCallback,
   handleRememberMe,
