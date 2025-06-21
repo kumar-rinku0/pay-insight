@@ -29,3 +29,39 @@ export type CompanyType = {
   name: string;
   address: string;
 };
+
+export type EmployeeAttendanceType = {
+  _id: string;
+  status: string;
+  date: string;
+  month: string;
+  punchingInfo: PunchingInfoType[];
+  user: UserType;
+};
+
+export type PunchingInfoType = {
+  punchInInfo: PunchInInfoType;
+  punchOutInfo: PunchOutInfoType;
+};
+
+export type PunchInInfoType = {
+  status: string;
+  punchInGeometry: {
+    type: string;
+    coordinates: [number];
+  };
+  punchInAddress: string;
+  punchInImg: string;
+  createdAt: Date;
+};
+
+export type PunchOutInfoType = {
+  status: string;
+  punchOutGeometry: {
+    type: string;
+    coordinates: [number];
+  };
+  punchOutAddress: string;
+  punchOutImg: string;
+  createdAt: Date;
+};

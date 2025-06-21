@@ -32,7 +32,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(null);
         setIsAuthenticated(false);
       })
-      .catch((err) => console.log("Logout error: ", err)); // Improved error handling
+      .catch(() => {
+        // console.log("Logout error: ", err);
+        location.reload();
+      }); // Improved error handling
   };
 
   // Check authentication status on initial render
