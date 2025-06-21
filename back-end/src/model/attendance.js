@@ -120,7 +120,7 @@ attendanceSchema.pre("save", async function (next) {
     if (!shift) {
       return next(new Error("doesn't assigned any shift!"));
     }
-    const shiftStartTime = getTodayTimestamp(shift.startTime);
+    const shiftStartTime = getTodayTimestamp(shift.startTime, shift.lateBy);
     const shiftStartTimeWithDelay = getTodayTimestamp(
       shift.startTime,
       shift.halfDayLateBy

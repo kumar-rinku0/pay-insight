@@ -51,10 +51,11 @@ export const currntTimeInFixedFomat = (currDate, delay = 0) => {
   return time;
 };
 
-export const formatDateForComparison = (dateObj) => {
-  const day = dateObj.getDate().toString().padStart(2, "0");
-  const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
-  const year = dateObj.getFullYear();
+export const formatDateForComparison = (localeDate) => {
+  const date = new Date(localeDate);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
   return `${day}/${month}/${year}`;
 };
 
@@ -78,21 +79,20 @@ export function getTodayTimestamp(timeStr, extraMinutes = 0) {
   );
 
   const timezoneOffsetMs = localDate.getTimezoneOffset() * 60 * 1000;
-  const utcDate = new Date(localDate.getTime() - timezoneOffsetMs);
+  const localTimestamp = new Date(localDate.getTime() - timezoneOffsetMs);
 
-  return utcDate.toISOString(); // Returns UTC timestamp
+  return localTimestamp; // Returns UTC timestamp
 }
 
 export function getTimeStempByTimeStemp(time) {
   const localDate = new Date(time);
 
-  // IST is UTC + 5:30 => 5.5 * 60 * 60 * 1000 = 19800000 ms
-  const istOffset = 5.5 * 60 * 60 * 1000;
+  const offsetInMinutes = new Date().getTimezoneOffset() * 60 * 1000;
 
-  const istDate = new Date(localDate.getTime() + istOffset);
+  const localTimestamp = new Date(localDate.getTime() - offsetInMinutes);
 
   // Format to ISO string but remove the 'Z' to indicate it's not UTC
-  return istDate.toISOString();
+  return localTimestamp;
 }
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {

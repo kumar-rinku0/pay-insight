@@ -85,7 +85,7 @@ const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
   res
 ) => {
   const { userId, companyId, branchId } = req.body;
-  const date = formatDateForComparison(new Date());
+  const date = formatDateForComparison(new Date().toLocaleString());
 
   const attendance = await Attendance.findOne({
     $and: [{ date: date, company: companyId, user: userId, branch: branchId }],
@@ -173,7 +173,7 @@ const handleGetOneSpecificDateAttendance = async (req, res) => {
 // Fetch attendance statistics for the dashboard
 const handleGetEmployeesAttendanceWithPunchingInfo = async (req, res) => {
   const user = req.user;
-  const formattedDate = formatDateForComparison(new Date());
+  const formattedDate = formatDateForComparison(new Date().toLocaleString());
   const query = {
     $and: [{ date: formattedDate }, { company: user.role.company }],
   };
