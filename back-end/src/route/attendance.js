@@ -3,11 +3,13 @@ import wrapAsync from "../util/wrap-async.js";
 import {
   handlemarkPunchIn,
   handlemarkPunchOut,
-  handleGetOneSpecificUserAttendance,
+  handleGetOneSpecificUserAttendanceInfoWithBranchInfo,
   handleGetOneSpecificMonthAttendance,
   handleGetOneSpecificDateAttendance,
-  handleGetAttendanceCount,
+  handleGetEmployeesAttendanceWithPunchingInfo,
 } from "../controller/attendance.js";
+
+import { onlyLoggedInUser, onlyAdminUser } from "../middleware/auth.js";
 
 // import { handleUploadImage } from "../util/cloud-init.js";
 import multer from "multer";
@@ -29,7 +31,7 @@ router.route("/mark").put(
 
 router
   .route("/users/information/today")
-  .post(wrapAsync(handleGetOneSpecificUserAttendance));
+  .post(wrapAsync(handleGetOneSpecificUserAttendanceInfoWithBranchInfo));
 
 router
   .route("/attendancebyid/:attendanceId")
@@ -39,6 +41,8 @@ router
   .route("/month/information")
   .post(wrapAsync(handleGetOneSpecificMonthAttendance));
 
-router.route("/count/:companyId").get(wrapAsync(handleGetAttendanceCount));
+router
+  .route("/employees")
+  .get(onlyAdminUser, wrapAsync(handleGetEmployeesAttendanceWithPunchingInfo));
 
 export default router;

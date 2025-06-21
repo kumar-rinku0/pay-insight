@@ -5,7 +5,6 @@ const roleSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
     required: [true, "User ID is required."],
-    unique: [true, "User ID must be unique."],
     validate: {
       validator: function (v) {
         return v != null; // Ensure user ID is not null
@@ -17,7 +16,6 @@ const roleSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Company",
     required: true,
-    unique: true,
     validate: {
       validator: function (v) {
         return v != null; // Ensure company ID is not null
