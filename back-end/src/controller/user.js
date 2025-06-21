@@ -106,13 +106,16 @@ const handleUserSignIn = async (req, res) => {
     return res.status(401).json({ error: user.message, status: user.status });
   }
   const role = await Role.findOne({ user: user._id });
-  const token = setUser(user, role);
-  res.cookie("JWT_TOKEN", token, cookieOptions());
-
+  req.session.user = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: role,
+  };
   return res.status(200).json({
     user: user,
     role: role,
-    message: "login successful. if user have company it will be in user!",
+    message: "login successful.",
   });
 };
 
@@ -131,7 +134,8 @@ const handleRememberMe = async (req, res) => {
 };
 
 const handleUserLogout = async (req, res) => {
-  res.cookie("JWT_TOKEN", "", cookieOptions());
+  req.session.destroy();
+  res.clearCookie("payinsight.void");
   return res.status(200).json({ message: "logout successful" });
 };
 

@@ -53,50 +53,53 @@ const punchOutSchema = new Schema(
 punchOutSchema.index({ punchOutGeometry: "2dsphere" });
 const PunchOut = model("PunchOut", punchOutSchema);
 
-const attendanceSchema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  company: {
-    type: Schema.Types.ObjectId,
-    ref: "Company",
-    required: true,
-  },
-  branch: {
-    type: Schema.Types.ObjectId,
-    ref: "Branch",
-    required: true,
-  },
-  date: {
-    type: String,
-    required: true,
-  },
-  month: {
-    type: String,
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: {
-      values: ["on time", "late", "half day", "holiday", "absent"],
-      message: "invailid status!",
+const attendanceSchema = new Schema(
+  {
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    company: {
+      type: Schema.Types.ObjectId,
+      ref: "Company",
+      required: true,
     },
-    default: "absent",
-  },
-  punchingInfo: {
-    type: [
-      {
-        punchInInfo: {
-          type: Schema.Types.ObjectId,
-          ref: "PunchIn",
-        },
-        punchOutInfo: {
-          type: Schema.Types.ObjectId,
-          ref: "PunchOut",
-        },
+    branch: {
+      type: Schema.Types.ObjectId,
+      ref: "Branch",
+      required: true,
+    },
+    date: {
+      type: String,
+      required: true,
+    },
+    month: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: {
+        values: ["on time", "late", "half day", "holiday", "absent"],
+        message: "invailid status!",
       },
-    ],
-    required: true,
+      default: "absent",
+    },
+    punchingInfo: {
+      type: [
+        {
+          punchInInfo: {
+            type: Schema.Types.ObjectId,
+            ref: "PunchIn",
+          },
+          punchOutInfo: {
+            type: Schema.Types.ObjectId,
+            ref: "PunchOut",
+          },
+        },
+      ],
+      required: true,
+    },
   },
-});
+  { timestamps: true }
+);
 
 attendanceSchema.pre("save", async function (next) {
   // if (this.isModified("punchingInfo")) {
@@ -117,7 +120,7 @@ attendanceSchema.pre("save", async function (next) {
     }
     const shiftStartTime = getTodayTimestamp(shift.startTime);
     const shiftStartTimeWithDelay = getTodayTimestamp(
-      shift.shiftStartTime,
+      shift.startTime,
       shift.halfDayLateBy
     );
     console.log(shiftStartTime, shiftStartTimeWithDelay);

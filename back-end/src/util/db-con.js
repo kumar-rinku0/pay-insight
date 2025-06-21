@@ -6,10 +6,10 @@ export const connectDatabase = (MONGO_URI) => {
     .connect(MONGO_URI)
     .then((res) => {
       console.log("connection successful.");
-      //   return res;
+      return res;
     })
     .catch((err) => {
       console.log(err);
-      //   return err;
+      return err;
     });
 };
