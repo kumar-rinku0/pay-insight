@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "@/providers/use-auth";
 import { formatDateForComparison } from "@/utils/functions";
 import {
@@ -11,6 +11,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import type { UserType } from "@/types/auth";
+
+type ResponseType = {
+  message: string;
+  attendances: AttendanceData[];
+  user: UserType;
+};
 
 interface AttendanceData {
   _id: string;
@@ -27,10 +34,7 @@ interface AttendanceSummary {
 }
 
 interface AttendancePageProps {
-  userId: string;
-  branchId: string;
-  companyId: string;
-  name: string;
+  roleId: string;
 }
 
 interface DayStatus {
@@ -42,17 +46,13 @@ interface DayStatus {
 const getMonthName = (year: number, month: number) =>
   new Date(year, month).toLocaleString("en-IN", { month: "long" });
 
-export const AttendancePage: React.FC<AttendancePageProps> = ({
-  userId,
-  branchId,
-  companyId,
-  name,
-}) => {
+export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
   const navigate = useNavigate();
   const today = React.useMemo(() => new Date(), []);
   const currentYear = today.getFullYear();
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
   const [content, setContent] = useState<AttendanceData[]>([]);
+  const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [attendance, setAttendance] = useState<AttendanceSummary>({
     present: 0,
@@ -124,22 +124,21 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
       setLoading(true);
       const monthName = getMonthName(currentYear, monthIndex);
       axios
-        .post("/api/attendance/month/information", {
-          userId,
-          branchId,
-          companyId,
+        .post<ResponseType>("/api/attendance/month/information", {
+          roleId,
           month: monthName,
         })
         .then((res) => {
           console.log("Attendance data:", res.data);
-          setContent(res.data.attendance);
+          setUser(res.data.user);
+          setContent(res.data.attendances);
         })
         .catch((err) => console.error("Error fetching attendance:", err))
         .finally(() => {
           setLoading(false);
         });
     },
-    [userId, branchId, companyId, currentYear]
+    [roleId, currentYear]
   );
 
   useEffect(() => {
@@ -177,9 +176,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
         status,
         month: selectedMonth,
         id: {
-          userId,
-          branchId,
-          companyId,
+          roleId,
           attendanceId,
         },
       },
@@ -188,15 +185,15 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[80vh]">
+      <div className="flex justify-center items-center h-[60vh]">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
       </div>
     );
   }
   return (
-    <div className="px-4 py-8 md:mx-40 lg:mx-60">
+    <div className="px-4 py-8 h-[60vh]">
       <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-4 font-bold flex justify-between items-center rounded-t-lg">
-        <div className="capitalize">{name}</div>
+        <div className="capitalize">{user?.name}</div>
         <Select
           onValueChange={(value) => setSelectedMonth(parseInt(value))}
           defaultValue={`${selectedMonth}`}
@@ -300,49 +297,40 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({
   );
 };
 
-const CalendarPage: React.FC = () => {
-  const { isAuthenticated, user } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+export const EmployeeCalendar: React.FC = () => {
+  const { user } = useAuth();
 
-  const handleNotesNavigate = (userId: string, name: string) => {
-    navigate("/notespage", { state: { userId, name } });
-  };
-
-  if (!isAuthenticated || !user || !user.role) return null;
+  if (!user) return null;
 
   const isEmployee = user.role.role === "employee";
-  const attendanceProps = isEmployee
-    ? {
-        userId: user._id,
-        companyId: user.role.company,
-        branchId: user.role.branch,
-        name: user.name,
-      }
-    : location.state;
+
+  if (!isEmployee) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col items-center mt-8">
-      {!isEmployee && (
-        <div className="flex rounded-lg shadow-lg overflow-hidden bg-white space-x-[1px]">
-          <div className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold cursor-pointer">
-            Attendance
-          </div>
-          <div
-            onClick={() =>
-              handleNotesNavigate(attendanceProps.userId, attendanceProps.name)
-            }
-            className="px-8 py-3 text-red-500 font-semibold cursor-pointer"
-          >
-            Notes
-          </div>
-        </div>
-      )}
       <div className="mt-8 w-full rounded-xl overflow-hidden">
-        <AttendancePage {...attendanceProps} />
+        <AttendancePage roleId={user.role._id} />
       </div>
     </div>
   );
 };
 
-export default CalendarPage;
+export const AdminCalendar = () => {
+  const [searchParmas] = useSearchParams();
+  const roleId = searchParmas.get("roleId");
+  console.log(roleId);
+  if (!roleId) {
+    return null;
+  }
+  return (
+    <div className="flex flex-col items-center mt-8">
+      <div className="mt-8 w-full rounded-xl overflow-hidden">
+        <AttendancePage roleId={roleId} />
+      </div>
+    </div>
+  );
+};
+
+export default EmployeeCalendar;

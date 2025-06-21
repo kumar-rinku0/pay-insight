@@ -1,5 +1,6 @@
 import { PunchIn, PunchOut, Attendance } from "../model/attendance.js";
 import Branch from "../model/branch.js";
+import Role from "../model/role.js";
 import { formatDateForComparison } from "../util/functions.js";
 import { reverseGeocode } from "../util/functions.js";
 
@@ -79,7 +80,10 @@ const handlemarkPunchOut = async (req, res) => {
 };
 
 // Get All Attendance Records
-const handleGetOneSpecificUserAttendance = async (req, res) => {
+const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
+  req,
+  res
+) => {
   const { userId, companyId, branchId } = req.body;
   const date = formatDateForComparison(new Date());
 
@@ -122,20 +126,31 @@ const handleGetOneSpecificUserAttendance = async (req, res) => {
 };
 
 const handleGetOneSpecificMonthAttendance = async (req, res) => {
-  const { userId, companyId, branchId, month } = req.body;
-  const attendance = await Attendance.find({
+  const { roleId, month } = req.body;
+  const role = await Role.findById(roleId).populate("user", "name email");
+  const query = {
     $and: [
       {
         month: month,
-        company: companyId,
-        user: userId,
-        branch: branchId,
+      },
+      {
+        user: role.user._id,
+      },
+      {
+        company: role.company,
+      },
+      {
+        branch: role.branch,
       },
     ],
-  }).populate("punchingInfo.punchInInfo");
+  };
+  const attendances = await Attendance.find(query).populate(
+    "punchingInfo.punchInInfo"
+  );
   return res.status(200).json({
     message: "ok",
-    attendance: attendance,
+    user: role.user,
+    attendances: attendances,
   });
 };
 
@@ -156,33 +171,29 @@ const handleGetOneSpecificDateAttendance = async (req, res) => {
 };
 
 // Fetch attendance statistics for the dashboard
-const handleGetAttendanceCount = async (req, res) => {
-  // const { companyId } = req.params;
+const handleGetEmployeesAttendanceWithPunchingInfo = async (req, res) => {
   const user = req.user;
-  const attendance = await Attendance.find({
-    $and: [
-      {
-        date: formatDateForComparison(new Date()),
-        company: user.role.company,
-      },
-    ],
-    // branchId: user.roleInfo.branch,
-  })
-    .populate("punchingInfo.punchInInfo")
-    .populate("punchingInfo.punchOutInfo");
+  const formattedDate = formatDateForComparison(new Date());
+  const query = {
+    $and: [{ date: formattedDate }, { company: user.role.company }],
+  };
+  const attendances = await Attendance.find(query)
+    .populate("user", "name email")
+    .populate("punchingInfo.punchInInfo", "status createdAt")
+    .populate("punchingInfo.punchOutInfo", "status createdAt");
 
   return res.status(200).json({
     message: "ok",
-    attendance: attendance,
-    puchInCount: attendance.length,
+    attendances: attendances,
+    puchInCount: attendances.length,
   });
 };
 
 export {
   handlemarkPunchIn,
   handlemarkPunchOut,
-  handleGetOneSpecificUserAttendance,
+  handleGetOneSpecificUserAttendanceInfoWithBranchInfo,
   handleGetOneSpecificMonthAttendance,
   handleGetOneSpecificDateAttendance,
-  handleGetAttendanceCount,
+  handleGetEmployeesAttendanceWithPunchingInfo,
 };

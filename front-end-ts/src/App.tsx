@@ -19,7 +19,10 @@ import Search from "./components/private/search/search";
 import Dashboard from "./components/private/dashboard/dashboard";
 import Users from "./components/private/users/users";
 import Profile from "./components/private/profile/profile";
-import Calendar from "./components/private/calendar/calendar";
+import {
+  EmployeeCalendar,
+  AdminCalendar,
+} from "./components/private/calendar/calendar";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -44,14 +47,16 @@ function App() {
         )}
         {isAuthenticated && (
           <Route path="/" element={<Header />}>
+            <Route path="/" element={<Dashboard />} />
             <Route path="/company" element={<CreateCompany />} />
             <Route path="/branch" element={<CreateBranch />} />
             <Route path="/staff" element={<CreateStaff />} />
             <Route path="/attendance" element={<Attendance />} />
-            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/calendar" element={<EmployeeCalendar />} />
+            <Route path="/users/calendar" element={<AdminCalendar />} />
+            <Route path="/dashboard" element={<Dashboard />} />
 
             <Route path="/search" element={<Search />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
             <Route path="/profile" element={<Profile />} />
             <>

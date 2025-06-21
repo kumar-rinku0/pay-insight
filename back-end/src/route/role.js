@@ -14,8 +14,6 @@ route.route("/").get((req, res) => {
 
 route.route("/userId/:userId").get(wrapAsync(handleGetOneUserRoles));
 
-route
-  .route("/employee/companyId/:companyId")
-  .get(onlyAdminUser, wrapAsync(handleGetEmployeeRoles));
+route.route("/employees").get(onlyAdminUser, wrapAsync(handleGetEmployeeRoles));
 
 export default route;

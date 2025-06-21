@@ -24,6 +24,7 @@ const punchInSchema = new Schema(
         required: true,
       },
     },
+    punchInImg: String,
     punchInAddress: String,
   },
   { timestamps: true }
@@ -46,6 +47,7 @@ const punchOutSchema = new Schema(
         type: [Number],
       },
     },
+    punchOutImg: String,
     punchOutAddress: String,
   },
   { timestamps: true }
