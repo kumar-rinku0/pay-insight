@@ -4,6 +4,7 @@ if (process.env.NODE_ENV != "development") {
   config();
 }
 import express from "express";
+import session from "express-session";
 import { connectDatabase } from "./util/db-con.js";
 
 // routers
@@ -28,6 +29,19 @@ connectDatabase(MONGO_URI);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const sessionConfig = {
+  secret: SECRET,
+  resave: true,
+  saveUninitialized: false,
+  cookie: { maxAge: 1 * 60 * 60 * 1000 },
+  name: "payinsight.void",
+};
+if (app.get("env") === "production") {
+  app.set("trust proxy", 1); // trust first proxy
+  sessionConfig.cookie.secure = true; // serve secure cookies
+}
+app.use(session(sessionConfig));
 
 app.use(isLoggedInCheck);
 

@@ -27,12 +27,16 @@ const getInfo = (token) => {
 };
 
 const getUser = (token, accessToken = KEY) => {
-  if (!token) return null;
-  try {
-    return jwt.verify(token, accessToken);
-  } catch (err) {
-    return null;
-  }
+  return jwt.verify(token, accessToken, (err, decoded) => {
+    if (err) {
+      console.error("JWT verification error:", err);
+      return null; // Return null if verification fails
+    } else if (err && err.name === "TokenExpiredError") {
+      console.error("JWT expired:", err);
+      return null; // Return null if token is expired
+    }
+    return decoded;
+  });
 };
 
 export { setUser, getUser, getInfo };

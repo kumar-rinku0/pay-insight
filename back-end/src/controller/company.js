@@ -28,8 +28,7 @@ const handleCreateCompany = async (req, res) => {
   await company.save();
   await role.save();
   await user.save();
-  const token = setUser(user, role);
-  res.cookie("JWT_TOKEN", token, cookieOptions());
+  req.session.user = { ...req.user, role: role };
   return res.status(200).send({
     message: "company created.",
     company: company,
@@ -46,9 +45,7 @@ const handleSelectCompany = async (req, res) => {
       .status(400)
       .send({ error: "you are not a member of this company!" });
   }
-  const token = setUser(user, role);
-  res.cookie("JWT_TOKEN", token, cookieOptions());
-
+  req.session.user = { ...req.user, role: role };
   return res.status(200).send({
     message: "ok!",
     user: user,

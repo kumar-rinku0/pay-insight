@@ -2,8 +2,7 @@
 import { getUser } from "../util/jwt.js";
 
 const isLoggedInCheck = (req, res, next) => {
-  const cookie = req.cookies?.JWT_TOKEN;
-  let user = getUser(cookie);
+  const user = req.session.user;
   req.user = user;
   return next();
 };
@@ -12,7 +11,7 @@ const onlyLoggedInUser = (req, res, next) => {
   // req.session.originalUrl = req.originalUrl;
   let user = req.user;
   if (!user || user == null) {
-    user = getUser(req.cookies?.JWT_TOKEN);
+    user = req.session.user;
     req.user = user;
   }
   if (!user) {
@@ -26,7 +25,7 @@ const onlyLoggedInUser = (req, res, next) => {
 const onlyAdminUser = (req, res, next) => {
   let user = req.user;
   if (!user || user == null) {
-    user = getUser(req.cookies?.JWT_TOKEN);
+    user = req.session.user;
     req.user = user;
   }
   console.log(user);
@@ -48,7 +47,7 @@ const onlyAdminUser = (req, res, next) => {
 const onlyAdminOrManagerUser = (req, res, next) => {
   let user = req.user;
   if (!user || user == null) {
-    user = getUser(req.cookies?.JWT_TOKEN);
+    user = req.session.user;
     req.user = user;
   }
   if (!user.role) {
