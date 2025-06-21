@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router";
+import { useLocation, useSearchParams, useNavigate } from "react-router";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,10 +13,12 @@ const BreadCrumb = () => {
   const router = useNavigate();
   const { pathname } = useLocation();
   const pathArray = pathname.split("/").filter((path) => path !== "");
+  const [searchParams] = useSearchParams();
+  const roleId = searchParams.get("roleId");
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem className="hidden md:block">
+        <BreadcrumbItem>
           <BreadcrumbLink
             onClick={() => router("/")}
             className={`cursor-pointer text-black ${
@@ -31,7 +33,7 @@ const BreadCrumb = () => {
           const isLast = index === pathArray.length - 1;
           return (
             <Fragment key={index}>
-              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbSeparator />
               <BreadcrumbItem key={index}>
                 <BreadcrumbPage>
                   <BreadcrumbLink
@@ -40,7 +42,11 @@ const BreadCrumb = () => {
                       const newPath = `/${pathArray
                         .slice(0, index + 1)
                         .join("/")}`;
-                      router(newPath);
+                      const fullPath =
+                        newPath === "/users/calendar"
+                          ? `${newPath}?roleId=${roleId}`
+                          : newPath;
+                      router(fullPath);
                     }}
                     className={`cursor-pointer ${isLast ? "font-bold" : ""}`}
                   >

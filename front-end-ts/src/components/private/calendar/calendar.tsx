@@ -47,7 +47,7 @@ const getMonthName = (year: number, month: number) =>
   new Date(year, month).toLocaleString("en-IN", { month: "long" });
 
 export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
-  const navigate = useNavigate();
+  const router = useNavigate();
   const today = React.useMemo(() => new Date(), []);
   const currentYear = today.getFullYear();
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
@@ -165,22 +165,12 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
   const handleDayClick = (day: number) => {
     const { status, attendanceId } = getDayStatus(day);
     if (status === "future") return;
-
-    const selectedDate = formatDateForComparison(
-      new Date(currentYear, selectedMonth, day)
+    // const selectedDate = formatDateForComparison(
+    //   new Date(currentYear, selectedMonth, day)
+    // );
+    router(
+      `/users/calendar/${day}?roleId=${roleId}&attendanceId=${attendanceId}&month=${selectedMonth}`
     );
-
-    navigate("/editattendance", {
-      state: {
-        selectedDate,
-        status,
-        month: selectedMonth,
-        id: {
-          roleId,
-          attendanceId,
-        },
-      },
-    });
   };
 
   if (loading) {
