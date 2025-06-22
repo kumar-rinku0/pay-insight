@@ -7,6 +7,7 @@ import {
   handleGetOneSpecificMonthAttendance,
   handleGetOneSpecificDateAttendance,
   handleGetEmployeesAttendanceWithPunchingInfo,
+  handleUpdateAttandance,
 } from "../controller/attendance.js";
 
 import { onlyLoggedInUser, onlyAdminUser } from "../middleware/auth.js";
@@ -40,6 +41,8 @@ router
 router
   .route("/month/information")
   .post(wrapAsync(handleGetOneSpecificMonthAttendance));
+
+router.route("/update").patch(onlyAdminUser, wrapAsync(handleUpdateAttandance));
 
 router
   .route("/employees")

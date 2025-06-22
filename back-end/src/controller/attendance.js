@@ -189,6 +189,41 @@ const handleGetEmployeesAttendanceWithPunchingInfo = async (req, res) => {
   });
 };
 
+const handleUpdateAttandance = async (req, res) => {
+  const { day, month, status, attendanceId, roleId } = req.body;
+  const year = new Date().getFullYear();
+  const monthName = new Date(year, month).toLocaleString("en-IN", {
+    month: "long",
+  });
+  const date = formatDateForComparison(new Date(`${day} ${monthName} ${year}`));
+  if (attendanceId) {
+    const attendance = await Attendance.findByIdAndUpdate(
+      attendanceId,
+      { status },
+      { new: true }
+    );
+    if (!attendance) {
+      return res.status(400).json({ message: "invalid attendance id." });
+    }
+    return res.status(200).json({ message: "attendance status updated." });
+  }
+
+  const role = await Role.findById(roleId);
+  if (!role) {
+    return res.status(400).json({ message: "invalid role id." });
+  }
+  const attendance = new Attendance({
+    user: role.user,
+    branch: role.branch,
+    company: role.company,
+    status,
+    date,
+    month: monthName,
+  });
+  await attendance.save();
+  return res.status(200).json({ message: "attandance created." });
+};
+
 export {
   handlemarkPunchIn,
   handlemarkPunchOut,
@@ -196,4 +231,5 @@ export {
   handleGetOneSpecificMonthAttendance,
   handleGetOneSpecificDateAttendance,
   handleGetEmployeesAttendanceWithPunchingInfo,
+  handleUpdateAttandance,
 };
