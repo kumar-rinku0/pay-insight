@@ -23,7 +23,6 @@ import {
   EmployeeCalendar,
   AdminCalendar,
 } from "./components/private/calendar/calendar";
-import UpdateAttendance from "./components/private/update/update-attendance";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -55,7 +54,6 @@ function App() {
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/calendar" element={<EmployeeCalendar />} />
             <Route path="/users/calendar" element={<AdminCalendar />} />
-            <Route path="/users/calendar/:day" element={<UpdateAttendance />} />
             <Route path="/dashboard" element={<Dashboard />} />
 
             <Route path="/search" element={<Search />} />
