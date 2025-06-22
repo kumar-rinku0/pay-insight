@@ -1,4 +1,4 @@
-import { useLocation, useSearchParams, useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,8 +13,6 @@ const BreadCrumb = () => {
   const router = useNavigate();
   const { pathname } = useLocation();
   const pathArray = pathname.split("/").filter((path) => path !== "");
-  const [searchParams] = useSearchParams();
-  const roleId = searchParams.get("roleId");
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -42,11 +40,7 @@ const BreadCrumb = () => {
                       const newPath = `/${pathArray
                         .slice(0, index + 1)
                         .join("/")}`;
-                      const fullPath =
-                        newPath === "/users/calendar"
-                          ? `${newPath}?roleId=${roleId}`
-                          : newPath;
-                      router(fullPath);
+                      router(newPath);
                     }}
                     className={`cursor-pointer ${isLast ? "font-bold" : ""}`}
                   >

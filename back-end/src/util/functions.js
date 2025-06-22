@@ -97,7 +97,7 @@ export function getTodayTimestamp(timeStr, extraMinutes = 0) {
   const timezoneOffsetMs = localDate.getTimezoneOffset() * 60 * 1000;
   const localTimestamp = new Date(localDate.getTime() - timezoneOffsetMs);
 
-  return localTimestamp; // Returns UTC timestamp
+  return localTimestamp.toISOString();
 }
 
 export function getTimeStempByTimeStemp(time) {
@@ -105,10 +105,9 @@ export function getTimeStempByTimeStemp(time) {
 
   const offsetInMinutes = new Date().getTimezoneOffset() * 60 * 1000;
 
-  const localTimestamp = new Date(localDate.getTime() - offsetInMinutes);
+  const localTimestamp = new Date(localDate.getTime() + offsetInMinutes);
 
-  // Format to ISO string but remove the 'Z' to indicate it's not UTC
-  return localTimestamp;
+  return localTimestamp.toISOString();
 }
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {

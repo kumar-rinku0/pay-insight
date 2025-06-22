@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import { useAuth } from "@/providers/use-auth";
 import { formatDateForComparison } from "@/utils/functions";
 import {
@@ -10,8 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import type { UserType } from "@/types/auth";
+import UpdateAttendance from "../update/update-attendance";
 
 type ResponseType = {
   message: string;
@@ -47,7 +47,7 @@ const getMonthName = (year: number, month: number) =>
   new Date(year, month).toLocaleString("en-IN", { month: "long" });
 
 export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
-  const router = useNavigate();
+  // const router = useNavigate();
   const today = React.useMemo(() => new Date(), []);
   const currentYear = today.getFullYear();
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
@@ -77,7 +77,6 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
         return { color: "bg-gray-300", status: "future" };
       }
       const info = content.find((item) => item.date === formattedDate);
-      console.log("Formatted Date:", day, formattedDate, info);
       if (info) {
         switch (info.status) {
           case "on time":
@@ -129,7 +128,6 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
           month: monthName,
         })
         .then((res) => {
-          console.log("Attendance data:", res.data);
           setUser(res.data.user);
           setContent(res.data.attendances);
         })
@@ -162,16 +160,16 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
     setAttendance({ present, absent, halfDay, paidLeave: 0, weekOff });
   }, [content, selectedMonth, daysInMonth, currentYear, getDayStatus]);
 
-  const handleDayClick = (day: number) => {
-    const { status, attendanceId } = getDayStatus(day);
-    if (status === "future") return;
-    // const selectedDate = formatDateForComparison(
-    //   new Date(currentYear, selectedMonth, day)
-    // );
-    router(
-      `/users/calendar/${day}?roleId=${roleId}&attendanceId=${attendanceId}&month=${selectedMonth}`
-    );
-  };
+  // const handleDayClick = (day: number) => {
+  //   const { status, attendanceId } = getDayStatus(day);
+  //   if (status === "future") return;
+  //   // const selectedDate = formatDateForComparison(
+  //   //   new Date(currentYear, selectedMonth, day)
+  //   // );
+  //   router(
+  //     `/users/calendar/${day}?roleId=${roleId}&attendanceId=${attendanceId}&month=${selectedMonth}`
+  //   );
+  // };
 
   if (loading) {
     return (
@@ -261,25 +259,34 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
 
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
-          const { color, status } = getDayStatus(day);
+          const { color, status, attendanceId } = getDayStatus(day);
           return (
-            <Button
+            <UpdateAttendance
               key={day}
-              className={`p-1 h-12 text-xs relative rounded-md text-white font-bold cursor-pointer ${color} hover:opacity-80`}
-              title={status}
-              onClick={() => handleDayClick(day)}
-            >
-              <span className="absolute top-1 left-0 right-0 text-[0.8rem]">
-                {day}
-              </span>
-              <span
-                className={`absolute bottom-1 left-0 right-0 text-[0.6rem] ${
-                  ["late", "half day"].includes(status) ? "" : "opacity-0"
-                }`}
-              >
-                {status}
-              </span>
-            </Button>
+              day={day}
+              color={color}
+              status={status}
+              attendanceId={attendanceId || ""}
+              roleId={roleId}
+              month={selectedMonth}
+            />
+            // <Button
+            //   key={day}
+            //   className={`p-1 h-12 text-xs relative rounded-md text-white font-bold cursor-pointer ${color} hover:opacity-80`}
+            //   title={status}
+            //   // onClick={() => handleDayClick(day)}
+            // >
+            //   <span className="absolute top-1 left-0 right-0 text-[0.8rem]">
+            //     {day}
+            //   </span>
+            //   <span
+            //     className={`absolute bottom-1 left-0 right-0 text-[0.6rem] ${
+            //       ["late", "half day"].includes(status) ? "" : "opacity-0"
+            //     }`}
+            //   >
+            //     {status}
+            //   </span>
+            // </Button>
           );
         })}
       </div>
@@ -310,7 +317,6 @@ export const EmployeeCalendar: React.FC = () => {
 export const AdminCalendar = () => {
   const [searchParmas] = useSearchParams();
   const roleId = searchParmas.get("roleId");
-  console.log(roleId);
   if (!roleId) {
     return null;
   }

@@ -178,19 +178,19 @@ const EmailOverlay = ({
                   )}
                 />
               </div>
-              <div className="flex gap-2">
+              <div className="w-full flex justify-between gap-2">
                 <Button
                   type="button"
                   variant={"outline"}
-                  className="w-full"
+                  className="w-1/2"
                   onClick={() => changeLoading({ overlay: false })}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full"
                   disabled={loading.button}
+                  className="w-1/2"
                 >
                   {loading.button ? "Loading..." : "Submit"}
                 </Button>
@@ -242,6 +242,7 @@ const LoginOverlay = ({
                 axios
                   .patch(`/api/user/remember`)
                   .then((res) => {
+                    location.reload();
                     toast.success(res.data.message);
                   })
                   .catch((err) => {
@@ -255,22 +256,13 @@ const LoginOverlay = ({
       })
       .catch((err) => {
         const { type, message } = err.response.data;
-        if (type === "ValidationError") {
-          toast.error(message);
-        } else if (type === "EmailNotVerified") {
+        toast.error(message);
+        if (type === "EmailNotVerified") {
           changeLoading({ forgetPassword: false, verifyUser: true });
         } else if (type === "UserNotFound") {
           toast.error(message);
         } else if (type === "PasswordNotMatch") {
           changeLoading({ forgetPassword: true, verifyUser: false });
-        } else if (type === "ServerError") {
-          toast.error(message || "Server Error, please try again later.");
-        } else if (type === "NetworkError") {
-          toast.error(
-            message || "Network Error, please check your internet connection."
-          );
-        } else {
-          toast.error(message || "Something went wrong, please try again.");
         }
       })
       .finally(() => {

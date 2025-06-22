@@ -4,8 +4,8 @@ import { Link } from "react-router";
 const HomePage = () => {
   return (
     <>
-      <div className="bg-[#f2fafc] dark:bg-transparent w-full h-full flex flex-col justify-center sm:flex-row gap-4">
-        <div className="w-full sm:w-1/2 flex flex-col gap-4 text-center sm:text-start sm:gap-8 justify-center px-8 lg:px-16 xl:px-32 py-4">
+      <div className="bg-[#f2fafc] dark:bg-transparent w-full h-[80vh] flex flex-col justify-center lg:flex-row gap-4">
+        <div className="w-full lg:w-1/2 lg:min-h-1/2 flex flex-col gap-4 text-center sm:text-start sm:gap-8 justify-center px-8 lg:px-16 xl:px-32 py-4">
           <h3 className="text-3xl font-semibold">Simplify Staff Management</h3>
           <p className="text-sm">
             Meet the smartest staff management system to manage attendance,
@@ -17,7 +17,7 @@ const HomePage = () => {
             </Button>
           </Link>
         </div>
-        <div className="w-full sm:w-1/2 flex items-center ">
+        <div className="w-full lg:w-1/2 flex items-center ">
           <div className="w-full relative h-96">
             <img
               src="/a2.png"
@@ -36,13 +36,13 @@ export default HomePage;
 
 const Tips = () => {
   return (
-    <div className="py-16 flex flex-col gap-2 sm:flex-row">
-      <div className="w-full sm:w-1/2 flex items-center">
+    <div className="py-16 flex flex-col gap-2 lg:flex-row">
+      <div className="w-full lg:w-1/2 flex items-center">
         <div className="w-full relative h-96">
           <img src={"/a-f.webp"} alt="feature pic" className="object-contain" />
         </div>
       </div>
-      <div className="w-full sm:w-1/2 flex flex-col gap-4 px-4">
+      <div className="w-full lg:w-1/2 flex flex-col gap-4 px-4">
         <h2 className="text-3xl font-bold">
           Spend less time and manage your employees smartly
         </h2>
