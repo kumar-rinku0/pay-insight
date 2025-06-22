@@ -120,15 +120,8 @@ const handleUserSignIn = async (req, res) => {
 };
 
 const handleRememberMe = async (req, res) => {
-  const { userId } = req.params;
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(400).json({ error: "user not found." });
-  }
-  const token = setUser(user, 7);
-  res.cookie("JWT_TOKEN", token, cookieOptionsForRemember());
+  req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000;
   return res.status(200).json({
-    user: user,
     message: "session extended for 7 days.",
   });
 };
