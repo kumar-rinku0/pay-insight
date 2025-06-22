@@ -14,6 +14,10 @@ const shiftShema = new Schema({
     default: ["sat", "sun"],
     required: true,
   },
+  lateBy: {
+    type: Number,
+    default: 0,
+  },
   halfDayLateBy: {
     type: Number,
     default: 30,
