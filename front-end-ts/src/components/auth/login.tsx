@@ -240,13 +240,13 @@ const LoginOverlay = ({
               label: "okay!",
               onClick: () => {
                 axios
-                  .patch(`/api/user/remember/userId/${user._id}`)
+                  .patch(`/api/user/remember`)
                   .then((res) => {
-                    console.log(res.data);
+                    toast.success(res.data.message);
                   })
                   .catch((err) => {
                     console.log(err);
-                    toast.error(err.response.data.error);
+                    toast.error(err.response.data.message);
                   });
               },
             },
@@ -254,19 +254,24 @@ const LoginOverlay = ({
         }
       })
       .catch((err) => {
-        if (err.status === 401) {
-          console.log(err.response.data);
-          const { status, error } = err.response.data;
-          toast.error(error);
-          if (status === 401) {
-            changeLoading({ forgetPassword: true, verifyUser: false });
-          } else if (status === 406) {
-            changeLoading({ forgetPassword: false, verifyUser: true });
-          }
+        const { type, message } = err.response.data;
+        if (type === "ValidationError") {
+          toast.error(message);
+        } else if (type === "EmailNotVerified") {
+          changeLoading({ forgetPassword: false, verifyUser: true });
+        } else if (type === "UserNotFound") {
+          toast.error(message);
+        } else if (type === "PasswordNotMatch") {
+          changeLoading({ forgetPassword: true, verifyUser: false });
+        } else if (type === "ServerError") {
+          toast.error(message || "Server Error, please try again later.");
+        } else if (type === "NetworkError") {
+          toast.error(
+            message || "Network Error, please check your internet connection."
+          );
         } else {
-          console.log("Server Error!");
+          toast.error(message || "Something went wrong, please try again.");
         }
-        console.log(err);
       })
       .finally(() => {
         changeLoading({ button: false });

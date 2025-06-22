@@ -5,7 +5,9 @@ if (process.env.NODE_ENV != "development") {
 }
 import express from "express";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import { connectDatabase } from "./util/db-con.js";
+import { randomUUID } from "crypto";
 
 // routers
 import userRouter from "./route/user.js";
@@ -30,18 +32,33 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const sessionConfig = {
+const store = MongoStore.create({
+  mongoUrl: MONGO_URI,
+  touchAfter: 2 * 3600,
+  crypto: {
+    secret: SECRET,
+  },
+  ttl: 7 * 24 * 60 * 60,
+});
+
+store.on("error", (err) => {
+  console.log("ERROR WHILE STORING SESSIONS!", err);
+});
+
+const sessionOptions = {
+  store,
   secret: SECRET,
+  genid: () => {
+    return randomUUID();
+  },
   resave: true,
   saveUninitialized: false,
-  cookie: { maxAge: 1 * 60 * 60 * 1000 },
+  cookie: { maxAge: 2 * 3600 * 1000 },
   name: "payinsight.void",
 };
-if (app.get("env") === "production") {
-  app.set("trust proxy", 1); // trust first proxy
-  sessionConfig.cookie.secure = true; // serve secure cookies
-}
-app.use(session(sessionConfig));
+
+app.set("trust proxy", 1);
+app.use(session(sessionOptions));
 
 app.use(isLoggedInCheck);
 
@@ -64,7 +81,9 @@ app.use("/api/contact", contectRouter);
 app.use((err, req, res, next) => {
   console.log(err);
   const { status = 500, message } = err;
-  res.status(status).send({ error: message, status: status });
+  res
+    .status(status)
+    .send({ message: message, status: status, type: "ServerError" });
 });
 
 app.listen(port, () => {

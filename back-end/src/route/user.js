@@ -48,8 +48,6 @@ route
     wrapAsync(handleUserSignUpWithRoles)
   );
 
-route
-  .route("/remember/userId/:userId")
-  .patch(onlyLoggedInUser, wrapAsync(handleRememberMe));
+route.route("/remember").patch(onlyLoggedInUser, wrapAsync(handleRememberMe));
 
 export default route;

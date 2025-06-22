@@ -10,17 +10,33 @@ if (process.env.NODE_ENV != "development") {
 export const isRightUser = async function (email, password) {
   const user = await User.findOne({ email: email.trim() });
   if (!user) {
-    return { message: "wrong email address.", status: 400 };
+    return {
+      message: "wrong email address.",
+      type: "UserNotFound",
+      status: 400,
+    };
   }
   const isOk = await bcrypt.compare(password.trim(), user.password);
   if (!isOk) {
-    return { message: "wrong password.", status: 401 };
+    return {
+      message: "wrong password.",
+      type: "PasswordNotMatch",
+      status: 401,
+    };
   }
   if (!user.isVerified) {
-    return { message: "please verify your email.", status: 406 };
+    return {
+      message: "please verify your email.",
+      type: "EmailNotVerified",
+      status: 403,
+    };
   }
   // if (user.role !== "admin" && user.status !== "active") {
-  //   return { message: "blocked by admin!!", status: 403 };
+  //   return {
+  //     message: "blocked by admin!!",
+  //     type: "ErrorBlockedUser",
+  //     status: 403,
+  //   };
   // }
   return user;
 };

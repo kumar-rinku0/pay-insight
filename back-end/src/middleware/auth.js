@@ -1,6 +1,3 @@
-// user is logged in or not check.
-import { getUser } from "../util/jwt.js";
-
 const isLoggedInCheck = (req, res, next) => {
   const user = req.session.user;
   req.user = user;
@@ -16,8 +13,8 @@ const onlyLoggedInUser = (req, res, next) => {
   }
   if (!user) {
     return res
-      .status(400)
-      .send({ origin: "middleware", type: "error", error: "login to access!" });
+      .status(401)
+      .send({ type: "Unauthorized", message: "Unauthorized!" });
   }
   return next();
 };
@@ -28,18 +25,16 @@ const onlyAdminUser = (req, res, next) => {
     user = req.session.user;
     req.user = user;
   }
-  console.log(user);
   if (!user.role) {
-    return res.status(400).send({
-      origin: "middleware",
-      type: "error",
-      error: "company not found!",
+    return res.status(403).send({
+      type: "Forbidden",
+      message: "Forbidden!",
     });
   }
   if (user.role.role !== "admin") {
     return res
       .status(400)
-      .send({ origin: "middleware", type: "error", error: "not an admin!" });
+      .send({ type: "Forbidden", message: "Not an admin!" });
   }
   return next();
 };
@@ -51,19 +46,17 @@ const onlyAdminOrManagerUser = (req, res, next) => {
     req.user = user;
   }
   if (!user.role) {
-    return res.status(400).send({
-      origin: "middleware",
-      type: "error",
-      error: "company not found!",
+    return res.status(403).send({
+      type: "Forbidden",
+      message: "Forbidden!",
     });
   }
 
   // check if the user is admin or manager
   if (user.role.role === "employee") {
-    return res.status(400).send({
-      origin: "middleware",
-      type: "error",
-      error: "not an admin or manager!",
+    return res.status(403).send({
+      type: "Forbidden",
+      message: "Not an admin or manager!",
     });
   }
   return next();
