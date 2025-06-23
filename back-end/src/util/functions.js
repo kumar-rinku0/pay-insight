@@ -105,7 +105,7 @@ export function getTimeStempByTimeStemp(time) {
 
   const offsetInMinutes = new Date().getTimezoneOffset() * 60 * 1000;
 
-  const localTimestamp = new Date(localDate.getTime() + offsetInMinutes);
+  const localTimestamp = new Date(localDate.getTime() - offsetInMinutes);
 
   return localTimestamp.toISOString();
 }
