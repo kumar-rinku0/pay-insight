@@ -10,7 +10,7 @@ import {
   handleUpdateAttandance,
 } from "../controller/attendance.js";
 
-import { onlyLoggedInUser, onlyAdminUser } from "../middleware/auth.js";
+import { onlyAdminOrManagerUser } from "../middleware/auth.js";
 
 // import { handleUploadImage } from "../util/cloud-init.js";
 import multer from "multer";
@@ -42,10 +42,15 @@ router
   .route("/month/information")
   .post(wrapAsync(handleGetOneSpecificMonthAttendance));
 
-router.route("/update").patch(onlyAdminUser, wrapAsync(handleUpdateAttandance));
+router
+  .route("/update")
+  .patch(onlyAdminOrManagerUser, wrapAsync(handleUpdateAttandance));
 
 router
   .route("/employees")
-  .get(onlyAdminUser, wrapAsync(handleGetEmployeesAttendanceWithPunchingInfo));
+  .get(
+    onlyAdminOrManagerUser,
+    wrapAsync(handleGetEmployeesAttendanceWithPunchingInfo)
+  );
 
 export default router;

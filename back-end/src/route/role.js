@@ -4,7 +4,7 @@ import {
   handleGetOneUserRoles,
   handleGetEmployeeRoles,
 } from "../controller/role.js";
-import { onlyAdminUser } from "../middleware/auth.js";
+import { onlyAdminOrManagerUser } from "../middleware/auth.js";
 
 const route = Router();
 
@@ -14,6 +14,8 @@ route.route("/").get((req, res) => {
 
 route.route("/userId/:userId").get(wrapAsync(handleGetOneUserRoles));
 
-route.route("/employees").get(onlyAdminUser, wrapAsync(handleGetEmployeeRoles));
+route
+  .route("/employees")
+  .get(onlyAdminOrManagerUser, wrapAsync(handleGetEmployeeRoles));
 
 export default route;
