@@ -97,7 +97,6 @@ const UpdateAttendance = ({
           key={day}
           className={`p-1 h-12 text-xs relative rounded-md text-white font-bold cursor-pointer ${color} hover:opacity-80`}
           title={status}
-          // onClick={() => handleDayClick(day)}
         >
           <span className="absolute top-1 left-0 right-0 text-[0.8rem]">
             {day}
@@ -113,7 +112,9 @@ const UpdateAttendance = ({
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>status: {currentStatus}</DrawerTitle>
+          <DrawerTitle>
+            Day: {day} Status: {currentStatus}
+          </DrawerTitle>
           <DrawerDescription>Are you wanna change status?</DrawerDescription>
           <div className="flex flex-wrap gap-2 mt-2">
             {["on time", "late", "half day", "absent", "holiday"].map((s) => (

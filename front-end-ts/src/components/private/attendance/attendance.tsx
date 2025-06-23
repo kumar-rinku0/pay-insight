@@ -230,7 +230,8 @@ const Attendance = () => {
     })
       .then((res) => {
         console.log("Punch successful:", res.data);
-        setHasPunchedIn(true);
+        setHasPunchedIn(!hasPunchedIn);
+        setPhotoCaptured(false);
         setInputs({
           punchInGeometry: null,
           punchOutGeometry: null,
