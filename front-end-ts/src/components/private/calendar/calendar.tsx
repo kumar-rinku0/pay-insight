@@ -299,9 +299,9 @@ export const EmployeeCalendar: React.FC = () => {
 
   if (!user) return null;
 
-  const isEmployee = user.role.role === "employee";
+  const isAdmin = user.role.role === "admin";
 
-  if (!isEmployee) {
+  if (isAdmin) {
     return null;
   }
 

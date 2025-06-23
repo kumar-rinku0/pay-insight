@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { RoleUserType } from "@/types/res-type";
 import { useNavigate } from "react-router";
+import { Calendar } from "lucide-react";
 
 // import {
 //   Dialog,
@@ -41,7 +42,7 @@ const Users = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Employee
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="hidden lg:flex px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Email
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -58,7 +59,7 @@ const Users = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {role.user.name}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="hidden lg:flex px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {role.user.email}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -68,26 +69,7 @@ const Users = () => {
                   className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
                   onClick={() => router(`/users/calendar?roleId=${role._id}`)}
                 >
-                  {/* <Dialog>
-                    <DialogTrigger>Open</DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Are you absolutely sure?</DialogTitle>
-                        <DialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete your account and remove your data from our
-                          servers.
-                        </DialogDescription>
-                        <AttendancePage
-                          userId={role.user._id}
-                          branchId={role.branch || ""}
-                          companyId={role.company}
-                          name={role.user.name}
-                        />
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog> */}
-                  calender
+                  <Calendar className="inline-block mr-2 cursor-pointer" />
                 </td>
               </tr>
             ))}
