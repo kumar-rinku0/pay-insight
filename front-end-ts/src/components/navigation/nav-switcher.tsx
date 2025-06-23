@@ -94,7 +94,7 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              Companies
             </DropdownMenuLabel>
             {companies.map((comp, index) => (
               <DropdownMenuItem

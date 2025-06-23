@@ -7,7 +7,6 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
-  Trash,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -26,7 +25,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import axios from "axios";
 import type { UserRoleType } from "@/types/auth";
 
 export function NavUser({
@@ -37,18 +35,10 @@ export function NavUser({
   logoutHandler?: () => void;
 }) {
   const { isMobile } = useSidebar();
-
-  const handleDeleteAccount = () => {
-    axios
-      .delete(`/api/user/delete/userid/${user._id}`)
-      .then((res) => {
-        console.log(res);
-        logoutHandler?.();
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+  const nameInit = user.name
+    .split(" ")
+    .map((name) => name[0].toUpperCase())
+    .join("");
 
   return (
     <SidebarMenu>
@@ -61,7 +51,9 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user?.picture} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {nameInit}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -80,7 +72,9 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user?.picture} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {nameInit}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
@@ -97,7 +91,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => location.assign("/profile")}>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
@@ -108,10 +102,6 @@ export function NavUser({
               <DropdownMenuItem>
                 <Bell />
                 Notifications
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDeleteAccount}>
-                <Trash />
-                Delete Account
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
