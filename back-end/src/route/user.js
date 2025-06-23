@@ -12,10 +12,12 @@ import {
   handleGoogleCallback,
   handleRememberMe,
   handleUserDelete,
+  handleUserAccountDelete,
 } from "../controller/user.js";
 import {
   onlyLoggedInUser,
   onlyAdminOrManagerUser,
+  onlyAdminUser,
 } from "../middleware/auth.js";
 
 const route = Router();
@@ -36,7 +38,11 @@ route.route("/logout").get(onlyLoggedInUser, wrapAsync(handleUserLogout));
 
 route
   .route("/delete/userid/:userid")
-  .delete(onlyLoggedInUser, wrapAsync(handleUserDelete));
+  .delete(onlyLoggedInUser, onlyAdminUser, wrapAsync(handleUserDelete));
+
+route
+  .route("/delete")
+  .delete(onlyLoggedInUser, wrapAsync(handleUserAccountDelete));
 
 route.post("/google/callback", wrapAsync(handleGoogleCallback));
 

@@ -22,15 +22,26 @@ type ResponseType = {
 const Users = () => {
   const router = useNavigate();
   const [roles, setRoles] = useState<RoleUserType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const handleFetchUsers = () => {
+    setLoading(true);
     axios.get<ResponseType>(`/api/role/employees`).then((res) => {
       console.log(res.data);
       setRoles(res.data.roles);
+      setLoading(false);
     });
   };
   useEffect(() => {
     handleFetchUsers();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
   return (
     <div>
       {roles.length === 0 ? (

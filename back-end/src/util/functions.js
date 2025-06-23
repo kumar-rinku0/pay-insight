@@ -79,21 +79,19 @@ export function getTodayTimestamp(timeStr, extraMinutes = 0) {
   const [hours, minutes] = timeStr.split(":").map(Number);
 
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth(); // Note: 0-based (0 = January)
-  const day = now.getDate();
-
   const localDate = new Date(
-    year,
-    month,
-    day,
-    hours,
-    minutes + extraMinutes,
-    0,
-    0
+    Date.UTC(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      hours,
+      minutes + extraMinutes + new Date().getTimezoneOffset(),
+      0,
+      0
+    )
   );
 
-  return localDate.toISOString();
+  return localDate.toISOString(); // Returns UTC ISO string
 }
 
 // Function to reverse geocode (coordinates to address)

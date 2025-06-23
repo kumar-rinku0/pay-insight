@@ -32,15 +32,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain
-          items={
-            user.role.role === "admin"
-              ? adminNavigation
-              : user.role.role === "manager"
-              ? managerNavigation
-              : employeeNavigation
-          }
-        />
+        {user.role ? (
+          <NavMain
+            items={
+              user.role.role === "admin"
+                ? adminNavigation
+                : user.role.role === "manager"
+                ? managerNavigation
+                : employeeNavigation
+            }
+          />
+        ) : (
+          <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">
+            Please select or create a company to view the navigation.
+          </p>
+        )}
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
