@@ -10,7 +10,7 @@ const handlemarkPunchIn = async (req, res) => {
     return res.json({ message: "file not found." });
   }
   const punchInPhoto = req.url;
-  const date = formatDateForComparison(new Date());
+  const date = formatDateForComparison(new Date().toLocaleString());
   const month = new Date().toLocaleString("en-IN", {
     month: "long",
   });

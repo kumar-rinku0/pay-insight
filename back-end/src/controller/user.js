@@ -46,7 +46,7 @@ const handleUserSignUpWithRoles = async (req, res) => {
   }
   const userbyemail = await User.findOne({ email }).exec();
   if (userbyemail) {
-    const info = await Role.find({
+    const info = await Role.findOne({
       $and: [{ user: userbyemail._id }, { company: company }],
     });
     if (!info) {
@@ -270,10 +270,22 @@ const handleGoogleCallback = async (req, res) => {
 
 export const handleUserDelete = async (req, res) => {
   const { userid } = req.params;
-  const user = await User.findByIdAndDelete(userid);
+  const user = await User.findOneAndDelete({ _id: userid });
+  req.session.destroy();
+  res.clearCookie("payinsight.void");
   return res
     .status(200)
     .json({ message: "User deleted successfully.", user: user });
+};
+
+export const handleUserAccountDelete = async (req, res) => {
+  const { _id } = req.user;
+  const user = await User.findOneAndDelete({ _id });
+  req.session.destroy();
+  res.clearCookie("payinsight.void");
+  return res
+    .status(200)
+    .json({ message: "User account deleted successfully.", user: user });
 };
 
 // Exporting all the functions
