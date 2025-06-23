@@ -18,16 +18,13 @@ import { NavSwitcher } from "./nav-switcher";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const data = NavItems();
+  const { employeeNavigation, adminNavigation, managerNavigation } =
+    data.navMain;
   const { user, signOut } = useAuth();
   if (!user) {
     return null; // or a loading state, or redirect to login
   }
-  data.user = {
-    _id: user._id,
-    email: user.email,
-    name: user.name,
-    avatar: user?.picture,
-  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -35,11 +32,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain
+          items={
+            user.role.role === "admin"
+              ? adminNavigation
+              : user.role.role === "manager"
+              ? managerNavigation
+              : employeeNavigation
+          }
+        />
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} logoutHandler={signOut} />
+        <NavUser user={user} logoutHandler={signOut} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
