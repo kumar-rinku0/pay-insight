@@ -1,9 +1,6 @@
 import { Schema, model } from "mongoose";
 import Shift from "../model/shift.js";
-import {
-  getTimeStempByTimeStemp,
-  getTodayTimestamp,
-} from "../util/functions.js";
+import { getTodayTimestamp } from "../util/functions.js";
 
 // branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch", required: true },
 
@@ -114,8 +111,8 @@ attendanceSchema.pre("save", async function (next) {
       this.punchingInfo.push(lastObj);
       return next();
     }
-    const currTime = getTimeStempByTimeStemp(lastObj?.punchInInfo.createdAt);
-    console.log(currTime);
+    const currTime = new Date(lastObj?.punchInInfo.createdAt).toISOString();
+    console.log("currTime", currTime);
     const shift = await Shift.findOne({ createdFor: this.user });
     if (!shift) {
       return next(new Error("doesn't assigned any shift!"));

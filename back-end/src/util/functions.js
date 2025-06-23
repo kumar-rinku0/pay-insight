@@ -76,7 +76,6 @@ export const formatDateForComparison = (localeDate) => {
 };
 
 export function getTodayTimestamp(timeStr, extraMinutes = 0) {
-  console.log(timeStr);
   const [hours, minutes] = timeStr.split(":").map(Number);
 
   const now = new Date();
@@ -94,21 +93,9 @@ export function getTodayTimestamp(timeStr, extraMinutes = 0) {
     0
   );
 
-  const timezoneOffsetMs = localDate.getTimezoneOffset() * 60 * 1000;
-  const localTimestamp = new Date(localDate.getTime() - timezoneOffsetMs);
-
-  return localTimestamp.toISOString();
+  return localDate.toISOString();
 }
 
-export function getTimeStempByTimeStemp(time) {
-  const localDate = new Date(time);
-
-  const offsetInMinutes = new Date().getTimezoneOffset() * 60 * 1000;
-
-  const localTimestamp = new Date(localDate.getTime() - offsetInMinutes);
-
-  return localTimestamp.toISOString();
-}
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {
   return null;
