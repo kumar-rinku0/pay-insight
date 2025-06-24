@@ -6,23 +6,20 @@ const handleFetchBranches = async (req, res) => {
   const companyId = req.user.role.company;
   const comp = await Company.findById(companyId);
   const branches = await Branch.find({ company: companyId });
-  if (branches.length === 0) {
-    return res.status(400).json({ error: "NO BRANCHES FOUND!" });
-  }
   return res
     .status(200)
-    .send({ message: "ok!", branches: branches, company: comp });
+    .json({ message: "ok!", branches: branches, company: comp });
 };
 
 const handleCreateBranch = async (req, res) => {
   const obj = req.body;
   const user = await User.findById(obj._id);
   if (!user) {
-    return res.status(400).send({ error: "user not found!" });
+    return res.status(400).send({ message: "user not found!" });
   }
   const comp = await Company.findById(obj.company);
   if (!comp) {
-    return res.status(400).send({ error: "company not found!" });
+    return res.status(400).send({ message: "company not found!" });
   }
   const branch = new Branch({
     name: obj.name,

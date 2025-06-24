@@ -99,10 +99,6 @@ export const reverseGeocode = async (latitude, longitude) => {
   return null;
 };
 
-export const cookieOptions = () => ({
-  path: "/",
-});
-export const cookieOptionsForRemember = () => ({
-  path: "/",
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-});
+export const fixName = (name) => {
+  return name.replace(/\s+/g, "");
+};

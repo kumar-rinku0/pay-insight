@@ -1,13 +1,11 @@
 import Company from "../model/company.js";
 import User from "../model/user.js";
-import { setUser } from "../util/jwt.js";
 import bcrypt from "bcryptjs";
 import { createMailSystem, createMailSystemForEmployee } from "../util/mail.js";
 import {
+  fixName,
   generateRandomString,
   isRightUser,
-  cookieOptions,
-  cookieOptionsForRemember,
 } from "../util/functions.js";
 import { getToken } from "../util/auth.js";
 import { getInfo } from "../util/jwt.js";
@@ -23,7 +21,7 @@ const handleUserSignUp = async (req, res) => {
   //     .send({ error: "user already exist.", user: userbyemail });
   // }
   const user = new User({
-    name: `${givenName} ${familyName}`,
+    name: `${fixName(givenName)} ${fixName(familyName)}`,
     email,
     password,
   });
@@ -76,7 +74,7 @@ const handleUserSignUpWithRoles = async (req, res) => {
   }
   const password = generateRandomString(8, true);
   const user = new User({
-    name: `${givenName} ${familyName}`,
+    name: `${fixName(givenName)} ${fixName(familyName)}`,
     email,
     password,
   });
@@ -236,8 +234,6 @@ const handleGoogleCallback = async (req, res) => {
         };
       }
     }
-    const token = setUser(userCheck);
-    res.cookie("JWT_TOKEN", token, cookieOptions());
     return res.status(200).send({
       type: "success",
       msg: `${given_name} welcome to pay-insight!`,
@@ -254,8 +250,6 @@ const handleGoogleCallback = async (req, res) => {
     picture: picture,
   });
   await user.save();
-  const token = setUser(user);
-  res.cookie("JWT_TOKEN", token, cookieOptions());
   await createMailSystemForEmployee({
     address: user.email,
     _id: user._id,

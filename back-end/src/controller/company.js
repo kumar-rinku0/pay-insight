@@ -1,8 +1,6 @@
 import Company from "../model/company.js";
 import Role from "../model/role.js";
 import User from "../model/user.js";
-import { cookieOptions } from "../util/functions.js";
-import { setUser } from "../util/jwt.js";
 
 const handleFetchCompanies = async (req, res) => {
   const { userId } = req.params;
@@ -14,9 +12,23 @@ const handleFetchCompanies = async (req, res) => {
 };
 
 const handleCreateCompany = async (req, res) => {
-  const obj = req.body;
+  const { name, cin, gst, logo, website, type, branches, phone } = req.body;
+  if (!name || !phone || !branches) {
+    return res
+      .status(400)
+      .send({ error: "name, phone and branch count are required." });
+  }
   const user = await User.findById(req.user._id);
-  const company = new Company(obj);
+  const company = new Company({
+    name,
+    cin,
+    gst,
+    logo,
+    website,
+    type,
+    branches,
+    createdBy: user._id,
+  });
   const role = new Role({
     user: user._id,
     company: company._id,
@@ -24,6 +36,7 @@ const handleCreateCompany = async (req, res) => {
     branch: null,
     role: "admin",
   });
+  user.phone = phone;
   user.roles.push(role);
   await company.save();
   await role.save();
