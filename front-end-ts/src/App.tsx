@@ -25,6 +25,7 @@ import {
 } from "./components/private/calendar/calendar";
 import Companies from "./components/private/companies/companies";
 import Branches from "./components/private/companies/branches/branches";
+import Shift from "./components/private/companies/staff/shift";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -56,13 +57,14 @@ function App() {
             <Route path="/branches/create" element={<CreateBranch />} />
             <Route path="/staff" element={<Staff />} />
             <Route path="/staff/create" element={<CreateStaff />} />
-            <Route path="/attendance" element={<Attendance />} />
+            <Route path="/staff/calendar" element={<AdminCalendar />} />
+            <Route path="/staff/shift" element={<Shift />} />
             <Route path="/calendar" element={<EmployeeCalendar />} />
-            <Route path="/users/calendar" element={<AdminCalendar />} />
+            <Route path="/attendance" element={<Attendance />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
 
             <Route path="/search" element={<Search />} />
-            <Route path="/profile" element={<Profile />} />
             <>
               {/* <Route path="/settings" element={<Settings />} />
               <Route path="/select" element={<SelectCompany />} />

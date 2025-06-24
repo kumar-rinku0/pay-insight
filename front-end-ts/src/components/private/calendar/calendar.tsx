@@ -16,6 +16,7 @@ import UpdateAttendance from "../update/update-attendance";
 type ResponseType = {
   message: string;
   attendances: AttendanceData[];
+  weekOffs: string[];
   user: UserType;
 };
 
@@ -53,6 +54,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
   const [content, setContent] = useState<AttendanceData[]>([]);
   const [user, setUser] = useState<UserType | null>(null);
+  const [weekOffs, setWeekOffs] = useState<string[]>([]); // Assuming week offs are stored in the user object
   const [loading, setLoading] = useState<boolean>(true);
   const [attendance, setAttendance] = useState<AttendanceSummary>({
     present: 0,
@@ -68,7 +70,8 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
   const getDayStatus = React.useCallback(
     (day: number): DayStatus => {
       const currentDate = new Date(currentYear, selectedMonth, day);
-      const dayOfWeek = currentDate.getDay();
+      const shortDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+      const dayOfWeek = shortDays[currentDate.getDay()];
       const formattedDate = formatDateForComparison(currentDate);
       if (
         selectedMonth === today.getMonth() &&
@@ -109,13 +112,13 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
         }
       }
 
-      if (dayOfWeek === 0 || dayOfWeek === 6) {
+      if (weekOffs.includes(dayOfWeek)) {
         return { color: "bg-gray-500", status: "week off" };
       }
 
       return { color: "bg-red-500", status: "absent" };
     },
-    [currentYear, selectedMonth, today, content]
+    [currentYear, selectedMonth, today, content, weekOffs]
   );
 
   const fetchMonthAttendance = React.useCallback(
@@ -128,7 +131,9 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
           month: monthName,
         })
         .then((res) => {
+          console.log("Attendance data:", res.data);
           setUser(res.data.user);
+          setWeekOffs(res.data.weekOffs);
           setContent(res.data.attendances);
         })
         .catch((err) => console.error("Error fetching attendance:", err))
