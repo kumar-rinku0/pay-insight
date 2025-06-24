@@ -55,7 +55,7 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
     return (
       <a
         className="font-medium text-neutral-500 dark:text-neutral-400"
-        href="/company"
+        href="/companies/create"
       >
         Create Company
       </a>
@@ -116,7 +116,7 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
               </div>
               <div
                 className="text-muted-foreground font-medium"
-                onClick={() => (location.href = "/company")}
+                onClick={() => location.assign("/companies/create")}
               >
                 Create Company
               </div>

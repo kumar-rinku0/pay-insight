@@ -19,7 +19,7 @@ type ResponseType = {
   message: string;
 };
 
-const Users = () => {
+const Staff = () => {
   const router = useNavigate();
   const [roles, setRoles] = useState<RoleUserType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -91,4 +91,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Staff;

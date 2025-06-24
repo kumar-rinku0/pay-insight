@@ -17,14 +17,16 @@ const BreadCrumb = () => {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink
-            onClick={() => router("/")}
-            className={`cursor-pointer text-black ${
-              pathname === "/" ? "font-bold" : ""
-            }`}
-          >
-            home
-          </BreadcrumbLink>
+          <BreadcrumbPage>
+            <BreadcrumbLink
+              onClick={() => router("/")}
+              className={`cursor-pointer text-black ${
+                pathname === "/" ? "font-bold" : ""
+              }`}
+            >
+              home
+            </BreadcrumbLink>
+          </BreadcrumbPage>
         </BreadcrumbItem>
         {/* <BreadcrumbSeparator className="hidden md:block" /> */}
         {pathArray.map((path, index) => {

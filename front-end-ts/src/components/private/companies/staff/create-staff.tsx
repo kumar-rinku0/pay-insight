@@ -146,7 +146,7 @@ const ShowBranches = ({
       lng: number;
     };
   };
-  const [branches, setBranches] = useState<branchType[]>([]);
+  const [branches, setBranches] = useState<branchType[] | null>(null);
   useEffect(() => {
     axios
       .get("/api/branch/company")
@@ -157,29 +157,50 @@ const ShowBranches = ({
       })
       .catch((err) => {
         console.log(err);
-        toast.error(err.response.data.error);
+        toast.error(err.response.data.message);
       });
     return;
   }, []);
 
+  if (!branches) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
-      <CardHeader>
-        <CardTitle className="text-xl">Select Branch</CardTitle>
-        <CardDescription>Select a branch to add!</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-4">
-          {branches.map((branch) => (
-            <Button
-              key={branch._id}
-              onClick={() => handleSetIsOpenBranch(branch._id)}
-            >
-              {branch.name}
+      {branches.length === 0 && (
+        <CardHeader>
+          <CardTitle className="text-xl">No Branches</CardTitle>
+          <CardDescription>
+            Please create a branch to add staff.
+          </CardDescription>
+          <CardContent className="flex justify-center items-center p-4">
+            <Button onClick={() => location.assign("/branches/create")}>
+              Create Branch
             </Button>
-          ))}
-        </div>
-      </CardContent>
+          </CardContent>
+        </CardHeader>
+      )}
+      {branches.length > 0 && (
+        <>
+          <CardHeader>
+            <CardTitle className="text-xl">Select Branch</CardTitle>
+            <CardDescription>Select a branch to add!</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-4">
+              {branches.map((branch) => (
+                <Button
+                  key={branch._id}
+                  onClick={() => handleSetIsOpenBranch(branch._id)}
+                >
+                  {branch.name}
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </>
+      )}
     </Card>
   );
 };
@@ -373,7 +394,7 @@ const ShiftDetails = ({ user }: { user: string | null }) => {
         .then((res) => {
           console.log(res);
           toast.success(res.data.message);
-          router("/dashboard");
+          router("/");
         })
         .catch((err) => {
           console.log(err);

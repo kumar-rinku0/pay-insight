@@ -3,11 +3,12 @@
 import {
   LayoutDashboard,
   Search,
-  Pill,
   User,
   Users,
   AlertTriangle,
   Calendar,
+  Building2,
+  GitBranch,
 } from "lucide-react";
 import { useLocation } from "react-router";
 
@@ -69,29 +70,37 @@ export const NavItems = () => {
         },
         {
           title: "Companies",
-          url: "/company",
-          icon: Pill,
-          isActive: isNavItemActive(pathname, `/company`),
+          url: "/companies",
+          icon: Building2,
+          isActive: isNavItemActive(pathname, `/companies`),
           items: [
             {
               title: "Create Company",
-              url: "/company",
-            },
-            {
-              title: "Create Branch",
-              url: "/branch",
-            },
-            {
-              title: "Create staff",
-              url: "/staff",
+              url: "/companies/create",
             },
           ],
         },
         {
-          title: "Users",
-          url: "/users",
+          title: "Branches",
+          url: "/branches",
+          icon: GitBranch,
+          isActive: isNavItemActive(pathname, `/branches`),
+          items: [
+            {
+              title: "Create Branch",
+              url: "/branches/create",
+            },
+            {
+              title: "Create Staff",
+              url: "/staff/create",
+            },
+          ],
+        },
+        {
+          title: "Staff",
+          url: "/staff",
           icon: Users,
-          isActive: isNavItemActive(pathname, `/users`),
+          isActive: isNavItemActive(pathname, `/staff`),
         },
         {
           title: "Profile",
@@ -126,10 +135,10 @@ export const NavItems = () => {
           isActive: isNavItemActive(pathname, `/calendar`),
         },
         {
-          title: "Users",
-          url: "/users",
+          title: "Staff",
+          url: "/staff",
           icon: Users,
-          isActive: isNavItemActive(pathname, `/users`),
+          isActive: isNavItemActive(pathname, `/staff`),
         },
         {
           title: "Profile",
