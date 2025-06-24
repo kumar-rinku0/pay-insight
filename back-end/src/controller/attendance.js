@@ -1,6 +1,7 @@
 import { PunchIn, PunchOut, Attendance } from "../model/attendance.js";
 import Branch from "../model/branch.js";
 import Role from "../model/role.js";
+import Shift from "../model/shift.js";
 import { formatDateForComparison } from "../util/functions.js";
 import { reverseGeocode } from "../util/functions.js";
 
@@ -128,6 +129,9 @@ const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
 const handleGetOneSpecificMonthAttendance = async (req, res) => {
   const { roleId, month } = req.body;
   const role = await Role.findById(roleId).populate("user", "name email");
+  const shift = await Shift.findOne({
+    createdFor: role.user._id,
+  });
   const query = {
     $and: [
       {
@@ -144,13 +148,13 @@ const handleGetOneSpecificMonthAttendance = async (req, res) => {
       },
     ],
   };
-  const attendances = await Attendance.find(query).populate(
-    "punchingInfo.punchInInfo"
-  );
+  const attendances = await Attendance.find(query);
   return res.status(200).json({
     message: "ok",
     user: role.user,
     attendances: attendances,
+    weekOffs: shift.weekOffs,
+    month: month,
   });
 };
 
