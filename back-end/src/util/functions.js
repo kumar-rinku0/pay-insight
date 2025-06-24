@@ -77,7 +77,8 @@ export const formatDateForComparison = (localeDate) => {
 
 export function getTodayTimestamp(timeStr, extraMinutes = 0) {
   const [hours, minutes] = timeStr.split(":").map(Number);
-
+  const offsetMins = new Date().getTimezoneOffset();
+  console.log(offsetMins);
   const now = new Date();
   const localDate = new Date(
     Date.UTC(
@@ -85,7 +86,7 @@ export function getTodayTimestamp(timeStr, extraMinutes = 0) {
       now.getMonth(),
       now.getDate(),
       hours,
-      minutes + extraMinutes + new Date().getTimezoneOffset(),
+      minutes + extraMinutes - 330,
       0,
       0
     )
