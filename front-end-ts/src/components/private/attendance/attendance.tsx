@@ -165,6 +165,7 @@ const Attendance = () => {
   const handleAllowAccess = async () => {
     setDisableBtn(true);
     try {
+      await startCamera();
       const position = await getLocation();
       showPosition(position);
     } catch (error) {

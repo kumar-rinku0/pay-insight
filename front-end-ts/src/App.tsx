@@ -26,6 +26,7 @@ import {
 import Companies from "./components/private/companies/companies";
 import Branches from "./components/private/companies/branches/branches";
 import Shift from "./components/private/companies/staff/shift";
+import Settings from "./components/private/settings/settings";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -65,6 +66,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/search" element={<Search />} />
+            <Route path="/settings" element={<Settings />} />
             <>
               {/* <Route path="/settings" element={<Settings />} />
               <Route path="/select" element={<SelectCompany />} />
