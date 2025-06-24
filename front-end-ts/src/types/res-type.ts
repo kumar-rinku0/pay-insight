@@ -30,6 +30,15 @@ export type CompanyType = {
   address: string;
 };
 
+export type ShiftType = {
+  _id: string;
+  createdFor: string;
+  startTime: string;
+  endTime: string;
+  weekOffs: string[];
+  type: string;
+};
+
 export type EmployeeAttendanceType = {
   _id: string;
   status: string;

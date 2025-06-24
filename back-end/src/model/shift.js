@@ -5,7 +5,7 @@ const shiftShema = new Schema({
     type: String,
     default: "morning",
     enum: {
-      values: ["morning", "evening", "night"],
+      values: ["morning", "noon", "evening", "night"],
       message: "invailid shift!",
     },
   },
@@ -24,16 +24,17 @@ const shiftShema = new Schema({
   },
   startTime: {
     type: String,
-    required: true,
+    required: [true, "startTime is required."],
   },
   endTime: {
     type: String,
-    required: true,
+    required: [true, "endTime is required."],
   },
   createdFor: {
     type: Schema.Types.ObjectId,
-    required: true,
-    unique: true,
+    ref: "User",
+    required: [true, "createdFor is required."],
+    unique: [true, "createdFor must be unique."],
   },
 });
 

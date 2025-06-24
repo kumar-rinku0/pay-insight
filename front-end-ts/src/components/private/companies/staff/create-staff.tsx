@@ -30,8 +30,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
 import { useAuth } from "@/providers/use-auth"; // Adjust the import path as necessary
+import { StaffShift } from "./shift";
 
 // Zod schema for frontend validation
 const staffSchema = z.object({
@@ -45,14 +45,8 @@ const staffSchema = z.object({
     errorMap: () => ({ message: "Role is required" }),
   }),
 });
-const shiftSchema = z.object({
-  type: z.string().min(2, "type is required"),
-  startTime: z.string().min(2, "start time is required").optional(),
-  endTime: z.string().min(2, "end time is required").optional(),
-});
 
 type StaffFormData = z.infer<typeof staffSchema>;
-type ShiftFormData = z.infer<typeof shiftSchema>;
 
 const CreateStaff = () => {
   const { isAuthenticated, user } = useAuth();
@@ -106,7 +100,7 @@ const CreateStaff = () => {
           />
         )}
         {isOpen.overlay && (
-          <ShiftDetails user={isOpen.user} /> // Show shift form when overlay is open
+          <StaffShift userId={isOpen.user} /> // Show shift form when overlay is open
         )}
       </main>
     );
@@ -126,7 +120,7 @@ const CreateStaff = () => {
         />
       )}
       {isOpen.branch && isOpen.overlay && (
-        <ShiftDetails user={isOpen.user} /> // Show shift form when overlay is open
+        <StaffShift userId={isOpen.user} /> // Show shift form when overlay is open
       )}
     </main>
   );
@@ -146,7 +140,7 @@ const ShowBranches = ({
       lng: number;
     };
   };
-  const [branches, setBranches] = useState<branchType[]>([]);
+  const [branches, setBranches] = useState<branchType[] | null>(null);
   useEffect(() => {
     axios
       .get("/api/branch/company")
@@ -157,29 +151,50 @@ const ShowBranches = ({
       })
       .catch((err) => {
         console.log(err);
-        toast.error(err.response.data.error);
+        toast.error(err.response.data.message);
       });
     return;
   }, []);
 
+  if (!branches) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
-      <CardHeader>
-        <CardTitle className="text-xl">Select Branch</CardTitle>
-        <CardDescription>Select a branch to add!</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-4">
-          {branches.map((branch) => (
-            <Button
-              key={branch._id}
-              onClick={() => handleSetIsOpenBranch(branch._id)}
-            >
-              {branch.name}
+      {branches.length === 0 && (
+        <CardHeader>
+          <CardTitle className="text-xl">No Branches</CardTitle>
+          <CardDescription>
+            Please create a branch to add staff.
+          </CardDescription>
+          <CardContent className="flex justify-center items-center p-4">
+            <Button onClick={() => location.assign("/branches/create")}>
+              Create Branch
             </Button>
-          ))}
-        </div>
-      </CardContent>
+          </CardContent>
+        </CardHeader>
+      )}
+      {branches.length > 0 && (
+        <>
+          <CardHeader>
+            <CardTitle className="text-xl">Select Branch</CardTitle>
+            <CardDescription>Select a branch to add!</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-4">
+              {branches.map((branch) => (
+                <Button
+                  key={branch._id}
+                  onClick={() => handleSetIsOpenBranch(branch._id)}
+                >
+                  {branch.name}
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </>
+      )}
     </Card>
   );
 };
@@ -332,163 +347,6 @@ const EmpoyeeDetails = ({
             {/* Submit Button */}
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Creating..." : "Create Staff"}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
-  );
-};
-
-const ShiftDetails = ({ user }: { user: string | null }) => {
-  const [selectedWeekOffs, setSelectedWeekOffs] = useState<string[]>([]);
-  // React Hook Form setup with Zod validation
-  const router = useNavigate();
-  const form2 = useForm<ShiftFormData>({
-    resolver: zodResolver(shiftSchema),
-    defaultValues: {
-      type: "",
-      startTime: "09:00", // Set default if needed
-      endTime: "16:00",
-    },
-  });
-
-  const {
-    control: control2,
-    handleSubmit: handleSubmit2,
-    formState: { errors: errors2 },
-  } = form2;
-
-  const onShiftSubmit = async (data: ShiftFormData) => {
-    // Handle the form data submission to the backend (e.g., API call)
-    console.log(data);
-    console.log("Selected week off:", selectedWeekOffs); // Log the selected week off
-    if (user) {
-      axios
-        .post("/api/shift/create", {
-          ...data,
-          userId: user,
-          weekOffs: selectedWeekOffs,
-        })
-        .then((res) => {
-          console.log(res);
-          toast.success(res.data.message);
-          router("/dashboard");
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error(err.response.data.error);
-        });
-    }
-  };
-
-  const handleWeekOffChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedDay = e.target.value; // Get selected day (e.g., 'mon', 'tue')
-    console.log("Selected week off day:", selectedDay);
-
-    // Update the selected day in state
-    setSelectedWeekOffs((prevSelected) => {
-      if (prevSelected.includes(selectedDay)) {
-        // If it's already selected, remove it (deselect)
-        return prevSelected.filter((day) => day !== selectedDay);
-      } else {
-        // Otherwise, add it to the selected days
-        return [...prevSelected, selectedDay];
-      }
-    });
-  };
-  return (
-    <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
-      <CardHeader>
-        <CardTitle className="text-xl">Add Staff Shift</CardTitle>
-        <CardDescription>Enter staff shift!</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form2}>
-          <form
-            onSubmit={handleSubmit2(onShiftSubmit)}
-            className="flex flex-col gap-4"
-          >
-            <div className="grid gap-4">
-              {/* First Name */}
-              <FormField
-                control={control2}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Shift Type</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Shift Type" {...field} />
-                    </FormControl>
-                    <FormMessage>{errors2.type?.message}</FormMessage>
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex justify-between">
-                {/* Start Time */}
-                <FormField
-                  control={control2}
-                  name="startTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Start Time</FormLabel>
-                      <FormControl>
-                        <Input type="time" {...field} className="input" />
-                      </FormControl>
-                      <FormMessage>{errors2.startTime?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-                {/*  End Time */}
-                <FormField
-                  control={control2}
-                  name="endTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>End Time</FormLabel>
-                      <FormControl>
-                        <Input type="time" {...field} className="input" />
-                      </FormControl>
-                      <FormMessage>{errors2.endTime?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              {/* Company Email */}
-              <FormLabel>Week Offs</FormLabel>
-              <FormField
-                name="weekOffs"
-                render={({ field }) => (
-                  <>
-                    {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map(
-                      (day) => (
-                        <FormItem key={day} className="flex items-center gap-4">
-                          <FormControl>
-                            <Input
-                              type="checkbox"
-                              className="w-6 h-6"
-                              value={day}
-                              checked={selectedWeekOffs.includes(day)}
-                              onChange={(e) => {
-                                field.onChange(e.target.value);
-                                handleWeekOffChange(e); // Call the handler
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel>{day}</FormLabel>
-                        </FormItem>
-                      )
-                    )}
-                  </>
-                )}
-              />
-            </div>
-
-            {/* Submit Button */}
-            <Button type="submit" className="w-full">
-              Add Shift
             </Button>
           </form>
         </Form>

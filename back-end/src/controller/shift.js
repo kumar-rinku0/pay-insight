@@ -37,3 +37,19 @@ export const handleCreateShifts = async (req, res) => {
   await shift.save();
   return res.status(201).send({ message: "shift created.", shift: shift });
 };
+
+export const handleShiftUpdateById = async (req, res) => {
+  const { shiftId } = req.params;
+  const { type, endTime, startTime, weekOffs } = req.body;
+  const shift = await Shift.findByIdAndUpdate(
+    shiftId,
+    { type, endTime, startTime, weekOffs },
+    { new: true }
+  );
+  if (!shift) {
+    return res.status(404).json({ error: "Shift not found!" });
+  }
+  return res
+    .status(200)
+    .json({ message: "Shift updated successfully!", shift });
+};

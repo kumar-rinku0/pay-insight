@@ -9,20 +9,23 @@ import Login from "./components/auth/login";
 import reactsvg from "@/assets/react.svg";
 import { Toaster } from "./components/ui/sonner";
 import NoPage from "./components/root/no-page";
-import CreateCompany from "./components/private/create/create-company";
+import CreateCompany from "./components/private/companies/create-company";
 import VerifyPage from "./components/auth/verify-user";
 import ResetPage from "./components/auth/reset-password";
-import CreateBranch from "./components/private/create/create-branch";
-import CreateStaff from "./components/private/create/create-staff";
+import CreateBranch from "./components/private/companies/branches/create-branch";
+import CreateStaff from "./components/private/companies/staff/create-staff";
 import Attendance from "./components/private/attendance/attendance";
 import Search from "./components/private/search/search";
 import Dashboard from "./components/private/dashboard/dashboard";
-import Users from "./components/private/users/users";
+import Staff from "./components/private/companies/staff/staff";
 import Profile from "./components/private/profile/profile";
 import {
   EmployeeCalendar,
   AdminCalendar,
 } from "./components/private/calendar/calendar";
+import Companies from "./components/private/companies/companies";
+import Branches from "./components/private/companies/branches/branches";
+import Shift from "./components/private/companies/staff/shift";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -48,17 +51,20 @@ function App() {
         {isAuthenticated && (
           <Route path="/" element={<Header />}>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/company" element={<CreateCompany />} />
-            <Route path="/branch" element={<CreateBranch />} />
-            <Route path="/staff" element={<CreateStaff />} />
-            <Route path="/attendance" element={<Attendance />} />
+            <Route path="/companies" element={<Companies />} />
+            <Route path="/branches" element={<Branches />} />
+            <Route path="/companies/create" element={<CreateCompany />} />
+            <Route path="/branches/create" element={<CreateBranch />} />
+            <Route path="/staff" element={<Staff />} />
+            <Route path="/staff/create" element={<CreateStaff />} />
+            <Route path="/staff/calendar" element={<AdminCalendar />} />
+            <Route path="/staff/shift" element={<Shift />} />
             <Route path="/calendar" element={<EmployeeCalendar />} />
-            <Route path="/users/calendar" element={<AdminCalendar />} />
+            <Route path="/attendance" element={<Attendance />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
 
             <Route path="/search" element={<Search />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/profile" element={<Profile />} />
             <>
               {/* <Route path="/settings" element={<Settings />} />
               <Route path="/select" element={<SelectCompany />} />

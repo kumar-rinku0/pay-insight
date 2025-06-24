@@ -4,6 +4,7 @@ import {
   getAllShifts,
   getShiftByEmployeeId,
   handleCreateShifts,
+  handleShiftUpdateById,
 } from "../controller/shift.js";
 import { onlyAdminOrManagerUser } from "../middleware/auth.js";
 
@@ -14,5 +15,9 @@ router.get("/:employeeId", wrapAsync(getShiftByEmployeeId));
 router
   .route("/create")
   .post(onlyAdminOrManagerUser, wrapAsync(handleCreateShifts));
+
+router
+  .route("/update/shiftId/:shiftId")
+  .put(onlyAdminOrManagerUser, wrapAsync(handleShiftUpdateById));
 
 export default router;

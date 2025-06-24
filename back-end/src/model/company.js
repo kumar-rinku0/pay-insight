@@ -4,28 +4,30 @@ const companySchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Company name is required."],
+      unique: [true, "Company name must be unique."],
       trim: true,
-      unique: true,
     },
     code: {
       type: String,
-      required: true,
-      unique: true,
+      required: [true, "Company code is required."],
+      unique: [true, "Company code must be unique."],
       default: () => generateRandomString(5),
     },
-    cin: String,
+    cin: {
+      type: String,
+      required: [true, "CIN is required."],
+      unique: [true, "CIN must be unique."],
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(v);
+        },
+        message: (props) => `${props.value} is not a valid CIN!`,
+      },
+    },
     gst: String,
     logo: String,
-    phone: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     website: String,
     type: {
       type: String,
@@ -36,8 +38,13 @@ const companySchema = new Schema(
       type: Number,
       required: true,
       min: 1,
-      max: 10,
+      max: 100,
       default: 1,
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Created by user is required."],
     },
   },
   { timestamps: true }

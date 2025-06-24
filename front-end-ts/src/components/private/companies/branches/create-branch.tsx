@@ -174,7 +174,9 @@ const CreateBranch = () => {
       <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
         <CardHeader>
           <CardTitle className="text-xl">Create Branch</CardTitle>
-          <CardDescription>Enter your branch information!</CardDescription>
+          <CardDescription>
+            Enter your branch information to create branch in selected company!
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>

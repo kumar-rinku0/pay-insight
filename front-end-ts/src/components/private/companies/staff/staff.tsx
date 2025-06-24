@@ -2,7 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { RoleUserType } from "@/types/res-type";
 import { useNavigate } from "react-router";
-import { Calendar } from "lucide-react";
+import { Calendar, ClockArrowUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // import {
 //   Dialog,
@@ -19,7 +20,7 @@ type ResponseType = {
   message: string;
 };
 
-const Users = () => {
+const Staff = () => {
   const router = useNavigate();
   const [roles, setRoles] = useState<RoleUserType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -60,7 +61,7 @@ const Users = () => {
                 Role
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Info
+                Actions
               </th>
             </tr>
           </thead>
@@ -76,11 +77,23 @@ const Users = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {role.role}
                 </td>
-                <td
-                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                  onClick={() => router(`/users/calendar?roleId=${role._id}`)}
-                >
-                  <Calendar className="inline-block mr-2 cursor-pointer" />
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex gap-2">
+                  <Button
+                    onClick={() => router(`/staff/calendar?roleId=${role._id}`)}
+                    variant="outline"
+                    className="flex justify-center items-center cursor-pointer"
+                  >
+                    <Calendar />
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      router(`/staff/shift?userId=${role.user._id}`)
+                    }
+                    variant="outline"
+                    className="flex justify-center items-center cursor-pointer"
+                  >
+                    <ClockArrowUp />
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -91,4 +104,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Staff;

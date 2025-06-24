@@ -14,7 +14,11 @@ export const handleGetEmployeeRoles = async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const skip = (page - 1) * limit;
   const query = {
-    $and: [{ company: company }, { role: { $in: ["employee", "manager"] } }],
+    $and: [
+      { company: company },
+      { role: { $in: ["employee", "manager", "admin"] } },
+      { branch: { $exists: true, $ne: null } },
+    ],
   };
   const totalRoles = await Role.countDocuments(query);
   const roles = await Role.find(query)

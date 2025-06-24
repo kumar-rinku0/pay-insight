@@ -4,15 +4,15 @@ const branchSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Branch name is required."],
     },
     address: {
       type: String,
-      required: true,
+      required: [true, "Branch address is required."],
     },
     radius: {
       type: Number,
-      required: true,
+      required: [true, "Branch radius is required."],
     },
     geometry: {
       type: {
@@ -28,12 +28,12 @@ const branchSchema = new Schema(
     company: {
       type: Schema.Types.ObjectId,
       ref: "Company",
-      required: true,
+      required: [true, "Associated company is required."],
     },
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: [true, "Created by user is required."],
     },
   },
   { timestamps: true }

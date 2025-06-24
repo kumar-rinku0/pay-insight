@@ -36,7 +36,7 @@ import { useAuth } from "@/providers/use-auth"; // Adjust the import path as nec
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
   phone: z.string().min(1, "Phone number is required"),
-  email: z.string().email("Invalid email address").min(1, "Email is required"),
+  cin: z.string().min(6, "CIN is required"),
   type: z.enum(["private", "public"]),
   branches: z.string().min(1, "Count is required").max(2, "Max limit crossed!"),
 });
@@ -52,7 +52,7 @@ const CreateCompany = () => {
     defaultValues: {
       name: "",
       phone: "",
-      email: "",
+      cin: "",
       type: undefined, // Set default if needed
       branches: "",
     },
@@ -74,8 +74,10 @@ const CreateCompany = () => {
           console.log(res);
           const { role } = res.data;
           signIn({ ...user, role: role });
-          toast.success("Company created successfully!");
-          router("/dashboard/branch");
+          toast.success(
+            "Company created successfully! Add branch in your company."
+          );
+          router("/branch");
         })
         .catch((err) => {
           console.log(err);
@@ -136,14 +138,14 @@ const CreateCompany = () => {
                 {/* Company Email */}
                 <FormField
                   control={control}
-                  name="email"
+                  name="cin"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Company Email</FormLabel>
+                      <FormLabel>Company CIN</FormLabel>
                       <FormControl>
-                        <Input placeholder="Email Address" {...field} />
+                        <Input placeholder="CIN" {...field} />
                       </FormControl>
-                      <FormMessage>{errors.email?.message}</FormMessage>
+                      <FormMessage>{errors.cin?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
