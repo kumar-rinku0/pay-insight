@@ -9,6 +9,7 @@ import {
   Calendar,
   Building2,
   GitBranch,
+  Settings,
 } from "lucide-react";
 import { useLocation } from "react-router";
 
@@ -53,6 +54,12 @@ export const NavItems = () => {
           url: "/profile",
           icon: User,
           isActive: isNavItemActive(pathname, `/profile`),
+        },
+        {
+          title: "Settings",
+          url: "/settings",
+          icon: Settings,
+          isActive: isNavItemActive(pathname, `/settings`),
         },
       ],
       adminNavigation: [
@@ -108,6 +115,12 @@ export const NavItems = () => {
           icon: User,
           isActive: isNavItemActive(pathname, `/profile`),
         },
+        {
+          title: "Settings",
+          url: "/settings",
+          icon: Settings,
+          isActive: isNavItemActive(pathname, `/settings`),
+        },
       ],
       managerNavigation: [
         {
@@ -145,6 +158,12 @@ export const NavItems = () => {
           url: "/profile",
           icon: User,
           isActive: isNavItemActive(pathname, `/profile`),
+        },
+        {
+          title: "Settings",
+          url: "/settings",
+          icon: Settings,
+          isActive: isNavItemActive(pathname, `/settings`),
         },
       ],
     },

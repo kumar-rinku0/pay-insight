@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { UserType } from "@/types/auth";
-import UpdateAttendance from "../update/update-attendance";
+import UpdateAttendance from "@/components/private/attendance/update-attendance";
 
 type ResponseType = {
   message: string;
