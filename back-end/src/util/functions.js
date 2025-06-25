@@ -77,22 +77,13 @@ export const formatDateForComparison = (localeDate) => {
 
 export function getTodayTimestamp(timeStr, extraMinutes = 0) {
   const [hours, minutes] = timeStr.split(":").map(Number);
-  const offsetMins = new Date().getTimezoneOffset();
-  console.log(offsetMins);
-  const now = new Date();
-  const localDate = new Date(
-    Date.UTC(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      hours,
-      minutes + extraMinutes - 330,
-      0,
-      0
-    )
+  const today = new Date().toLocaleDateString("en-US", {
+    timeZone: "Asia/Kolkata",
+  });
+  return (
+    new Date(`${today} ${hours}:${minutes}:00 GMT+0530`).getTime() +
+    extraMinutes * 60 * 1000
   );
-
-  return localDate.toISOString(); // Returns UTC ISO string
 }
 
 // Function to reverse geocode (coordinates to address)
