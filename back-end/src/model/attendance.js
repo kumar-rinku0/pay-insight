@@ -111,7 +111,7 @@ attendanceSchema.pre("save", async function (next) {
       this.punchingInfo.push(lastObj);
       return next();
     }
-    const currTime = new Date(lastObj?.punchInInfo.createdAt).toISOString();
+    const currTime = new Date(lastObj?.punchInInfo.createdAt).getTime();
     console.log("currTime", currTime);
     const shift = await Shift.findOne({ createdFor: this.user });
     if (!shift) {
