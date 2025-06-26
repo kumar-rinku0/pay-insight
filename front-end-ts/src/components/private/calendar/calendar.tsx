@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { UserType } from "@/types/auth";
-import UpdateAttendance from "@/components/private/attendance/update-attendance";
+import CalendarDrawer from "./cal-drawer";
 
 type ResponseType = {
   message: string;
@@ -266,7 +266,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
           const day = i + 1;
           const { color, status, attendanceId } = getDayStatus(day);
           return (
-            <UpdateAttendance
+            <CalendarDrawer
               key={day}
               day={day}
               color={color}

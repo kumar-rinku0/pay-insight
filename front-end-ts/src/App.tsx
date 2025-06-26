@@ -51,7 +51,8 @@ function App() {
         )}
         {isAuthenticated && (
           <Route path="/" element={<Header />}>
-            <Route path="/" element={<Dashboard />} />
+            {/* <Route path="/" element={<Dashboard />} /> */}
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/branches" element={<Branches />} />
             <Route path="/companies/create" element={<CreateCompany />} />
@@ -62,7 +63,6 @@ function App() {
             <Route path="/staff/shift" element={<Shift />} />
             <Route path="/calendar" element={<EmployeeCalendar />} />
             <Route path="/attendance" element={<Attendance />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/search" element={<Search />} />
