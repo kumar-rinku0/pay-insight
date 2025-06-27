@@ -29,7 +29,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.12.1",
     "multer": "^1.4.5-lts.2",
-    "nodemailer": "^6.10.0"
+    "nodemailer": "^6.10.0",
+    "pg-sdk-node": "https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-node/releases/v2/phonepe-pg-sdk-node.tgz"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
