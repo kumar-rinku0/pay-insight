@@ -161,8 +161,9 @@ const handleGetOneSpecificMonthAttendance = async (req, res) => {
 const handleGetOneSpecificDateAttendance = async (req, res) => {
   const { attendanceId } = req.params;
   const attendance = await Attendance.findById(attendanceId)
-    .populate("punchingInfo.punchInInfo")
-    .populate("punchingInfo.punchOutInfo");
+    .select("punchingInfo date month status")
+    .populate("punchingInfo.punchInInfo", "status createdAt")
+    .populate("punchingInfo.punchOutInfo", "status createdAt");
   if (!attendance) {
     return res.status(404).json({
       message: "Attendance not found!",
