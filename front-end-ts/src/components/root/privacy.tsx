@@ -170,14 +170,15 @@ const Privacy = () => {
             / notify you about the significant changes to the Privacy Policy, in
             the manner as may be required under applicable laws.
           </div>
-          <div>Grievance Officer</div>
-          <div>Designation: Software Developer</div>
-          <div>Phone: Time: Monday - Friday(9:00 - 18:00)</div>
           <div>
-            Insert Name and Address of the Company: PayInsight Jawahar Nagar,
-            Jaipur
+            <strong>Contact Us</strong>- If you have questions or concerns about
+            this Privacy Policy, contact us at:
           </div>
-          <div>Insert Name of the Office: PayInsight</div>
+          <div>
+            <div>PAY INSIGHT</div>
+            <div>JAWAHAR NAGAR, JAIPUR</div>
+            <div>RINKUKUMAR412616@GMAIL.COM</div>
+          </div>
         </div>
       </div>
     </div>
