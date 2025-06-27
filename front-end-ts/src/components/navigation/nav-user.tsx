@@ -84,7 +84,9 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => location.assign("/subscription")}
+              >
                 <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>

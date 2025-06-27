@@ -28,6 +28,7 @@ import Branches from "./components/private/companies/branches/branches";
 import Shift from "./components/private/companies/staff/shift";
 import Settings from "./components/private/settings/settings";
 import Subscription from "./components/private/subscription/subscription";
+import PayStatus from "./components/private/subscription/status";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -67,6 +68,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/subscription" element={<Subscription />} />
+            <Route path="/status" element={<PayStatus />} />
             <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />
             <>
