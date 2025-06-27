@@ -29,6 +29,9 @@ import Shift from "./components/private/companies/staff/shift";
 import Settings from "./components/private/settings/settings";
 import Subscription from "./components/private/subscription/subscription";
 import PayStatus from "./components/private/subscription/status";
+import Terms from "./components/root/terms";
+import Privacy from "./components/root/privacy";
+import Policy from "./components/root/policy";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -44,6 +47,10 @@ function App() {
       <Routes>
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/reset" element={<ResetPage />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/policy" element={<Policy />} />
+
         {!isAuthenticated && (
           <>
             <Route path="/" element={<HomePage />} />
