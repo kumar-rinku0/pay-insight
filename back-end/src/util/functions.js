@@ -86,6 +86,18 @@ export function getTodayTimestamp(timeStr, extraMinutes = 0) {
   );
 }
 
+export function getLocaleDateStringByTimeZone() {
+  return new Date().toLocaleDateString("en-US", {
+    timeZone: "Asia/Kolkata",
+  });
+}
+export function getLocaleMonthStringByTimeZone() {
+  return new Date().toLocaleDateString("en-US", {
+    timeZone: "Asia/Kolkata",
+    month: "long",
+  });
+}
+
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {
   return null;
