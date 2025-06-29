@@ -2,7 +2,11 @@ import { PunchIn, PunchOut, Attendance } from "../model/attendance.js";
 import Branch from "../model/branch.js";
 import Role from "../model/role.js";
 import Shift from "../model/shift.js";
-import { formatDateForComparison } from "../util/functions.js";
+import {
+  formatDateForComparison,
+  getLocaleDateStringByTimeZone,
+  getLocaleMonthStringByTimeZone,
+} from "../util/functions.js";
 import { reverseGeocode } from "../util/functions.js";
 
 const handlemarkPunchIn = async (req, res) => {
@@ -11,10 +15,8 @@ const handlemarkPunchIn = async (req, res) => {
     return res.json({ message: "file not found." });
   }
   const punchInPhoto = req.url;
-  const date = formatDateForComparison(new Date().toLocaleString());
-  const month = new Date().toLocaleString("en-IN", {
-    month: "long",
-  });
+  const date = formatDateForComparison(getLocaleDateStringByTimeZone());
+  const month = getLocaleMonthStringByTimeZone();
   const punchInAddress = await reverseGeocode(
     punchInGeometry.coordinates[1],
     punchInGeometry.coordinates[0]
@@ -63,7 +65,7 @@ const handlemarkPunchOut = async (req, res) => {
     punchOutPhoto,
   });
   await punchOut.save();
-  const date = formatDateForComparison(new Date());
+  const date = formatDateForComparison(getLocaleDateStringByTimeZone());
 
   const attendance = await Attendance.findOne({
     $and: [{ date: date, company: companyId, user: userId, branch: branchId }],
@@ -86,7 +88,7 @@ const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
   res
 ) => {
   const { userId, companyId, branchId } = req.body;
-  const date = formatDateForComparison(new Date().toLocaleString());
+  const date = formatDateForComparison(getLocaleDateStringByTimeZone());
 
   const attendance = await Attendance.findOne({
     $and: [{ date: date, company: companyId, user: userId, branch: branchId }],
@@ -178,7 +180,9 @@ const handleGetOneSpecificDateAttendance = async (req, res) => {
 // Fetch attendance statistics for the dashboard
 const handleGetEmployeesAttendanceWithPunchingInfo = async (req, res) => {
   const user = req.user;
-  const formattedDate = formatDateForComparison(new Date().toLocaleString());
+  const formattedDate = formatDateForComparison(
+    getLocaleDateStringByTimeZone()
+  );
   const query = {
     $and: [{ date: formattedDate }, { company: user.role.company }],
   };
@@ -197,7 +201,7 @@ const handleGetEmployeesAttendanceWithPunchingInfo = async (req, res) => {
 const handleUpdateAttandance = async (req, res) => {
   const { day, month, status, attendanceId, roleId } = req.body;
   const year = new Date().getFullYear();
-  const monthName = new Date(year, month).toLocaleString("en-IN", {
+  const monthName = new Date(year, month).toLocaleString("en-US", {
     month: "long",
   });
   const date = formatDateForComparison(new Date(`${day} ${monthName} ${year}`));
