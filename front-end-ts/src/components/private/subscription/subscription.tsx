@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { useState } from "react";
+import Checkout from "./checkout";
 
 const plans = [
   {
@@ -25,21 +27,32 @@ const plans = [
 ];
 
 type ResponseType = {
-  checkoutPageUrl: string;
+  orderInfo: OrderType;
   message: string;
 };
 
+export type OrderType = {
+  _id: string;
+  amount: string;
+  redirectUrl: string;
+};
+
 const Subscription = () => {
+  const [order, setOrder] = useState<OrderType | null>(null);
   const handleCreatePaymentRequiest = (amount: string) => {
     axios
       .post<ResponseType>("/api/payment/create", { amount: amount })
       .then((res) => {
-        location.assign(res.data.checkoutPageUrl);
+        console.log(res.data);
+        setOrder(res.data.orderInfo);
       })
       .catch((err) => {
         console.log(err);
       });
   };
+  if (order) {
+    return <Checkout {...order} />;
+  }
   return (
     <div className="flex flex-col justify-center items-center p-4">
       <div className="p-4">choose a plan!</div>
