@@ -1,5 +1,4 @@
 import { StandardCheckoutPayRequest } from "pg-sdk-node";
-import { client } from "./phonepay.js";
 import { randomUUID } from "crypto";
 
 const redirectUrl = process.env.DOMAIN;
