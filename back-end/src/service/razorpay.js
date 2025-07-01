@@ -8,7 +8,6 @@ import Payment from "../model/payment.js";
 const CLIENT_ID = process.env.RAZORPAY_CLIENT_ID;
 const SECRET_KEY = process.env.RAZORPAY_SECRET_KEY;
 const DOMAIN = process.env.DOMAIN;
-console.log(CLIENT_ID, SECRET_KEY);
 
 export const client = new Razorpay({
   key_id: CLIENT_ID,

@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import type { OrderType } from "./subscription";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -44,32 +43,28 @@ const loadScript = (src: string): Promise<boolean> => {
     script.src = src;
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
-    document.body.appendChild(script);
+    const paymentBtn = document.querySelector("#paymentBTN");
+    if (paymentBtn) {
+      paymentBtn.appendChild(script);
+    }
   });
 };
 
-const Checkout: React.FC<OrderType> = (orderInfo) => {
+const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
   const CLIENT_ID = import.meta.env.VITE_RAZORPAY_CLIENT_ID;
   console.log(CLIENT_ID);
-  useEffect(() => {
-    const displayRazorpay = async () => {
-      const res = await loadScript(
-        "https://checkout.razorpay.com/v1/checkout.js"
-      );
-      if (!res) {
-        alert("Razorpay SDK failed to load.");
-        return;
-      }
-    };
 
-    if (orderInfo && CLIENT_ID) {
-      displayRazorpay();
-    } else {
-      alert("Missing ORDERID OR CLIENTID!");
+  const displayRazorpay = async () => {
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+    if (!res) {
+      alert("Razorpay SDK failed to load.");
+      return;
     }
-  }, [orderInfo, CLIENT_ID]);
+  };
 
-  const handleRazorPayClick = () => {
+  const handleRazorPayClick = async () => {
     const options = {
       key: CLIENT_ID, // Replace with your Razorpay key
       order_id: orderInfo._id,
@@ -95,23 +90,24 @@ const Checkout: React.FC<OrderType> = (orderInfo) => {
         // alert(response.razorpay_order_id);
         // alert(response.razorpay_signature);
       },
-      theme: {
-        color: "#3399cc",
-      },
     };
-    const paymentObject = new window.Razorpay(options);
-    paymentObject.on("payment.failed", function (response) {
-      alert(response.error.description);
-      location.assign(`/status?orderId=${orderInfo._id}`);
-    });
-    paymentObject.open();
+    if (orderInfo && CLIENT_ID) {
+      await displayRazorpay();
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.on("payment.failed", function (response) {
+        alert(response.error.description);
+        location.assign(`/status?orderId=${orderInfo._id}`);
+      });
+      paymentObject.open();
+    } else {
+      alert("Missing ORDERID OR CLIENTID!");
+    }
   };
 
   return (
-    <div>
-      <div>checkout to pay</div>
-      <Button onClick={handleRazorPayClick}>Pay</Button>
-    </div>
+    <Button id="paymentBTN" onClick={handleRazorPayClick}>
+      Pay
+    </Button>
   );
 };
 
