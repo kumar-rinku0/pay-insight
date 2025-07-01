@@ -67,8 +67,12 @@ export const handleConfirmationPaymentRequest = async (req, res) => {
     .createHmac("sha256", SECRET_KEY)
     .update(order_id + "|" + razorpay_payment_id)
     .digest("hex");
-
-  if (generated_signature === razorpay_signature) {
+  payment.payment = razorpay_payment_id;
+  payment.sign = razorpay_signature;
+  if (
+    razorpay_order_id === payment.order &&
+    generated_signature === razorpay_signature
+  ) {
     payment.status = "captured";
     await payment.save();
     return res
