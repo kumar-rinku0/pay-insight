@@ -8,7 +8,6 @@ import Payment from "../model/payment.js";
 const CLIENT_ID = process.env.RAZORPAY_CLIENT_ID;
 const SECRET_KEY = process.env.RAZORPAY_SECRET_KEY;
 const DOMAIN = process.env.DOMAIN;
-console.log(CLIENT_ID, SECRET_KEY);
 
 export const client = new Razorpay({
   key_id: CLIENT_ID,
@@ -59,16 +58,30 @@ export const handleConfirmationPaymentRequest = async (req, res) => {
   const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
     req.body;
   const user = req.user;
-  const payment = await Payment.findOne({ user: user._id }).sort({
+  const payment = await Payment.findOne({
+    user: user._id,
+    order: razorpay_order_id,
+  }).sort({
     createdAt: -1,
   });
+  if (!payment) {
+    payment.status = "failed";
+    await payment.save();
+    return res
+      .status(400)
+      .json({ message: "payment failed.", status: "not okay" });
+  }
   const order_id = payment.order;
   const generated_signature = crypto
     .createHmac("sha256", SECRET_KEY)
     .update(order_id + "|" + razorpay_payment_id)
     .digest("hex");
-
-  if (generated_signature === razorpay_signature) {
+  payment.payment = razorpay_payment_id;
+  payment.sign = razorpay_signature;
+  if (
+    razorpay_order_id === payment.order &&
+    generated_signature === razorpay_signature
+  ) {
     payment.status = "captured";
     await payment.save();
     return res
@@ -78,7 +91,7 @@ export const handleConfirmationPaymentRequest = async (req, res) => {
     payment.status = "failed";
     await payment.save();
     return res
-      .status(200)
+      .status(400)
       .json({ message: "payment failed.", status: "not okay" });
   }
 };

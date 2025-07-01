@@ -51,7 +51,13 @@ const Subscription = () => {
       });
   };
   if (order) {
-    return <Checkout {...order} />;
+    return (
+      <div className="h-[80vh] flex justify-center items-center">
+        <div className="flex justify-center items-center">
+          <Checkout orderInfo={order} />
+        </div>
+      </div>
+    );
   }
   return (
     <div className="flex flex-col justify-center items-center p-4">

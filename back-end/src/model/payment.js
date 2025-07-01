@@ -16,9 +16,11 @@ const paymentSchema = new Schema(
     order: {
       type: String,
       required: true,
+      trim: true,
     },
     payment: {
       type: String,
+      trim: true,
     },
     amount: {
       type: Number,
@@ -26,6 +28,7 @@ const paymentSchema = new Schema(
     },
     sign: {
       type: String,
+      trim: true,
     },
     status: {
       type: String,
