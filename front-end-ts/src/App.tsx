@@ -32,6 +32,7 @@ import PayStatus from "./components/private/subscription/status";
 import Terms from "./components/root/terms";
 import Privacy from "./components/root/privacy";
 import Policy from "./components/root/policy";
+import Home from "./components/private/home/home";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -60,7 +61,7 @@ function App() {
         )}
         {isAuthenticated && (
           <Route path="/" element={<Header />}>
-            {/* <Route path="/" element={<Dashboard />} /> */}
+            <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/branches" element={<Branches />} />

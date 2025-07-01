@@ -27,13 +27,21 @@ const PunchInEmployees = () => {
   useEffect(() => {
     handleGetEmployeesAttendance();
   }, []);
+  if (employeesAttendance.length === 0) {
+    return (
+      <div className="flex justify-center items-center">NO Employees IN</div>
+    );
+  }
   return (
     <div className="flex justify-center items-center">
-      <table className="max-w-sm">
+      <table className="table-auto">
         <thead>
           <tr className="bg-gray-100">
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Employee
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:flex">
+              Email
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               status
@@ -49,13 +57,16 @@ const PunchInEmployees = () => {
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {empoyeeAttendance.user.name}
               </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:flex">
+                {empoyeeAttendance.user.email}
+              </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {empoyeeAttendance.status}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {new Date(
                   empoyeeAttendance.punchingInfo[0].punchInInfo.createdAt
-                ).toLocaleTimeString("en-IN", {
+                ).toLocaleTimeString("en-US", {
                   hour: "numeric",
                   minute: "numeric",
                 })}
