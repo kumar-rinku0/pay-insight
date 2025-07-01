@@ -82,7 +82,7 @@ const Checkout: React.FC<OrderType> = (orderInfo) => {
       notes: {
         address: "Razorpay Corporate Office",
       },
-      handler: async function (response: {
+      handler: function (response: {
         razorpay_payment_id: string;
         razorpay_order_id: string;
         razorpay_signature: string;
