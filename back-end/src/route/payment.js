@@ -1,7 +1,4 @@
 import express from "express";
-import // handleCreatePaymentRequest,
-// handleGetPaymentStauts,
-"../service/checkout.js";
 import {
   handleGetPaymentStauts,
   handleCreatePaymentRequest,
