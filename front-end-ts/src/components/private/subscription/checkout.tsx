@@ -89,7 +89,7 @@ const Checkout: React.FC<OrderType> = (orderInfo) => {
       }) {
         // alert(response.razorpay_payment_id);
         console.log(response);
-        axios.post("/api/payment/confirmation", response).then(() => {
+        axios.post("/api/payment/confirmation", response).finally(() => {
           location.assign(`/status?orderId=${response.razorpay_order_id}`);
         });
         // alert(response.razorpay_order_id);
