@@ -11,7 +11,7 @@ const PayStatus = () => {
       axios
         .get(`/api/payment/status?orderId=${orderId}`)
         .then((res) => {
-          console.log(res);
+          console.log(res.data);
           setState(res.data.state);
         })
         .catch((err) => {
