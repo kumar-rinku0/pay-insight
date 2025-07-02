@@ -1,10 +1,10 @@
 import { Router } from "express";
-import wrapAsync from "../util/wrap-async.js";
+import wrapAsync from "../utils/wrap-async.js";
 import {
   handleGetOneUserRoles,
   handleGetEmployeeRoles,
-} from "../controller/role.js";
-import { onlyAdminOrManagerUser } from "../middleware/auth.js";
+} from "../controllers/role.js";
+import { onlyAdminOrManagerUser } from "../middlewares/auth.js";
 
 const route = Router();
 

@@ -1,5 +1,5 @@
 import express from "express";
-import wrapAsync from "../util/wrap-async.js";
+import wrapAsync from "../utils/wrap-async.js";
 import {
   handlemarkPunchIn,
   handlemarkPunchOut,
@@ -8,9 +8,9 @@ import {
   handleGetOneSpecificDateAttendance,
   handleGetEmployeesAttendanceWithPunchingInfo,
   handleUpdateAttandance,
-} from "../controller/attendance.js";
+} from "../controllers/attendance.js";
 
-import { onlyAdminOrManagerUser } from "../middleware/auth.js";
+import { onlyAdminOrManagerUser } from "../middlewares/auth.js";
 
 // import { handleUploadImage } from "../util/cloud-init.js";
 import multer from "multer";

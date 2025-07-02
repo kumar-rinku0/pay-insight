@@ -1,4 +1,4 @@
-import Shift from "../model/shift.js";
+import Shift from "../models/shift.js";
 
 export const getAllShifts = async (req, res) => {
   const shifts = await Shift.find({});

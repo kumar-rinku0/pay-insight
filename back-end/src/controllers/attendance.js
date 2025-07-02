@@ -1,13 +1,13 @@
-import { PunchIn, PunchOut, Attendance } from "../model/attendance.js";
-import Branch from "../model/branch.js";
-import Role from "../model/role.js";
-import Shift from "../model/shift.js";
+import { PunchIn, PunchOut, Attendance } from "../models/attendance.js";
+import Branch from "../models/branch.js";
+import Role from "../models/role.js";
+import Shift from "../models/shift.js";
 import {
   formatDateForComparison,
   getLocaleDateStringByTimeZone,
   getLocaleMonthStringByTimeZone,
-} from "../util/functions.js";
-import { reverseGeocode } from "../util/functions.js";
+} from "../utils/functions.js";
+import { reverseGeocode } from "../utils/functions.js";
 
 const handlemarkPunchIn = async (req, res) => {
   const { userId, companyId, branchId, punchInGeometry } = req.body;

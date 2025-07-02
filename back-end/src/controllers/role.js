@@ -1,4 +1,4 @@
-import Role from "../model/role.js";
+import Role from "../models/role.js";
 
 export const handleGetOneUserRoles = async (req, res) => {
   const { userId } = req.params;

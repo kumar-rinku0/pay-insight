@@ -1,6 +1,6 @@
-import Branch from "../model/branch.js";
-import Company from "../model/company.js";
-import User from "../model/user.js";
+import Branch from "../models/branch.js";
+import Company from "../models/company.js";
+import User from "../models/user.js";
 
 const handleFetchBranches = async (req, res) => {
   const companyId = req.user.role.company;

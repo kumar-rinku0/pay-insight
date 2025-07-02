@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
-import Shift from "../model/shift.js";
-import { getTodayTimestamp } from "../util/functions.js";
+import Shift from "../models/shift.js";
+import { getTodayTimestamp } from "../utils/functions.js";
 
 // branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch", required: true },
 

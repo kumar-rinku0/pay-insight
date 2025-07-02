@@ -1,11 +1,11 @@
 import { Router } from "express";
-import wrapAsync from "../util/wrap-async.js";
+import wrapAsync from "../utils/wrap-async.js";
 import {
   handleCreateBranch,
   handleFetchBranches,
   handleGetBranchInfo,
-} from "../controller/branch.js";
-import { onlyAdminUser } from "../middleware/auth.js";
+} from "../controllers/branch.js";
+import { onlyAdminUser } from "../middlewares/auth.js";
 
 const route = Router();
 

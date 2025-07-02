@@ -3,7 +3,7 @@ config();
 
 import crypto from "crypto";
 import Razorpay from "razorpay";
-import Payment from "../model/payment.js";
+import Payment from "../models/payment.js";
 
 const CLIENT_ID = process.env.RAZORPAY_CLIENT_ID;
 const SECRET_KEY = process.env.RAZORPAY_SECRET_KEY;

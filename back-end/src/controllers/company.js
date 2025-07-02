@@ -1,6 +1,6 @@
-import Company from "../model/company.js";
-import Role from "../model/role.js";
-import User from "../model/user.js";
+import Company from "../models/company.js";
+import Role from "../models/role.js";
+import User from "../models/user.js";
 
 const handleFetchCompanies = async (req, res) => {
   const { userId } = req.params;
