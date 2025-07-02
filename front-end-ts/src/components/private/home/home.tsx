@@ -25,15 +25,21 @@ const Home = () => {
             <strong>Quick Navigation:</strong> Use these shortcuts to avoid
             opening the navigation panel on small devices!
           </p>
-          <QuickNavigation
-            items={
-              user.role?.role === "admin"
-                ? adminNavigation
-                : user.role?.role === "manager"
-                ? managerNavigation
-                : employeeNavigation
-            }
-          />
+          {user.role ? (
+            <QuickNavigation
+              items={
+                user.role.role === "admin"
+                  ? adminNavigation
+                  : user.role.role === "manager"
+                  ? managerNavigation
+                  : employeeNavigation
+              }
+            />
+          ) : (
+            <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">
+              Please select or create a company to view the navigation.
+            </p>
+          )}
         </div>
       </div>
     </div>

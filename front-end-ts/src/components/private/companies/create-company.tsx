@@ -36,7 +36,13 @@ import { useAuth } from "@/providers/use-auth"; // Adjust the import path as nec
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
   phone: z.string().min(1, "Phone number is required"),
-  cin: z.string().min(6, "CIN is required"),
+  cin: z
+    .string()
+    .min(6, "CIN is required")
+    .regex(
+      /^[A-Z]{5}[0-9]{4}[A-Z]$/,
+      "5 latters, 4 numeric and remaining latters! only capital allowed."
+    ),
   type: z.enum(["private", "public"]),
   branches: z.string().min(1, "Count is required").max(2, "Max limit crossed!"),
 });

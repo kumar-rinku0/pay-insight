@@ -80,28 +80,28 @@ export const NavItems = () => {
           url: "/companies",
           icon: Building2,
           isActive: isNavItemActive(pathname, `/companies`),
-          items: [
-            {
-              title: "Create Company",
-              url: "/companies/create",
-            },
-          ],
+          // items: [
+          //   {
+          //     title: "Create Company",
+          //     url: "/companies/create",
+          //   },
+          // ],
         },
         {
           title: "Branches",
           url: "/branches",
           icon: GitBranch,
           isActive: isNavItemActive(pathname, `/branches`),
-          items: [
-            {
-              title: "Create Branch",
-              url: "/branches/create",
-            },
-            {
-              title: "Create Staff",
-              url: "/staff/create",
-            },
-          ],
+          // items: [
+          //   {
+          //     title: "Create Branch",
+          //     url: "/branches/create",
+          //   },
+          //   {
+          //     title: "Create Staff",
+          //     url: "/staff/create",
+          //   },
+          // ],
         },
         {
           title: "Staff",
