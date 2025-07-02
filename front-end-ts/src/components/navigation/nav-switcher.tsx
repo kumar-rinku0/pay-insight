@@ -44,7 +44,7 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
       .get(`/api/company/select-rolebased-company/roleid/${roleId}`)
       .then((res) => {
         console.log(res);
-        location.reload();
+        location.assign("/");
       })
       .catch((err) => {
         console.log(err);

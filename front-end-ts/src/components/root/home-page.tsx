@@ -108,7 +108,7 @@ const Footer = () => {
       </div>
       <div className="w-full flex flex-col md:flex-row justify-center md:justify-around items-center my-5">
         <div className="flex flex-wrap justify-center items-center text-xs">
-          Copyright © 2024 InferNo, All rights reserved.
+          Copyright © 2024 PayInsight, All rights reserved.
         </div>
         <div>
           <div className="flex flex-row gap-4 items-center p-10">

@@ -2,8 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import type { RoleUserType } from "@/types/res-type";
 import { useNavigate, useSearchParams } from "react-router";
-import { Calendar, ClockArrowUp } from "lucide-react";
+import { Calendar, ClockArrowUp, PlusCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type ResponseType = {
   roles: RoleUserType[];
@@ -134,9 +135,28 @@ const Staff = ({ page }: { page: number }) => {
 };
 
 const StaffPage = () => {
+  const router = useNavigate();
   const [searchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1");
-  return <Staff page={page} />;
+  return (
+    <div>
+      <div className="px-4 flex gap-4 justify-between items-center">
+        <span className="hidden lg:flex gap-2">
+          <Input className="w-60" />
+          <Button variant="outline">
+            <Search />
+          </Button>
+        </span>
+        <span>
+          <Button onClick={() => router("/staff/create")}>
+            <PlusCircle />
+            <span>Add Staff</span>
+          </Button>
+        </span>
+      </div>
+      <Staff page={page} />
+    </div>
+  );
 };
 
 export default StaffPage;

@@ -4,11 +4,8 @@ import User from "../model/user.js";
 
 const handleFetchBranches = async (req, res) => {
   const companyId = req.user.role.company;
-  const comp = await Company.findById(companyId);
   const branches = await Branch.find({ company: companyId });
-  return res
-    .status(200)
-    .json({ message: "ok!", branches: branches, company: comp });
+  return res.status(200).json({ message: "ok!", branches: branches });
 };
 
 const handleCreateBranch = async (req, res) => {

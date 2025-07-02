@@ -13,8 +13,8 @@ route.route("/").get((req, res) => {
   return res.status(200).json({ msg: "ok" });
 });
 
-route.route("/create").post(wrapAsync(handleCreateBranch));
+route.route("/create").post(onlyAdminUser, wrapAsync(handleCreateBranch));
 route.route("/info").get(wrapAsync(handleGetBranchInfo));
-route.route("/:companyId").get(wrapAsync(handleFetchBranches));
+route.route("/company").get(wrapAsync(handleFetchBranches));
 
 export default route;
