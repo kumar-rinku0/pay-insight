@@ -23,6 +23,6 @@ route
   .route("/getOneByCompanyId/:companyId")
   .get(wrapAsync(handleGetCompanyById));
 
-route.route("/:userId").get(wrapAsync(handleFetchCompanies));
+route.route("/userId/:userId").get(wrapAsync(handleFetchCompanies));
 
 export default route;

@@ -5,9 +5,6 @@ import User from "../model/user.js";
 const handleFetchCompanies = async (req, res) => {
   const { userId } = req.params;
   const companies = await Company.find({ createdBy: userId });
-  if (companies.length < 0) {
-    return res.status(400).send({ error: "NO COMPANIES FOUND!" });
-  }
   return res.status(200).send({ message: "ok!", companies: companies });
 };
 
