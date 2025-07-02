@@ -20,7 +20,7 @@ const BreadCrumb = () => {
           <BreadcrumbPage>
             <BreadcrumbLink
               onClick={() => router("/")}
-              className={`cursor-pointer text-black ${
+              className={`cursor-pointer select-none text-black ${
                 pathname === "/" ? "font-bold" : ""
               }`}
             >
