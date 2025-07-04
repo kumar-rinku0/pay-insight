@@ -69,7 +69,7 @@ export const StaffShift = ({
       axios
         .post("/api/shift/create", {
           ...data,
-          employeeId,
+          employeeId: employeeId,
           weekOffs: selectedWeekOffs,
         })
         .then((res) => {
