@@ -12,17 +12,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Trash } from "lucide-react";
 
 const Profile = () => {
   const { user, signOut } = useAuth();
@@ -43,8 +43,8 @@ const Profile = () => {
   return (
     <div className="p-6 space-y-6">
       <h3 className="mb-4 text-lg font-medium">Account Settings</h3>
-      <div className="flex justify-around items-center flex-wrap gap-4">
-        <Card className="min-w-xs min-h-60 md:min-w-sm lg:min-w-md">
+      <div className="flex flex-col gap-4">
+        <Card>
           <CardHeader>
             <CardTitle className="text-lg">Account Info</CardTitle>
           </CardHeader>
@@ -71,7 +71,7 @@ const Profile = () => {
             </div>
           </CardContent>
         </Card>
-        <Card className="min-w-xs min-h-60 md:min-w-sm lg:min-w-md">
+        <Card>
           <CardHeader>
             <CardTitle className="text-lg">Update Display Name</CardTitle>
             <CardDescription>
@@ -79,21 +79,21 @@ const Profile = () => {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="flex gap-2">
-            <Input
-              type="text"
-              placeholder="Enter your display name"
-              defaultValue={user.name}
-              className="w-full"
-            />
-            <Button type="submit" className="ml-auto">
-              Save
-            </Button>
+          <CardContent>
+            <div className="flex gap-2">
+              <Input
+                type="text"
+                placeholder="Enter your display name"
+                defaultValue={user.name}
+                className="w-60"
+              />
+              <Button type="submit">Save</Button>
+            </div>
           </CardContent>
           <CardFooter></CardFooter>
         </Card>
 
-        <Card className="min-w-xs min-h-60 md:min-w-sm lg:min-w-md">
+        <Card>
           <CardHeader>
             <CardTitle className="text-lg">Delete Account</CardTitle>
             <CardDescription>
@@ -104,28 +104,35 @@ const Profile = () => {
           </CardHeader>
           <form>
             <CardContent>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive">Delete Account</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="destructive">
+                    <Trash /> Delete Account
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
                       This action cannot be undone. This will permanently delete
                       your account and remove your data from our servers.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteAccount}>
-                      Continue
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Close</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                      <Button
+                        variant="destructive"
+                        onClick={handleDeleteAccount}
+                      >
+                        Delete
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </form>
           <CardFooter></CardFooter>
