@@ -54,15 +54,20 @@ const PunchOut = model("PunchOut", punchOutSchema);
 
 const attendanceSchema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    company: {
+    // user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    // company: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "Company",
+    //   required: true,
+    // },
+    // branch: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "Branch",
+    //   required: true,
+    // },
+    role: {
       type: Schema.Types.ObjectId,
-      ref: "Company",
-      required: true,
-    },
-    branch: {
-      type: Schema.Types.ObjectId,
-      ref: "Branch",
+      ref: "Role",
       required: true,
     },
     date: {
@@ -113,7 +118,7 @@ attendanceSchema.pre("save", async function (next) {
     }
     const currTime = new Date(lastObj?.punchInInfo.createdAt).getTime();
     console.log("currTime", currTime);
-    const shift = await Shift.findOne({ createdFor: this.user });
+    const shift = await Shift.findOne({ createdFor: this.role });
     if (!shift) {
       return next(new Error("doesn't assigned any shift!"));
     }

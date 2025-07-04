@@ -23,13 +23,17 @@ const roleSchema = new Schema({
       message: "Company ID is required.",
     },
   },
+  name: {
+    type: String,
+    required: true,
+  },
   branch: {
     type: Schema.Types.ObjectId,
     ref: "Branch",
   },
-  name: {
-    type: String,
-    required: true,
+  shift: {
+    type: Schema.Types.ObjectId,
+    ref: "Shift",
   },
   role: {
     type: String,

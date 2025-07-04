@@ -10,7 +10,7 @@ import {
 import { reverseGeocode } from "../utils/functions.js";
 
 const handlemarkPunchIn = async (req, res) => {
-  const { userId, companyId, branchId, punchInGeometry } = req.body;
+  const { roleId, punchInGeometry } = req.body;
   if (!req.url) {
     return res.json({ message: "file not found." });
   }
@@ -28,7 +28,7 @@ const handlemarkPunchIn = async (req, res) => {
   });
   await punchIn.save();
   const prevAttendance = await Attendance.findOne({
-    $and: [{ date: date, company: companyId, user: userId, branch: branchId }],
+    $and: [{ date: date, role: roleId }],
   });
   if (prevAttendance) {
     prevAttendance.punchingInfo.push({ punchInInfo: punchIn });
@@ -37,9 +37,7 @@ const handlemarkPunchIn = async (req, res) => {
     return res.status(201).json({ message: "punched in!", punchIn: punchIn });
   }
   const attendance = new Attendance({
-    user: userId,
-    company: companyId,
-    branch: branchId,
+    role: roleId,
     date,
     month,
   });
@@ -50,7 +48,7 @@ const handlemarkPunchIn = async (req, res) => {
 };
 
 const handlemarkPunchOut = async (req, res) => {
-  const { userId, companyId, branchId, punchOutGeometry } = req.body;
+  const { roleId, punchOutGeometry } = req.body;
   if (!req.url) {
     return res.json({ message: "file not found." });
   }
@@ -68,7 +66,7 @@ const handlemarkPunchOut = async (req, res) => {
   const date = formatDateForComparison(getLocaleDateStringByTimeZone());
 
   const attendance = await Attendance.findOne({
-    $and: [{ date: date, company: companyId, user: userId, branch: branchId }],
+    $and: [{ date: date, role: roleId }],
   });
   const lastPunchInInfo = attendance.punchingInfo.pop();
   lastPunchInInfo.punchOutInfo = punchOut;
@@ -87,13 +85,14 @@ const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
   req,
   res
 ) => {
-  const { userId, companyId, branchId } = req.body;
+  const user = req.user;
+  const { role } = user;
   const date = formatDateForComparison(getLocaleDateStringByTimeZone());
 
   const attendance = await Attendance.findOne({
-    $and: [{ date: date, company: companyId, user: userId, branch: branchId }],
+    $and: [{ date: date, role: role._id }],
   });
-  const branch = await Branch.findById(branchId);
+  const branch = await Branch.findById(role.branch);
   if (!attendance) {
     return res.status(200).json({
       message: "user isn't punched in yet!",
@@ -132,7 +131,7 @@ const handleGetOneSpecificMonthAttendance = async (req, res) => {
   const { roleId, month } = req.body;
   const role = await Role.findById(roleId).populate("user", "name email");
   const shift = await Shift.findOne({
-    createdFor: role.user._id,
+    createdFor: role._id,
   });
   const query = {
     $and: [
@@ -140,13 +139,7 @@ const handleGetOneSpecificMonthAttendance = async (req, res) => {
         month: month,
       },
       {
-        user: role.user._id,
-      },
-      {
-        company: role.company,
-      },
-      {
-        branch: role.branch,
+        role: role._id,
       },
     ],
   };
@@ -187,7 +180,7 @@ const handleGetEmployeesAttendanceWithPunchingInfo = async (req, res) => {
     $and: [{ date: formattedDate }, { company: user.role.company }],
   };
   const attendances = await Attendance.find(query)
-    .populate("user", "name email")
+    .populate("role.user", "name email")
     .populate("punchingInfo.punchInInfo", "status createdAt")
     .populate("punchingInfo.punchOutInfo", "status createdAt");
 

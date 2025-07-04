@@ -32,7 +32,7 @@ router.route("/mark").put(
 
 router
   .route("/users/information/today")
-  .post(wrapAsync(handleGetOneSpecificUserAttendanceInfoWithBranchInfo));
+  .get(wrapAsync(handleGetOneSpecificUserAttendanceInfoWithBranchInfo));
 
 router
   .route("/attendancebyid/:attendanceId")

@@ -32,7 +32,7 @@ const shiftShema = new Schema({
   },
   createdFor: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Role",
     required: [true, "createdFor is required."],
     unique: [true, "createdFor must be unique."],
   },

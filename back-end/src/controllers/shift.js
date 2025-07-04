@@ -20,8 +20,8 @@ export const getShiftByEmployeeId = async (req, res) => {
 };
 
 export const handleCreateShifts = async (req, res) => {
-  const { type, endTime, startTime, weekOffs, userId } = req.body;
-  const previous = await Shift.findOne({ createdFor: userId });
+  const { type, endTime, startTime, weekOffs, roleId } = req.body;
+  const previous = await Shift.findOne({ createdFor: roleId });
   if (previous) {
     return res
       .status(201)
