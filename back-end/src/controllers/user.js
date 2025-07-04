@@ -1,15 +1,18 @@
-import Company from "../model/company.js";
-import User from "../model/user.js";
+import Company from "../models/company.js";
+import User from "../models/user.js";
 import bcrypt from "bcryptjs";
-import { createMailSystem, createMailSystemForEmployee } from "../util/mail.js";
+import {
+  createMailSystem,
+  createMailSystemForEmployee,
+} from "../utils/mail.js";
 import {
   fixName,
   generateRandomString,
   isRightUser,
-} from "../util/functions.js";
-import { getToken } from "../util/auth.js";
-import { getInfo } from "../util/jwt.js";
-import Role from "../model/role.js";
+} from "../utils/functions.js";
+import { getToken } from "../utils/auth.js";
+import { getInfo } from "../utils/jwt.js";
+import Role from "../models/role.js";
 
 // login, logout & create user
 const handleUserSignUp = async (req, res) => {

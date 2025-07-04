@@ -3,7 +3,7 @@ import {
   handleGetPaymentStauts,
   handleCreatePaymentRequest,
   handleConfirmationPaymentRequest,
-} from "../service/razorpay.js";
+} from "../services/razorpay.js";
 
 const router = express.Router();
 

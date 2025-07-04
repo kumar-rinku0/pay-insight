@@ -1,5 +1,5 @@
 import { Router } from "express";
-import wrapAsync from "../util/wrap-async.js";
+import wrapAsync from "../utils/wrap-async.js";
 import {
   handleUserSignUp,
   handleUserSignIn,
@@ -13,12 +13,12 @@ import {
   handleRememberMe,
   handleUserDelete,
   handleUserAccountDelete,
-} from "../controller/user.js";
+} from "../controllers/user.js";
 import {
   onlyLoggedInUser,
   onlyAdminOrManagerUser,
   onlyAdminUser,
-} from "../middleware/auth.js";
+} from "../middlewares/auth.js";
 
 const route = Router();
 

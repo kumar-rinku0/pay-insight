@@ -22,12 +22,15 @@ export type BranchType = {
   _id: string;
   name: string;
   address: string;
+  radius: number;
 };
 
 export type CompanyType = {
   _id: string;
   name: string;
-  address: string;
+  code: string;
+  type: string;
+  branches: number;
 };
 
 export type ShiftType = {

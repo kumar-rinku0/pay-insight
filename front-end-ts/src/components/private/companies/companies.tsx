@@ -1,12 +1,4 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { useAuth } from "@/providers/use-auth";
 import type { CompanyType } from "@/types/res-type";
 import axios from "axios";
@@ -44,45 +36,73 @@ const Companies = () => {
   }
 
   return (
-    <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
-      {companies.length === 0 && (
-        <CardHeader>
-          <CardTitle className="text-xl">No Companies</CardTitle>
-          <CardDescription>
+    <div className="px-4 py-2">
+      {companies.length === 0 ? (
+        <div className="min-h-[80vh] flex flex-col gap-2 justify-center items-center">
+          <span className="text-2xl font-bold">NO Companies!</span>
+          <span className="text-gray-500 text-center">
             You have not created any companies yet. Please create a company and
             its first branch to get started.
-          </CardDescription>
-          <CardContent className="flex justify-center items-center p-4">
-            <Button onClick={() => location.assign("/companies/create")}>
-              Create Company
-            </Button>
-          </CardContent>
-        </CardHeader>
-      )}
-      {companies.length > 0 && (
-        <>
-          <CardHeader>
-            <CardTitle className="text-xl">Companies</CardTitle>
-            <CardDescription>
-              Here are your companies. Click on a company to view more details
-              or manage its branches.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4">
-              {companies.map((company: CompanyType) => (
-                <Button key={company._id}>{company.name}</Button>
+          </span>
+          <Button onClick={() => router("/companies/create")}>
+            Create New Company
+          </Button>
+        </div>
+      ) : (
+        <div className="min-h-[80vh]">
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Branches
+                </th>
+                <th className="hidden lg:flex px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Code
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {companies.map((company) => (
+                <tr key={company._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {company.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {company.type}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {company.branches}
+                  </td>
+                  <td className="hidden lg:flex px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {company.code}
+                  </td>
+                </tr>
               ))}
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={() => router("/companies/create")}>
-              Create New Company
-            </Button>
-          </CardFooter>
-        </>
+            </tbody>
+          </table>
+        </div>
       )}
-    </Card>
+      {/* <div className="flex justify-between items-center px-4">
+        <Button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </Button>
+        <span style={{ margin: "0 1rem" }}>
+          Page {page} of {content.totalPage}
+        </span>
+        <Button
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page >= content.totalPage}
+        >
+          Next
+        </Button>
+      </div> */}
+    </div>
   );
 };
 

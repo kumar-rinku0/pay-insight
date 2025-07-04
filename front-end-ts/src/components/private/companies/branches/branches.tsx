@@ -1,12 +1,4 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { useAuth } from "@/providers/use-auth";
 import type { BranchType } from "@/types/res-type";
 import axios from "axios";
@@ -44,45 +36,67 @@ const Branches = () => {
   }
 
   return (
-    <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
-      {branches.length === 0 && (
-        <CardHeader>
-          <CardTitle className="text-xl">No Branch</CardTitle>
-          <CardDescription>
-            You have not created any branches yet. Please create a branch to add
-            staff.
-          </CardDescription>
-          <CardContent className="flex justify-center items-center p-4">
-            <Button onClick={() => location.assign("/companies/create")}>
-              Create Branch
-            </Button>
-          </CardContent>
-        </CardHeader>
-      )}
-      {branches.length > 0 && (
-        <>
-          <CardHeader>
-            <CardTitle className="text-xl">Branches</CardTitle>
-            <CardDescription>
-              Here are your branches. Click on a branch to view more details or
-              manage it.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4">
-              {branches.map((branch: BranchType) => (
-                <Button key={branch._id}>{branch.name}</Button>
+    <div className="px-4 py-2">
+      {branches.length === 0 ? (
+        <div className="min-h-[80vh] flex flex-col gap-2 justify-center items-center">
+          <span className="text-2xl font-bold">NO Branches!</span>
+          <span className="text-gray-500 text-center">
+            You have not created any branches yet. Please create a branch and
+            add employees.
+          </span>
+          <Button onClick={() => router("/branches/create")}>
+            Create New Branch
+          </Button>
+        </div>
+      ) : (
+        <div className="min-h-[80vh]">
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Address
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Radius (metres)
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {branches.map((branch) => (
+                <tr key={branch._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {branch.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {branch.address}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {branch.radius}
+                  </td>
+                </tr>
               ))}
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={() => router("/branches/create")}>
-              Create New Branch
-            </Button>
-          </CardFooter>
-        </>
+            </tbody>
+          </table>
+        </div>
       )}
-    </Card>
+      {/* <div className="flex justify-between items-center px-4">
+        <Button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
+          Prev
+        </Button>
+        <span style={{ margin: "0 1rem" }}>
+          Page {page} of {content.totalPage}
+        </span>
+        <Button
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page >= content.totalPage}
+        >
+          Next
+        </Button>
+      </div> */}
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import User from "../model/user.js";
+import User from "../models/user.js";
 import { randomUUID } from "crypto";
 import { configDotenv } from "dotenv";
 if (process.env.NODE_ENV != "development") {

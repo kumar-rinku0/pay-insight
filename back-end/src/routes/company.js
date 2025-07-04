@@ -1,14 +1,14 @@
 import { Router } from "express";
-import wrapAsync from "../util/wrap-async.js";
+import wrapAsync from "../utils/wrap-async.js";
 import {
   handleCreateCompany,
   handleFetchCompanies,
   handleGetCompanyById,
   handleSelectCompany,
-} from "../controller/company.js";
+} from "../controllers/company.js";
 
 const route = Router();
-import { onlyAdminUser } from "../middleware/auth.js";
+import { onlyAdminUser } from "../middlewares/auth.js";
 
 route.route("/").get((req, res) => {
   return res.status(200).json({ msg: "ok" });

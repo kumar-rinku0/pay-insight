@@ -6,21 +6,21 @@ if (process.env.NODE_ENV != "development") {
 import express from "express";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import { connectDatabase } from "./util/db-con.js";
+import { connectDatabase } from "./utils/db-con.js";
 import { randomUUID } from "crypto";
 
 // routers
-import userRouter from "./route/user.js";
-import companyRouter from "./route/company.js";
-import branchRouter from "./route/branch.js";
-import attendanceRouter from "./route/attendance.js";
-import shiftRouter from "./route/shift.js";
-import contectRouter from "./route/contact.js";
-import roleRouter from "./route/role.js";
-import paymentRouter from "./route/payment.js";
+import userRouter from "./routes/user.js";
+import companyRouter from "./routes/company.js";
+import branchRouter from "./routes/branch.js";
+import attendanceRouter from "./routes/attendance.js";
+import shiftRouter from "./routes/shift.js";
+import contectRouter from "./routes/contact.js";
+import roleRouter from "./routes/role.js";
+import paymentRouter from "./routes/payment.js";
 
 //middlewares
-import { isLoggedInCheck, onlyLoggedInUser } from "./middleware/auth.js";
+import { isLoggedInCheck, onlyLoggedInUser } from "./middlewares/auth.js";
 
 const app = express();
 const port = process.env.PORT || "8000";

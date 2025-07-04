@@ -43,7 +43,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             }
           />
         ) : (
-          <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="hidden text-center text-sm text-neutral-500 dark:text-neutral-400">
             Please select or create a company to view the navigation.
           </p>
         )}
