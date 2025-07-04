@@ -63,7 +63,7 @@ const CreateStaff = () => {
     setIsOpen((prev) => ({ ...prev, branch: value }));
   };
   const handleSetIsOpenEmployeeRole = (value: string | null) => {
-    setIsOpen((prev) => ({ ...prev, role: value }));
+    setIsOpen((prev) => ({ ...prev, employeeRole: value }));
   };
 
   // const [isLoading, setIsLoading] = React.useState(false);
