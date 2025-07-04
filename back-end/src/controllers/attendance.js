@@ -225,9 +225,7 @@ const handleUpdateAttandance = async (req, res) => {
     return res.status(400).json({ message: "invalid role id." });
   }
   const attendance = new Attendance({
-    user: role.user,
-    branch: role.branch,
-    company: role.company,
+    role: roleId,
     status,
     date,
     month: monthName,
