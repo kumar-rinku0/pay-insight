@@ -10,8 +10,8 @@ type ResponseType = {
 
 const PunchInEmployees = () => {
   const [employeesAttendance, setEmployeesAttendance] = useState<
-    EmployeeAttendanceType[]
-  >([]);
+    EmployeeAttendanceType[] | null
+  >(null);
 
   const handleGetEmployeesAttendance = () => {
     axios
@@ -27,9 +27,18 @@ const PunchInEmployees = () => {
   useEffect(() => {
     handleGetEmployeesAttendance();
   }, []);
+  if (!employeesAttendance) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
   if (employeesAttendance.length === 0) {
     return (
-      <div className="flex justify-center items-center">NO Employees IN</div>
+      <div className="flex justify-center items-center h-[60vh]">
+        NO Employees IN
+      </div>
     );
   }
   return (
@@ -55,10 +64,10 @@ const PunchInEmployees = () => {
           {employeesAttendance.map((empoyeeAttendance) => (
             <tr key={empoyeeAttendance._id} className="hover:bg-gray-50">
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {empoyeeAttendance.user.name}
+                {empoyeeAttendance.role.user.name}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:flex">
-                {empoyeeAttendance.user.email}
+                {empoyeeAttendance.role.user.email}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {empoyeeAttendance.status}

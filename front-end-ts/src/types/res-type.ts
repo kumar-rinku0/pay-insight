@@ -48,7 +48,10 @@ export type EmployeeAttendanceType = {
   date: string;
   month: string;
   punchingInfo: PunchingInfoType[];
-  user: UserType;
+  role: {
+    _id: string;
+    user: UserType;
+  };
 };
 
 export type PunchingInfoType = {

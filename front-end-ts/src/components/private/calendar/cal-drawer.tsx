@@ -1,4 +1,11 @@
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import DayButton from "./day-button";
 
 import ATStatusChange from "../attendance/at-status-change";
@@ -9,6 +16,7 @@ import type {
   PunchingInfoType,
 } from "@/types/res-type";
 import axios from "axios";
+import { useAuth } from "@/providers/use-auth";
 
 export type CalendarDrawerType = {
   day: number;
@@ -32,6 +40,7 @@ const CalendarDrawer = ({
   roleId,
   month,
 }: CalendarDrawerType) => {
+  const { user } = useAuth();
   const [punchingInfo, setPunchingInfo] = useState<PunchingInfoType[] | null>(
     null
   );
@@ -46,6 +55,9 @@ const CalendarDrawer = ({
         console.log(err);
       });
   };
+  if (!user) {
+    return null;
+  }
   if (status === "future") {
     return <DayButton day={day} color={color} status={status} />;
   }
@@ -62,45 +74,62 @@ const CalendarDrawer = ({
         />
       </DrawerTrigger>
       <DrawerContent>
-        <ATStatusChange
-          attendanceId={attendanceId}
-          color={color}
-          day={day}
-          month={month}
-          roleId={roleId}
-          status={status}
-        />
+        {user.role.role === "admin" && (
+          <ATStatusChange
+            attendanceId={attendanceId}
+            color={color}
+            day={day}
+            month={month}
+            roleId={roleId}
+            status={status}
+          />
+        )}
         {!punchingInfo && (
-          <Button variant={"link"} onClick={handleViewInfoClick}>
-            View Info
-          </Button>
+          <DrawerHeader>
+            <DrawerTitle>Punching Information!!</DrawerTitle>
+            <DrawerDescription> </DrawerDescription>
+            <Button variant={"link"} onClick={handleViewInfoClick}>
+              View Info
+            </Button>
+          </DrawerHeader>
         )}
 
         {punchingInfo && (
-          <div className="flex flex-wrap gap-1 p-2">
-            {punchingInfo.map((item) => (
-              <div className="bg-accent p-2 rounded-md">
-                <div>
-                  <span>in : </span>
-                  <span>
-                    {new Date(item.punchInInfo.createdAt).toLocaleTimeString(
-                      "en-US"
-                    )}
-                  </span>
-                </div>
-                <div>
-                  <span>out : </span>
-                  <span>
-                    {item.punchOutInfo
-                      ? new Date(item.punchInInfo.createdAt).toLocaleTimeString(
-                          "en-US"
-                        )
-                      : "-------"}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <>
+            <DrawerHeader>
+              <DrawerTitle>Punching Information!!</DrawerTitle>
+              <DrawerDescription> </DrawerDescription>
+            </DrawerHeader>
+            <div className="flex justify-center items-center flex-wrap gap-1 p-2">
+              {punchingInfo.map((item, idx) => (
+                <DrawerHeader className="bg-accent p-2 rounded-md" key={idx}>
+                  <DrawerDescription>
+                    <span>IN&#42; : </span>
+                    <span>
+                      {new Date(item.punchInInfo.createdAt).toLocaleTimeString(
+                        "en-US",
+                        { hour: "numeric", minute: "numeric" }
+                      )}
+                    </span>
+                  </DrawerDescription>
+
+                  <DrawerDescription>
+                    <span>OUT : </span>
+                    <span>
+                      {item.punchOutInfo
+                        ? new Date(
+                            item.punchInInfo.createdAt
+                          ).toLocaleTimeString("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                          })
+                        : "--:--"}
+                    </span>
+                  </DrawerDescription>
+                </DrawerHeader>
+              ))}
+            </div>
+          </>
         )}
       </DrawerContent>
     </Drawer>
