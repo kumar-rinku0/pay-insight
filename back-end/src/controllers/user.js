@@ -97,7 +97,9 @@ const handleUserSignUpWithRoles = async (req, res) => {
     _id: user._id,
     password,
   });
-  return res.status(200).json({ message: "ok", user: user });
+  return res
+    .status(200)
+    .json({ message: "ok, assigned.", user: user, role: newRole });
 };
 
 const handleUserSignIn = async (req, res) => {
