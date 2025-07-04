@@ -43,8 +43,8 @@ const Profile = () => {
   return (
     <div className="p-6 space-y-6">
       <h3 className="mb-4 text-lg font-medium">Account Settings</h3>
-      <div className="flex justify-around flex-wrap gap-4">
-        <Card className="min-w-xs md:min-w-sm lg:min-w-md">
+      <div className="flex justify-around items-center flex-wrap gap-4">
+        <Card className="min-w-xs min-h-60 md:min-w-sm lg:min-w-md">
           <CardHeader>
             <CardTitle className="text-lg">Account Info</CardTitle>
           </CardHeader>
@@ -71,7 +71,7 @@ const Profile = () => {
             </div>
           </CardContent>
         </Card>
-        <Card className="min-w-xs md:min-w-sm lg:min-w-md">
+        <Card className="min-w-xs min-h-60 md:min-w-sm lg:min-w-md">
           <CardHeader>
             <CardTitle className="text-lg">Update Display Name</CardTitle>
             <CardDescription>
@@ -93,7 +93,7 @@ const Profile = () => {
           <CardFooter></CardFooter>
         </Card>
 
-        <Card className="min-w-xs md:min-w-sm lg:min-w-md">
+        <Card className="min-w-xs min-h-60 md:min-w-sm lg:min-w-md">
           <CardHeader>
             <CardTitle className="text-lg">Delete Account</CardTitle>
             <CardDescription>
