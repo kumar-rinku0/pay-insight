@@ -31,10 +31,6 @@ const roleSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Branch",
   },
-  shift: {
-    type: Schema.Types.ObjectId,
-    ref: "Shift",
-  },
   role: {
     type: String,
     enum: {

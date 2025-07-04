@@ -32,7 +32,7 @@ export const handleCreateShifts = async (req, res) => {
     endTime,
     startTime,
     weekOffs,
-    createdFor: userId,
+    createdFor: roleId,
   });
   await shift.save();
   return res.status(201).send({ message: "shift created.", shift: shift });
