@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import type { RoleType } from "@/types/res-type";
 import axios from "axios";
+import { Button } from "../ui/button";
 
 export function NavSwitcher({ company }: { company: RoleType | null }) {
   const { isMobile } = useSidebar();
@@ -53,12 +54,9 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
 
   if (!company) {
     return (
-      <a
-        className="font-medium text-neutral-500 dark:text-neutral-400"
-        href="/companies/create"
-      >
+      <Button onClick={() => location.assign("/companies/create")}>
         Create Company
-      </a>
+      </Button>
     );
   }
 
