@@ -10,8 +10,8 @@ type ResponseType = {
 
 const PunchInEmployees = () => {
   const [employeesAttendance, setEmployeesAttendance] = useState<
-    EmployeeAttendanceType[]
-  >([]);
+    EmployeeAttendanceType[] | null
+  >(null);
 
   const handleGetEmployeesAttendance = () => {
     axios
@@ -27,9 +27,18 @@ const PunchInEmployees = () => {
   useEffect(() => {
     handleGetEmployeesAttendance();
   }, []);
+  if (!employeesAttendance) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
   if (employeesAttendance.length === 0) {
     return (
-      <div className="flex justify-center items-center">NO Employees IN</div>
+      <div className="flex justify-center items-center h-[60vh]">
+        NO Employees IN
+      </div>
     );
   }
   return (

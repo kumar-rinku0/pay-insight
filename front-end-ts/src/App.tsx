@@ -12,20 +12,20 @@ import NoPage from "./components/root/no-page";
 import CreateCompany from "./components/private/companies/create-company";
 import VerifyPage from "./components/auth/verify-user";
 import ResetPage from "./components/auth/reset-password";
-import CreateBranch from "./components/private/companies/branches/create-branch";
-import CreateStaff from "./components/private/companies/staff/create-staff";
+import CreateBranch from "./components/private/branches/create-branch";
+import CreateStaff from "./components/private/staff/create-staff";
 import Attendance from "./components/private/attendance/attendance";
 import Search from "./components/private/search/search";
 import Dashboard from "./components/private/dashboard/dashboard";
-import Staff from "./components/private/companies/staff/staff";
+import Staff from "./components/private/staff/staff";
 import Profile from "./components/private/profile/profile";
 import {
   EmployeeCalendar,
   AdminCalendar,
 } from "./components/private/calendar/calendar";
 import Companies from "./components/private/companies/companies";
-import Branches from "./components/private/companies/branches/branches";
-import Shift from "./components/private/companies/staff/shift";
+import Branches from "./components/private/branches/branches";
+import Shift from "./components/private/staff/shift";
 import Settings from "./components/private/settings/settings";
 import Subscription from "./components/private/subscription/subscription";
 import PayStatus from "./components/private/subscription/status";
