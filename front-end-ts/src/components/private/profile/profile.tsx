@@ -11,6 +11,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 
 const Profile = () => {
@@ -30,10 +41,10 @@ const Profile = () => {
       });
   };
   return (
-    <div className=" p-6 space-y-6">
-      <h1 className="text-3xl font-semibold">Account Settings</h1>
-      <div className="flex justify-around flex-wrap gap-2">
-        <Card className="min-w-sm">
+    <div className="p-6 space-y-6">
+      <h3 className="mb-4 text-lg font-medium">Account Settings</h3>
+      <div className="flex justify-around flex-wrap gap-4">
+        <Card className="min-w-xs md:min-w-sm lg:min-w-md">
           <CardHeader>
             <CardTitle className="text-lg">Account Info</CardTitle>
           </CardHeader>
@@ -60,7 +71,7 @@ const Profile = () => {
             </div>
           </CardContent>
         </Card>
-        <Card className="min-w-sm">
+        <Card className="min-w-xs md:min-w-sm lg:min-w-md">
           <CardHeader>
             <CardTitle className="text-lg">Update Display Name</CardTitle>
             <CardDescription>
@@ -82,18 +93,39 @@ const Profile = () => {
           <CardFooter></CardFooter>
         </Card>
 
-        <Card className="min-w-sm">
+        <Card className="min-w-xs md:min-w-sm lg:min-w-md">
           <CardHeader>
             <CardTitle className="text-lg">Delete Account</CardTitle>
             <CardDescription>
-              To delete your account, click the button below.
+              To delete your account, click the button below. This action cannot
+              be undone. This will permanently delete your account and remove
+              your data from our servers.
             </CardDescription>
           </CardHeader>
           <form>
             <CardContent>
-              <Button variant="destructive" onClick={handleDeleteAccount}>
-                Delete Account
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">Delete Account</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your account and remove your data from our servers.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteAccount}>
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardContent>
           </form>
           <CardFooter></CardFooter>

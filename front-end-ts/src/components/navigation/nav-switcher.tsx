@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronsUpDown, Plus } from "lucide-react";
+import { Building2, ChevronsUpDown, Plus } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import type { RoleType } from "@/types/res-type";
 import axios from "axios";
-import { Button } from "../ui/button";
+// import { Button } from "../ui/button";
 
 export function NavSwitcher({ company }: { company: RoleType | null }) {
   const { isMobile } = useSidebar();
@@ -54,9 +54,18 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
 
   if (!company) {
     return (
-      <Button onClick={() => location.assign("/companies/create")}>
-        Create Company
-      </Button>
+      <SidebarMenuButton
+        onClick={() => location.assign("/companies/create")}
+        size="lg"
+        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+      >
+        <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+          <Plus className="size-4" />
+        </div>
+        <div className="grid flex-1 text-left text-sm leading-tight">
+          <span className="truncate font-medium">Create Company</span>
+        </div>
+      </SidebarMenuButton>
     );
   }
 
@@ -77,6 +86,7 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
             >
               <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 {/* <activeCompany.logo className="size-4" /> */}
+                <Building2 className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{company.name}</span>
@@ -94,7 +104,7 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Companies
             </DropdownMenuLabel>
-            {companies.map((comp, index) => (
+            {companies.map((comp) => (
               <DropdownMenuItem
                 key={comp.name}
                 onSelect={() => handleSelectOneCompany(comp._id)}
@@ -102,9 +112,10 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
               >
                 <div className="flex size-6 items-center justify-center rounded-md border">
                   {/* <comp.logo className="size-3.5 shrink-0" /> */}
+                  <Building2 className="size-3.5 shrink-0" />
                 </div>
                 {comp.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                <DropdownMenuShortcut>{comp.role}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />

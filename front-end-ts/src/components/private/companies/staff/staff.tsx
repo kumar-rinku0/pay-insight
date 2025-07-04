@@ -141,8 +141,8 @@ const StaffPage = () => {
   return (
     <div>
       <div className="px-4 flex gap-4 justify-between items-center">
-        <span className="hidden lg:flex gap-2">
-          <Input className="w-60" />
+        <span className="flex gap-2">
+          <Input className="w-40 md:w-60" />
           <Button variant="outline">
             <Search />
           </Button>
