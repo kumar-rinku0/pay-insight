@@ -32,10 +32,10 @@ const shiftSchema = z.object({
 type ShiftFormData = z.infer<typeof shiftSchema>;
 
 export const StaffShift = ({
-  userId,
+  employeeId,
   shift,
 }: {
-  userId: string | null;
+  employeeId: string | null;
   shift?: ShiftType | null;
 }) => {
   const router = useNavigate();
@@ -69,7 +69,7 @@ export const StaffShift = ({
       axios
         .post("/api/shift/create", {
           ...data,
-          userId,
+          employeeId,
           weekOffs: selectedWeekOffs,
         })
         .then((res) => {
@@ -218,20 +218,20 @@ export const StaffShift = ({
 
 const Shift = () => {
   const [searchParams] = useSearchParams();
-  const userId = searchParams.get("userId");
+  const employeeId = searchParams.get("employeeId");
   const [loading, setLoading] = useState<boolean>(false);
   const [shift, setShift] = useState<ShiftType | null>(null);
   useEffect(() => {
     // Fetch existing shift data if needed
-    if (userId) {
-      handleFetchShift(userId);
+    if (employeeId) {
+      handleFetchShift(employeeId);
     }
-  }, [userId]);
+  }, [employeeId]);
 
-  const handleFetchShift = (userId: string) => {
+  const handleFetchShift = (employeeId: string) => {
     setLoading(true);
     axios
-      .get(`/api/shift/${userId}`)
+      .get(`/api/shift/employeeId/${employeeId}`)
       .then((res) => {
         console.log(res.data);
         setShift(res.data.shift);
@@ -245,7 +245,7 @@ const Shift = () => {
       });
   };
 
-  if (!userId || loading) {
+  if (!employeeId || loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
@@ -254,10 +254,10 @@ const Shift = () => {
   }
 
   if (!shift) {
-    return <StaffShift userId={userId} />;
+    return <StaffShift employeeId={employeeId} />;
   }
 
-  return <StaffShift userId={userId} shift={shift} />;
+  return <StaffShift employeeId={employeeId} shift={shift} />;
 };
 
 export default Shift;

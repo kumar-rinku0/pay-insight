@@ -53,8 +53,8 @@ const CreateStaff = () => {
   const [isOpen, setIsOpen] = React.useState<{
     overlay: boolean;
     branch: string | null;
-    user: string | null;
-  }>({ overlay: false, branch: null, user: null });
+    employeeRole: string | null;
+  }>({ overlay: false, branch: null, employeeRole: null });
   const handleSetIsOpenOverlay = (value: boolean) => {
     setIsOpen((prev) => ({ ...prev, overlay: value }));
   };
@@ -62,8 +62,8 @@ const CreateStaff = () => {
   const handleSetIsOpenBranch = (value: string | null) => {
     setIsOpen((prev) => ({ ...prev, branch: value }));
   };
-  const handleSetIsOpenUser = (value: string | null) => {
-    setIsOpen((prev) => ({ ...prev, user: value }));
+  const handleSetIsOpenEmployeeRole = (value: string | null) => {
+    setIsOpen((prev) => ({ ...prev, role: value }));
   };
 
   // const [isLoading, setIsLoading] = React.useState(false);
@@ -95,12 +95,12 @@ const CreateStaff = () => {
         {!isOpen.overlay && (
           <EmpoyeeDetails
             handleSetIsOpenOverlay={handleSetIsOpenOverlay}
-            handleSetIsOpenUser={handleSetIsOpenUser}
+            handleSetIsOpenEmployeeRole={handleSetIsOpenEmployeeRole}
             branchId={user.role.branch}
           />
         )}
         {isOpen.overlay && (
-          <StaffShift userId={isOpen.user} /> // Show shift form when overlay is open
+          <StaffShift employeeId={isOpen.employeeRole} /> // Show shift form when overlay is open
         )}
       </main>
     );
@@ -115,12 +115,12 @@ const CreateStaff = () => {
       {isOpen.branch && !isOpen.overlay && (
         <EmpoyeeDetails
           handleSetIsOpenOverlay={handleSetIsOpenOverlay}
-          handleSetIsOpenUser={handleSetIsOpenUser}
+          handleSetIsOpenEmployeeRole={handleSetIsOpenEmployeeRole}
           branchId={isOpen.branch}
         />
       )}
       {isOpen.branch && isOpen.overlay && (
-        <StaffShift userId={isOpen.user} /> // Show shift form when overlay is open
+        <StaffShift employeeId={isOpen.employeeRole} /> // Show shift form when overlay is open
       )}
     </main>
   );
@@ -201,11 +201,11 @@ const ShowBranches = ({
 
 const EmpoyeeDetails = ({
   handleSetIsOpenOverlay,
-  handleSetIsOpenUser,
+  handleSetIsOpenEmployeeRole,
   branchId,
 }: {
   handleSetIsOpenOverlay: (value: boolean) => void;
-  handleSetIsOpenUser: (value: string | null) => void;
+  handleSetIsOpenEmployeeRole: (value: string | null) => void;
   branchId: string;
 }) => {
   const { isAuthenticated, user } = useAuth();
@@ -238,7 +238,7 @@ const EmpoyeeDetails = ({
         })
         .then((res) => {
           console.log(res);
-          handleSetIsOpenUser(res.data.user._id); // Set the user ID for the shift form
+          handleSetIsOpenEmployeeRole(res.data.role._id); // Set the user ID for the shift form
           toast.success(res.data.message);
           handleSetIsOpenOverlay(true); // Open the shift form after staff creation
         })

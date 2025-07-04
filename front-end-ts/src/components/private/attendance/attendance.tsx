@@ -36,11 +36,7 @@ const Attendance = () => {
   useEffect(() => {
     if (isAuthenticated && user && user.role) {
       axios
-        .post("/api/attendance/users/information/today", {
-          userId: user._id,
-          companyId: user.role.company,
-          branchId: user.role.branch,
-        })
+        .get("/api/attendance/users/information/today")
         .then((res) => {
           console.log("Attendance info:", res.data);
           startCamera();
@@ -225,9 +221,7 @@ const Attendance = () => {
       ...(hasPunchedIn
         ? { punchOutGeometry: geo, punchOutPhoto: photo }
         : { punchInGeometry: geo, punchInPhoto: photo }),
-      userId: user?._id ?? "",
-      companyId: user?.role?.company ?? "",
-      branchId: user?.role?.branch ?? "",
+      roleId: user?.role._id,
     })
       .then((res) => {
         console.log("Punch successful:", res.data);

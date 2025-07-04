@@ -102,7 +102,7 @@ const Staff = ({ page }: { page: number }) => {
                     </Button>
                     <Button
                       onClick={() =>
-                        router(`/staff/shift?userId=${role.user._id}`)
+                        router(`/staff/shift?employeeId=${role._id}`)
                       }
                       variant="outline"
                       className="flex justify-center items-center cursor-pointer"

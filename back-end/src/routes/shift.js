@@ -11,7 +11,7 @@ import { onlyAdminOrManagerUser } from "../middlewares/auth.js";
 const router = express.Router();
 
 router.get("/all", wrapAsync(getAllShifts));
-router.get("/:employeeId", wrapAsync(getShiftByEmployeeId));
+router.get("/employeeId/:employeeId", wrapAsync(getShiftByEmployeeId));
 router
   .route("/create")
   .post(onlyAdminOrManagerUser, wrapAsync(handleCreateShifts));
