@@ -176,11 +176,21 @@ const handleGetEmployeesAttendanceWithPunchingInfo = async (req, res) => {
   const formattedDate = formatDateForComparison(
     getLocaleDateStringByTimeZone()
   );
+  const roles = await Role.find({ company: user.role.company });
   const query = {
-    $and: [{ date: formattedDate }, { company: user.role.company }],
+    $and: [{ date: formattedDate }, { role: { $in: roles } }],
   };
   const attendances = await Attendance.find(query)
-    .populate("role.user", "name email")
+    .populate({
+      path: "role",
+      model: "Role",
+      select: "user",
+      populate: {
+        path: "user", // this is nested populate
+        model: "User",
+        select: "name email",
+      },
+    })
     .populate("punchingInfo.punchInInfo", "status createdAt")
     .populate("punchingInfo.punchOutInfo", "status createdAt");
 
