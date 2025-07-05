@@ -217,12 +217,20 @@ const Attendance = () => {
       : "/api/attendance/mark";
     const method = hasPunchedIn ? axios.put : axios.post;
 
-    method(endpoint, {
-      ...(hasPunchedIn
-        ? { punchOutGeometry: geo, punchOutPhoto: photo }
-        : { punchInGeometry: geo, punchInPhoto: photo }),
-      roleId: user?.role._id,
-    })
+    method(
+      endpoint,
+      {
+        ...(hasPunchedIn
+          ? { punchOutGeometry: geo, punchOutPhoto: photo }
+          : { punchInGeometry: geo, punchInPhoto: photo }),
+        roleId: user?.role._id,
+      },
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    )
       .then((res) => {
         console.log("Punch successful:", res.data);
         setHasPunchedIn(!hasPunchedIn);
