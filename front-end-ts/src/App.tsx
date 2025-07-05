@@ -34,6 +34,7 @@ import Privacy from "./components/root/privacy";
 import Policy from "./components/root/policy";
 import Home from "./components/private/home/home";
 import Session from "./components/private/profile/session";
+import ImageUpload from "./components/root/upload";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -81,38 +82,7 @@ function App() {
             <Route path="/status" element={<PayStatus />} />
             <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />
-            <>
-              {/* <Route path="/settings" element={<Settings />} />
-              <Route path="/select" element={<SelectCompany />} />
-              <Route path="/branch" element={<CreateBranch />} />
-              <Route path="/attendance" element={<Attendance />} />
-              <Route path="/leavereq" element={<Leaves />} />
-              <Route path="/leaveapr" element={<ApprovePage />} />
-              <Route path="/holidaylist" element={<HolidayList />} />
-              <Route
-                path="/attendancedetails"
-                element={<AttendanceDetails />}
-              />
-              <Route path="/worktimings" element={<WorkTime />} />
-              <Route path="/attendancemode" element={<AttendanceModes />} />
-              <Route path="/automationrules" element={<AutomationRules />} />
-              <Route path="/attendancepage" element={<CalendarPage />} />
-              <Route path="/editattendance" element={<EditAttendance />} />
-              <Route path="/create" element={<CreateCompany />} />
-              <Route path="/showdetails" element={<ShowCompany />} />
-              <Route path="/staff" element={<CreateStaff />} />
-              <Route path="/selectcompany" element={<SelectCompany />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profilepage" element={<ProfilePage />} />
-              <Route path="/personaldetails" element={<PersonalDetails />} />
-              <Route path="/currentemp" element={<CurrentEmp />} />
-              <Route path="/bankdetails" element={<BankDetails />} />
-              <Route path="/leavesform" element={<LeavesPage />} />
-              <Route path="/leavedetails" element={<LeaveDetails />} />
-              <Route path="/notespage" element={<NotesPage />} />
-              <Route path="/message" element={<MessagesSystem />} />
-              <Route path="/button" element={<ExportUsersCSVButton />} /> */}
-            </>
+            <Route path="/upload" element={<ImageUpload />} />
           </Route>
         )}
         <Route path="/*" element={<NoPage />} />
