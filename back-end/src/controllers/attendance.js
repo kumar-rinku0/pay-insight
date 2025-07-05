@@ -14,7 +14,7 @@ const handlemarkPunchIn = async (req, res) => {
   if (!req.url) {
     return res.json({ message: "file not found." });
   }
-  const punchInPhoto = req.url;
+  const punchInImg = req.url;
   const date = formatDateForComparison(getLocaleDateStringByTimeZone());
   const month = getLocaleMonthStringByTimeZone();
   const punchInAddress = await reverseGeocode(
@@ -24,7 +24,7 @@ const handlemarkPunchIn = async (req, res) => {
   const punchIn = new PunchIn({
     punchInGeometry,
     punchInAddress,
-    punchInPhoto,
+    punchInImg,
   });
   await punchIn.save();
   const prevAttendance = await Attendance.findOne({
@@ -52,7 +52,7 @@ const handlemarkPunchOut = async (req, res) => {
   if (!req.url) {
     return res.json({ message: "file not found." });
   }
-  const punchOutPhoto = req.url;
+  const punchOutImg = req.url;
   const punchOutAddress = await reverseGeocode(
     punchOutGeometry.coordinates[1],
     punchOutGeometry.coordinates[0]
@@ -60,7 +60,7 @@ const handlemarkPunchOut = async (req, res) => {
   const punchOut = new PunchOut({
     punchOutGeometry,
     punchOutAddress,
-    punchOutPhoto,
+    punchOutImg,
   });
   await punchOut.save();
   const date = formatDateForComparison(getLocaleDateStringByTimeZone());

@@ -14,21 +14,25 @@ import { onlyAdminOrManagerUser } from "../middlewares/auth.js";
 
 // import { handleUploadImage } from "../util/cloud-init.js";
 import multer from "multer";
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+import { handleUploadImage } from "../utils/cloud-init.js";
+const upload = multer({ dest: "uploads/" });
 
 const router = express.Router();
 
-router.route("/mark").post(
-  upload.single("punchInPhoto"),
-  // wrapAsync(handleUploadImage),
-  wrapAsync(handlemarkPunchIn)
-);
-router.route("/mark").put(
-  upload.single("punchOutPhoto"),
-  // wrapAsync(handleUploadImage),
-  wrapAsync(handlemarkPunchOut)
-);
+router
+  .route("/mark")
+  .post(
+    upload.single("punchInPhoto"),
+    wrapAsync(handleUploadImage),
+    wrapAsync(handlemarkPunchIn)
+  );
+router
+  .route("/mark")
+  .put(
+    upload.single("punchOutPhoto"),
+    wrapAsync(handleUploadImage),
+    wrapAsync(handlemarkPunchOut)
+  );
 
 router
   .route("/users/information/today")
@@ -52,5 +56,12 @@ router
     onlyAdminOrManagerUser,
     wrapAsync(handleGetEmployeesAttendanceWithPunchingInfo)
   );
+
+router
+  .route("/upload")
+  .post(upload.single("image"), wrapAsync(handleUploadImage), (req, res) => {
+    console.log("url is:", req.url);
+    return res.status(200).json({ status: "okay." });
+  });
 
 export default router;

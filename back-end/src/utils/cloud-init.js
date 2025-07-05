@@ -1,7 +1,5 @@
-// import path from "path";
-// import { configDotenv } from "dotenv";
-
-// configDotenv(); // Load from .env file
+import { configDotenv } from "dotenv";
+configDotenv(); // Load from .env file
 
 // const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 
@@ -38,3 +36,35 @@
 //   req.url = result.Location;
 //   return next();
 // };
+
+import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
+const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+const API_KEY = process.env.CLOUDINARY_API_KEY;
+const API_SECRET = process.env.CLOUDINARY_API_SECRET;
+cloudinary.config({
+  cloud_name: CLOUD_NAME,
+  api_key: API_KEY,
+  api_secret: API_SECRET,
+});
+export const handleUploadImage = async (req, res, next) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded");
+  }
+  const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: "payinsight",
+    transformation: {
+      quality: "auto",
+      format: "auto",
+      crop: "thumb",
+      gravity: "face",
+      width: 400,
+      height: 400,
+    },
+  });
+
+  fs.unlinkSync(req.file.path); // Clean up local file
+
+  req.url = result.secure_url;
+  return next();
+};

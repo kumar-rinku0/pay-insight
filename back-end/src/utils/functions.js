@@ -5,7 +5,7 @@ import { configDotenv } from "dotenv";
 if (process.env.NODE_ENV != "development") {
   configDotenv();
 }
-// const mapToken = process.env.MAPBOX_DEFAULT_TOKEN;
+const mapToken = process.env.MAPBOX_DEFAULT_TOKEN;
 
 export const isRightUser = async function (email, password) {
   const user = await User.findOne({ email: email.trim() });
@@ -100,7 +100,11 @@ export function getLocaleMonthStringByTimeZone() {
 
 // Function to reverse geocode (coordinates to address)
 export const reverseGeocode = async (latitude, longitude) => {
-  return null;
+  const res = await fetch(
+    `https://api.mapbox.com/search/geocode/v6/reverse?longitude=${longitude}&latitude=${latitude}&access_token=${mapToken}`
+  );
+  const data = await res.json();
+  return data.features[0].properties.full_address || null;
 };
 
 export const fixName = (name) => {
