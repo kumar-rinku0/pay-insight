@@ -21,6 +21,7 @@
   "homepage": "https://github.com/kumar-rinku0/pay-insight-0#readme",
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.7.0",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
