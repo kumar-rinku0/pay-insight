@@ -1,4 +1,8 @@
 import Company from "../models/company.js";
+import { config } from "dotenv";
+if (process.env.NODE_ENV != "development") {
+  config();
+}
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import {
@@ -117,10 +121,13 @@ const handleUserSignIn = async (req, res) => {
     email: user.email,
     role: role,
   };
+  const DOMAIN = process.env.DOMAIN;
+  const redirect = `${DOMAIN}/account/onetap?next=%2F`;
   return res.status(200).json({
     user: user,
     role: role,
     message: "login successful.",
+    redirect: redirect,
   });
 };
 

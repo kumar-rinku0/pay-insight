@@ -49,7 +49,7 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: [true, "email is required."],
-      unique: [true, "email already exist."],
+      unique: [true, "email already registered."],
       validate: {
         validator: function (v) {
           return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(v);
