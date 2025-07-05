@@ -51,7 +51,11 @@ export const handleUploadImage = async (req, res, next) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded");
   }
-  const result = await cloudinary.uploader.upload(req.file.path, {
+  const file = req.file;
+  const mimeType = file.mimetype; // e.g., 'image/jpeg'
+  const base64String = file.buffer.toString("base64");
+  const dataUri = `data:${mimeType};base64,${base64String}`;
+  const result = await cloudinary.uploader.upload(dataUri, {
     folder: "payinsight",
     transformation: {
       quality: "auto",
@@ -62,8 +66,6 @@ export const handleUploadImage = async (req, res, next) => {
       height: 400,
     },
   });
-
-  fs.unlinkSync(req.file.path); // Clean up local file
 
   req.url = result.secure_url;
   return next();
