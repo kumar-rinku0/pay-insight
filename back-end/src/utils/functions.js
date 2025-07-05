@@ -11,7 +11,7 @@ export const isRightUser = async function (email, password) {
   const user = await User.findOne({ email: email.trim() });
   if (!user) {
     return {
-      message: "wrong email address.",
+      message: "email not registered.",
       type: "UserNotFound",
       status: 400,
     };

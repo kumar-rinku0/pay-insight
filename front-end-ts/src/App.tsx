@@ -33,6 +33,7 @@ import Terms from "./components/root/terms";
 import Privacy from "./components/root/privacy";
 import Policy from "./components/root/policy";
 import Home from "./components/private/home/home";
+import Session from "./components/private/profile/session";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -73,7 +74,8 @@ function App() {
             <Route path="/staff/shift" element={<Shift />} />
             <Route path="/calendar" element={<EmployeeCalendar />} />
             <Route path="/attendance" element={<Attendance />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/account" element={<Profile />} />
+            <Route path="/account/onetap" element={<Session />} />
 
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/status" element={<PayStatus />} />

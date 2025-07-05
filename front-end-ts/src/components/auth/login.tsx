@@ -35,6 +35,7 @@ type ResponseProp = {
   user: UserType;
   role: RoleType;
   message: string;
+  redirect: string;
 };
 
 const formSchema = z.object({
@@ -211,8 +212,8 @@ const LoginOverlay = ({
   changeLoading: (values: Partial<LoadingProp>) => void;
 }) => {
   // 1. Define your form.
-  const router = useNavigate();
-  const { isAuthenticated, signIn } = useAuth();
+  // const router = useNavigate();
+  const { isAuthenticated } = useAuth();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -230,29 +231,7 @@ const LoginOverlay = ({
       .post<ResponseProp>("/api/user/login", values)
       .then((res) => {
         console.log(res.data);
-        if (res.status === 200) {
-          const { user, role, message } = res.data;
-          signIn({ ...user, role: role });
-          router("/");
-          toast(message, {
-            description: "remember password?",
-            action: {
-              label: "okay!",
-              onClick: () => {
-                axios
-                  .patch(`/api/user/remember`)
-                  .then((res) => {
-                    location.reload();
-                    toast.success(res.data.message);
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    toast.error(err.response.data.message);
-                  });
-              },
-            },
-          });
-        }
+        location.assign(res.data.redirect);
       })
       .catch((err) => {
         const { type, message } = err.response.data;

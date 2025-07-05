@@ -50,10 +50,10 @@ export const NavItems = () => {
           isActive: isNavItemActive(pathname, `/calendar`),
         },
         {
-          title: "Profile",
-          url: "/profile",
+          title: "Account",
+          url: "/account",
           icon: User,
-          isActive: isNavItemActive(pathname, `/profile`),
+          isActive: isNavItemActive(pathname, `/account`),
         },
         {
           title: "Settings",
@@ -110,10 +110,10 @@ export const NavItems = () => {
           isActive: isNavItemActive(pathname, `/staff`),
         },
         {
-          title: "Profile",
-          url: "/profile",
+          title: "Account",
+          url: "/account",
           icon: User,
-          isActive: isNavItemActive(pathname, `/profile`),
+          isActive: isNavItemActive(pathname, `/account`),
         },
         {
           title: "Settings",
@@ -154,10 +154,10 @@ export const NavItems = () => {
           isActive: isNavItemActive(pathname, `/staff`),
         },
         {
-          title: "Profile",
-          url: "/profile",
+          title: "Account",
+          url: "/account",
           icon: User,
-          isActive: isNavItemActive(pathname, `/profile`),
+          isActive: isNavItemActive(pathname, `/account`),
         },
         {
           title: "Settings",

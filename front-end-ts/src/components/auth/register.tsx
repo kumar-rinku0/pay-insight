@@ -26,6 +26,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 // import { authorizeUrl } from "@/components/partial/google-auth";
 import { useAuth } from "@/providers/use-auth";
+import { useState } from "react";
 
 const formSchema = z.object({
   givenName: z.string().min(2, "at least 2 characters!").max(20),
@@ -37,6 +38,7 @@ const formSchema = z.object({
 const Register = () => {
   const router = useNavigate();
   const { isAuthenticated } = useAuth(); // Assuming you have a useAuth hook to check authentication status
+  const [loading, setLoading] = useState(false);
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,6 +52,7 @@ const Register = () => {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
@@ -64,7 +67,10 @@ const Register = () => {
       })
       .catch((err) => {
         console.log(err);
-        toast.error(err.response.data.error);
+        toast.error(err.response.data.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }
 
@@ -149,7 +155,7 @@ const Register = () => {
                     )}
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" disabled={loading}>
                   Create an account
                 </Button>
               </form>
