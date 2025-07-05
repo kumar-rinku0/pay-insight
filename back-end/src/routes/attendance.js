@@ -15,7 +15,7 @@ import { onlyAdminOrManagerUser } from "../middlewares/auth.js";
 // import { handleUploadImage } from "../util/cloud-init.js";
 import multer from "multer";
 import { handleUploadImage } from "../utils/cloud-init.js";
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
