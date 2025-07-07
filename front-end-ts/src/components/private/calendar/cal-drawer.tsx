@@ -17,6 +17,7 @@ import type {
 } from "@/types/res-type";
 import axios from "axios";
 import { useAuth } from "@/providers/use-auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export type CalendarDrawerType = {
   day: number;
@@ -102,30 +103,66 @@ const CalendarDrawer = ({
             </DrawerHeader>
             <div className="flex justify-center items-center flex-wrap gap-1 p-2">
               {punchingInfo.map((item, idx) => (
-                <DrawerHeader className="bg-accent p-2 rounded-md" key={idx}>
-                  <DrawerDescription>
-                    <span>IN&#42; : </span>
-                    <span>
-                      {new Date(item.punchInInfo.createdAt).toLocaleTimeString(
-                        "en-US",
-                        { hour: "numeric", minute: "numeric" }
-                      )}
-                    </span>
-                  </DrawerDescription>
-
-                  <DrawerDescription>
-                    <span>OUT : </span>
-                    <span>
-                      {item.punchOutInfo
-                        ? new Date(
+                <DrawerHeader
+                  className="w-sm bg-accent p-2 rounded-md"
+                  key={idx}
+                >
+                  <div className="flex gap-1">
+                    <Avatar className="h-16 w-16 rounded-lg">
+                      <AvatarImage
+                        src={item.punchOutInfo?.punchOutImg}
+                        alt={item.punchOutInfo?.status}
+                      />
+                      <AvatarFallback className="rounded-lg bg-white">
+                        IN
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col gap-1">
+                      <DrawerTitle className="text-start">
+                        <span>IN&#42; : </span>
+                        <span>
+                          {new Date(
                             item.punchInInfo.createdAt
                           ).toLocaleTimeString("en-US", {
                             hour: "numeric",
                             minute: "numeric",
-                          })
-                        : "--:--"}
-                    </span>
-                  </DrawerDescription>
+                          })}
+                        </span>
+                      </DrawerTitle>
+                      <DrawerDescription className="text-start">
+                        {item.punchInInfo.punchInAddress}
+                      </DrawerDescription>
+                    </div>
+                  </div>
+                  <div className="flex gap-1">
+                    <Avatar className="h-16 w-16 rounded-lg">
+                      <AvatarImage
+                        src={item.punchOutInfo?.punchOutImg}
+                        alt={item.punchOutInfo?.status}
+                      />
+                      <AvatarFallback className="rounded-lg bg-white">
+                        OUT
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col gap-1">
+                      <DrawerTitle className="text-start">
+                        <span>OUT : </span>
+                        <span>
+                          {item.punchOutInfo
+                            ? new Date(
+                                item.punchOutInfo.createdAt
+                              ).toLocaleTimeString("en-US", {
+                                hour: "numeric",
+                                minute: "numeric",
+                              })
+                            : "--:--"}
+                        </span>
+                      </DrawerTitle>
+                      <DrawerDescription className="text-start">
+                        {item.punchOutInfo?.punchOutAddress}
+                      </DrawerDescription>
+                    </div>
+                  </div>
                 </DrawerHeader>
               ))}
             </div>
