@@ -5,43 +5,54 @@ import Checkout from "./checkout";
 
 const plans = [
   {
-    id: "001",
+    _id: "001",
     duration: "1 month",
-    price: "2",
+    durationDays: 30,
+    price: 2,
   },
   {
-    id: "002",
+    _id: "002",
     duration: "3 month",
-    price: "6",
+    durationDays: 90,
+    price: 6,
   },
   {
-    id: "003",
+    _id: "003",
     duration: "6 month",
-    price: "11",
+    durationDays: 180,
+    price: 11,
   },
   {
-    id: "004",
+    _id: "004",
     duration: "1 year",
-    price: "21",
+    durationDays: 365,
+    price: 21,
   },
-];
+] as PlanType[];
 
 type ResponseType = {
   orderInfo: OrderType;
   message: string;
 };
 
+type PlanType = {
+  _id: string;
+  duration: string;
+  durationDays: number;
+  price: number;
+};
 export type OrderType = {
   _id: string;
+  customer_id: string;
   amount: string;
   redirectUrl: string;
 };
 
 const Subscription = () => {
   const [order, setOrder] = useState<OrderType | null>(null);
-  const handleCreatePaymentRequiest = (amount: string) => {
+  const handleCreatePaymentRequiest = (plan: PlanType) => {
     axios
-      .post<ResponseType>("/api/payment/create", { amount: amount })
+      .post<ResponseType>("/api/payment/create", plan)
       .then((res) => {
         console.log(res.data);
         setOrder(res.data.orderInfo);
@@ -63,14 +74,14 @@ const Subscription = () => {
     <div className="flex flex-col justify-center items-center p-4">
       <div className="p-4">choose a plan!</div>
       <div className="flex justify-center flex-wrap gap-2">
-        {plans.map((plan) => (
+        {plans.map((plan: PlanType) => (
           <div
-            key={plan.id}
+            key={plan._id}
             className="flex flex-col justify-center items-center gap-4 bg-accent w-32 h-40"
           >
             <div>{plan.duration}</div>
             <Button
-              onClick={() => handleCreatePaymentRequiest(plan.price)}
+              onClick={() => handleCreatePaymentRequiest(plan)}
               variant="outline"
             >
               {plan.price} &#x20B9;
