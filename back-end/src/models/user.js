@@ -90,6 +90,18 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.post("save", async function (user, next) {
+  const Subscription = model("Subscription");
+  const subCount = await Subscription.countDocuments({ createdBy: user._id });
+  if (!subCount) {
+    const sub = new Subscription({
+      createdBy: user._id,
+    });
+    await sub.save();
+  }
+  next();
+});
+
 // delete shift and role when user is deleted
 userSchema.pre("findOneAndDelete", async function (next) {
   // Assuming you have a Shift model and a Role model
@@ -100,26 +112,31 @@ userSchema.pre("findOneAndDelete", async function (next) {
   const Attendance = model("Attendance");
   const PunchIn = model("PunchIn");
   const PunchOut = model("PunchOut");
-
-  await Shift.deleteOne({
-    createdFor: _id,
-  });
-  await Role.deleteOne({ user: _id });
-  const attendanceRecords = await Attendance.find({ user: _id });
-  for (const record of attendanceRecords) {
-    await PunchIn.deleteMany({
-      _id: { $in: record.punchingInfo.map((info) => info.punchInInfo) },
-    });
-    await PunchOut.deleteMany({
-      _id: { $in: record.punchingInfo.map((info) => info.punchOutInfo) },
-    });
+  const roleCount = Role.countDocuments({ user: _id });
+  if (roleCount === 0) {
+    return next();
   }
-  console.log(
-    "Attendance Punch In/Out deleted, associated shifts and roles removed.",
-    attendanceRecords
-  );
-  await Attendance.deleteMany({ user: _id });
-  console.log("Attendance records deleted.");
+  const roles = await Role.find({ user: _id });
+  for (const role of roles) {
+    await Shift.deleteOne({
+      createdFor: role._id,
+    });
+    const attendanceRecords = await Attendance.find({ role: role._id });
+    for (const record of attendanceRecords) {
+      await PunchIn.deleteMany({
+        _id: { $in: record.punchingInfo.map((info) => info.punchInInfo) },
+      });
+      await PunchOut.deleteMany({
+        _id: { $in: record.punchingInfo.map((info) => info.punchOutInfo) },
+      });
+    }
+    console.log(
+      "Attendance Punch In/Out deleted, associated shifts and roles removed.",
+      attendanceRecords
+    );
+    await Attendance.deleteMany({ role: role._id });
+    console.log("Attendance records deleted.");
+  }
   next();
 });
 
