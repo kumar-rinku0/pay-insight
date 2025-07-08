@@ -9,12 +9,15 @@ import {
 
 const route = Router();
 import { onlyAdminUser } from "../middlewares/auth.js";
+import { isProUser } from "../controllers/subscription.js";
 
 route.route("/").get((req, res) => {
   return res.status(200).json({ msg: "ok" });
 });
 
-route.route("/create").post(wrapAsync(handleCreateCompany));
+route
+  .route("/create")
+  .post(wrapAsync(isProUser), wrapAsync(handleCreateCompany));
 route
   .route("/select-rolebased-company/roleid/:roleid")
   .get(wrapAsync(handleSelectCompany));

@@ -83,11 +83,14 @@ const CreateCompany = () => {
           toast.success(
             "Company created successfully! Add branch in your company."
           );
-          router("/branch");
+          router("/branches");
         })
         .catch((err) => {
           console.log(err);
-          toast.error(err.response.data.error);
+          toast.error(err.response.data.message);
+          if (err.response.data.code === "ErrorPro") {
+            router("/subscription");
+          }
         });
     }
   };

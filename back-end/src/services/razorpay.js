@@ -4,6 +4,8 @@ config();
 import crypto from "crypto";
 import Razorpay from "razorpay";
 import Payment from "../models/payment.js";
+import { getCustomerBySubscription } from "../controllers/subscription.js";
+import { getByPlanId } from "../models/payment.js";
 
 const CLIENT_ID = process.env.RAZORPAY_CLIENT_ID;
 const SECRET_KEY = process.env.RAZORPAY_SECRET_KEY;
@@ -14,27 +16,59 @@ export const client = new Razorpay({
   key_secret: SECRET_KEY,
 });
 
-export const handleCreatePaymentRequest = (req, res) => {
-  const { amount } = req.body;
+const handleCreatePaymentGatewayCustomer = async (id) => {
+  const sub = await getCustomerBySubscription(id);
+  console.log(sub);
+  if (sub?.customer) {
+    return sub.customer;
+  } else {
+    const { name, email, phone } = sub.createdBy;
+    console.log("user sub -", name, email, phone);
+    const customer = client.customers
+      .create({
+        name: name,
+        contact: phone,
+        email: email,
+        fail_existing: "1",
+      })
+      .then(async (res) => {
+        sub.customer = res.id;
+        await sub.save();
+        return res.id;
+      })
+      .catch((err) => {
+        console.log(err);
+        return null;
+      });
+    return customer;
+  }
+};
+
+export const handleCreatePaymentRequest = async (req, res) => {
+  const { _id } = req.body;
+  const plan = getByPlanId(_id);
   const user = req.user;
-  if (!amount || isNaN(amount)) {
+  if (!plan || !plan.price || isNaN(plan.price)) {
     return res.status(400).json({
       message: "Invalid or missing amount.",
       type: "BadRequest",
     });
   }
+  const customer_id = await handleCreatePaymentGatewayCustomer(user._id);
   const options = {
-    amount: amount * 100,
+    amount: plan.price * 100,
     currency: "INR",
     receipt: `RCPT#${Date.now()}`,
+    customer_id: customer_id,
   };
 
   client.orders.create(options, async function (err, order) {
     if (order) {
       const payment = new Payment({
-        user: user._id,
-        amount: amount,
+        initiatedBy: user._id,
+        amount: plan.price,
         order: order.id,
+        plan: plan._id,
         status: "created",
       });
       await payment.save();
@@ -42,6 +76,7 @@ export const handleCreatePaymentRequest = (req, res) => {
         message: "okay",
         orderInfo: {
           _id: order.id,
+          customer_id: customer_id,
           amount: order.amount,
           redirectUrl: `${DOMAIN}/payment-status`,
         },
@@ -59,7 +94,7 @@ export const handleConfirmationPaymentRequest = async (req, res) => {
     req.body;
   const user = req.user;
   const payment = await Payment.findOne({
-    user: user._id,
+    initiatedBy: user._id,
     order: razorpay_order_id,
   }).sort({
     createdAt: -1,
@@ -100,7 +135,7 @@ export const handleGetPaymentStauts = async (req, res) => {
   const user = req.user;
   const { orderId } = req.query;
   const payment = await Payment.findOne({
-    user: user._id,
+    initiatedBy: user._id,
     order: orderId,
   }).sort({
     createdAt: -1,

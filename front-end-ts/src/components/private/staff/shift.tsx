@@ -14,6 +14,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import type { ShiftType } from "@/types/res-type";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -129,7 +136,7 @@ export const StaffShift = ({
             className="flex flex-col gap-4"
           >
             <div className="grid gap-4">
-              {/* First Name */}
+              {/* Shift Name */}
               <FormField
                 control={control2}
                 name="type"
@@ -137,7 +144,20 @@ export const StaffShift = ({
                   <FormItem>
                     <FormLabel>Shift Type</FormLabel>
                     <FormControl>
-                      <Input placeholder="Shift Type" {...field} />
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select Shift Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="morning">MORNING</SelectItem>
+                          <SelectItem value="night">NIGHT</SelectItem>
+                          <SelectItem value="noon">NOON</SelectItem>
+                          <SelectItem value="evening">EVENING</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage>{errors2.type?.message}</FormMessage>
                   </FormItem>
@@ -180,10 +200,10 @@ export const StaffShift = ({
               <FormField
                 name="weekOffs"
                 render={({ field }) => (
-                  <>
+                  <div className="flex flex-wrap gap-8">
                     {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map(
                       (day) => (
-                        <FormItem key={day} className="flex items-center gap-4">
+                        <FormItem key={day} className="flex items-center gap-1">
                           <FormControl>
                             <Input
                               type="checkbox"
@@ -200,7 +220,7 @@ export const StaffShift = ({
                         </FormItem>
                       )
                     )}
-                  </>
+                  </div>
                 )}
               />
             </div>

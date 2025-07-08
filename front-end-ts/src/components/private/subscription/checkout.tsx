@@ -10,7 +10,7 @@ type RazorpayOptions = {
   description: string;
   image: string;
   order_id: string | null;
-  callback_url: string;
+  customer_id: string;
   notes?: Record<string, unknown>;
   theme?: {
     color: string;
@@ -73,7 +73,7 @@ const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
       name: "Rinku Kumar",
       description: "Transaction",
       image: "https://example.com/your_logo",
-      callback_url: orderInfo.redirectUrl,
+      customer_id: orderInfo.customer_id,
       notes: {
         address: "Razorpay Corporate Office",
       },

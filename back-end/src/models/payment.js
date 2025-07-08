@@ -1,8 +1,35 @@
 import { Schema, model } from "mongoose";
 
+export const plans = [
+  {
+    _id: "001",
+    duration: "1 month",
+    durationDays: 30,
+    price: 2,
+  },
+  {
+    _id: "002",
+    duration: "3 month",
+    durationDays: 90,
+    price: 6,
+  },
+  {
+    _id: "003",
+    duration: "6 month",
+    durationDays: 180,
+    price: 11,
+  },
+  {
+    _id: "004",
+    duration: "1 year",
+    durationDays: 365,
+    price: 21,
+  },
+];
+
 const paymentSchema = new Schema(
   {
-    user: {
+    initiatedBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User ID is required."],
@@ -12,6 +39,10 @@ const paymentSchema = new Schema(
         },
         message: "User ID is required.",
       },
+    },
+    plan: {
+      type: String,
+      required: [true, "plan is required."],
     },
     order: {
       type: String,
@@ -41,5 +72,29 @@ const paymentSchema = new Schema(
   { timestamps: true }
 );
 
+paymentSchema.post("save", async function (payment, next) {
+  if (payment.status === "captured") {
+    const Subscription = model("Subscription");
+    const initiatedBy = payment.initiatedBy;
+    const subscription = await Subscription.findOneAndUpdate(
+      { createdBy: initiatedBy },
+      {
+        pro: true,
+        type: "pro",
+        proExpire:
+          Date.now() +
+          getByPlanId(payment.plan).durationDays * 24 * 3600 * 1000,
+      },
+      { new: true }
+    );
+    console.log(subscription);
+  }
+  return next();
+});
+
 const Payment = model("Payment", paymentSchema);
 export default Payment;
+
+export const getByPlanId = (planId) => {
+  return plans.find((item) => item._id === planId);
+};

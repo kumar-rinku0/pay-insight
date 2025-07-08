@@ -110,8 +110,8 @@ const CalendarDrawer = ({
                   <div className="flex gap-1">
                     <Avatar className="h-16 w-16 rounded-lg">
                       <AvatarImage
-                        src={item.punchOutInfo?.punchOutImg}
-                        alt={item.punchOutInfo?.status}
+                        src={item.punchInInfo?.punchInImg}
+                        alt={item.punchInInfo?.status}
                       />
                       <AvatarFallback className="rounded-lg bg-white">
                         IN
