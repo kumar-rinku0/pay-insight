@@ -71,8 +71,9 @@ const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
       amount: orderInfo.amount, // in paise
       currency: "INR",
       name: "Rinku Kumar",
-      description: "Transaction",
-      image: "https://example.com/your_logo",
+      description: "pay it.",
+      image:
+        "https://rinkukumar.in/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Frinku_sign.ec451a48.png&w=96&q=100",
       customer_id: orderInfo.customer_id,
       notes: {
         address: "Razorpay Corporate Office",

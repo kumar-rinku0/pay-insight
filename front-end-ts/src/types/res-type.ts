@@ -80,3 +80,12 @@ export type PunchOutInfoType = {
   punchOutImg: string;
   createdAt: Date;
 };
+
+export type SubscriptionType = {
+  _id: string;
+  type: string;
+  pro: boolean;
+  createdBy: UserType;
+  proExpire: Date;
+  upcoming: [string];
+};

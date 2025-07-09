@@ -30,6 +30,10 @@ const subscriptionSchema = new Schema({
     type: Date,
     default: null,
   },
+  upcoming: {
+    type: [String], // array of upcoming plan _id
+    default: [],
+  },
 });
 
 const Subscription = model("Subscription", subscriptionSchema);
