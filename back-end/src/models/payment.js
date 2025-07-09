@@ -76,17 +76,33 @@ paymentSchema.post("save", async function (payment, next) {
   if (payment.status === "captured") {
     const Subscription = model("Subscription");
     const initiatedBy = payment.initiatedBy;
-    const subscription = await Subscription.findOneAndUpdate(
-      { createdBy: initiatedBy },
-      {
-        pro: true,
-        type: "pro",
-        proExpire:
-          Date.now() +
-          getByPlanId(payment.plan).durationDays * 24 * 3600 * 1000,
-      },
-      { new: true }
-    );
+    const subscription = await Subscription.findOne({
+      createdBy: initiatedBy,
+    }).exec();
+    if (!subscription) {
+      return next(new Error("user subscription doesn't exist.")); // this case never exist until user subscription deleted manually.
+    }
+    if (subscription.pro) {
+      subscription.upcoming.push(payment.plan);
+      await subscription.save();
+      return next();
+    }
+    subscription.pro = true;
+    subscription.type = "pro";
+    subscription.proExpire =
+      Date.now() + getByPlanId(payment.plan).durationDays * 24 * 3600 * 1000;
+    await subscription.save();
+    // const subscription = await Subscription.findOneAndUpdate(
+    //   { createdBy: initiatedBy },
+    //   {
+    //     pro: true,
+    //     type: "pro",
+    //     proExpire:
+    //       Date.now() +
+    //       getByPlanId(payment.plan).durationDays * 24 * 3600 * 1000,
+    //   },
+    //   { new: true }
+    // );
     console.log(subscription);
   }
   return next();
