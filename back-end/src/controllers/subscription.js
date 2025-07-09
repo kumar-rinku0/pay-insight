@@ -12,6 +12,24 @@ export const getCustomerBySubscription = async (id) => {
   return sub;
 };
 
+export const getSubscriptionByUser = async (req, res) => {
+  const user = req.user;
+  const sub = await Subscription.findOne({ createdBy: user._id }).populate(
+    "createdBy",
+    "name email phone"
+  );
+  if (!sub) {
+    return res.status(400).json({
+      message: "user don't have any subscritpion.",
+      subscription: sub,
+    });
+  }
+  return res.status(200).json({
+    message: `user have ${sub.type} subscritpion.`,
+    subscription: sub,
+  });
+};
+
 // middleware for pro users.
 export const isProUser = async (req, res, next) => {
   const user = req.user;

@@ -32,7 +32,7 @@ const subscriptionSchema = new Schema({
   },
   upcoming: {
     type: [String], // array of upcoming plan _id
-    default: null,
+    default: [],
   },
 });
 
