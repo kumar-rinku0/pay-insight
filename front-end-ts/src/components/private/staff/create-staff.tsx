@@ -244,7 +244,7 @@ const EmpoyeeDetails = ({
         })
         .catch((err) => {
           console.log(err);
-          toast.error(err.response.data.error);
+          toast.error(err.response.data.message || err.message);
         })
         .finally(() => {
           setIsLoading(false); // Reset loading state after API call

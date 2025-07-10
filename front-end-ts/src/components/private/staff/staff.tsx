@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { Calendar, ClockArrowUp, PlusCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 type ResponseType = {
   roles: RoleUserType[];
@@ -37,6 +38,10 @@ const Staff = ({ page }: { page: number }) => {
           totalPage,
         }));
         setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.message || err.message);
       });
   };
   const handlePageChange = (pageNo: number) => {

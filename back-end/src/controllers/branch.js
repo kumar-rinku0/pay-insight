@@ -66,7 +66,8 @@ export const onlyOneBranchAccess = async (req, res, next) => {
     return next();
   }
   return res.status(403).json({
-    message: "free subscribers can only create one branch.",
+    message:
+      "free subscribers can only create one branch, upgrade to pro subscription.",
     code: "ErrorPro",
   });
 };

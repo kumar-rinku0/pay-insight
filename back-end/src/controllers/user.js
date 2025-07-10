@@ -109,10 +109,10 @@ const handleUserSignUpWithRoles = async (req, res) => {
 const handleUserSignIn = async (req, res) => {
   const { email, password } = req.body;
   const user = await isRightUser(email, password);
-  if (user?.type) {
+  if (user?.code) {
     return res
-      .status(401)
-      .json({ message: user.message, type: user.type, status: user.status });
+      .status(user.status)
+      .json({ message: user.message, code: user.code, status: user.status });
   }
   const role = await Role.findOne({ user: user._id });
   req.session.user = {
@@ -162,7 +162,7 @@ const handleUserVerify = async (req, res) => {
       .status(200)
       .json({ message: "User verified.", user: info, status: 200 });
   }
-  return res.status(400).json({ error: "Invalid token.", status: 400 });
+  return res.status(400).json({ message: "Invalid token.", status: 400 });
 };
 
 const handleUserSendVerifyEmail = async (req, res) => {
@@ -220,16 +220,16 @@ const handleGoogleCallback = async (req, res) => {
   const { code } = req.body;
   const tokens = await getToken(code);
   if (!tokens) {
-    return res.status(400).send({ type: "error", msg: "Invalid token!" });
+    return res.status(400).send({ message: "Invalid token!" });
   }
   if (tokens.error) {
-    return res.status(400).send({ type: "error", msg: tokens.error });
+    return res.status(400).send({ message: tokens.error });
   }
   const { email, email_verified, given_name, family_name, picture } = getInfo(
     tokens.id_token
   );
   if (!email_verified) {
-    return res.status(400).send({ type: "error", msg: "Email not verified!" });
+    return res.status(400).send({ message: "Email not verified!" });
   }
   const userCheck = await User.findOne({ email: email });
   if (userCheck) {
@@ -247,8 +247,7 @@ const handleGoogleCallback = async (req, res) => {
       }
     }
     return res.status(200).send({
-      type: "success",
-      msg: `${given_name} welcome to pay-insight!`,
+      message: `${given_name} welcome to pay-insight!`,
       user: userCheck,
     });
   }
@@ -268,8 +267,7 @@ const handleGoogleCallback = async (req, res) => {
     password,
   });
   return res.status(200).send({
-    type: "success",
-    msg: `${given_name} welcome to pay-insight!`,
+    message: `${given_name} welcome to pay-insight!`,
     user: user,
   });
 };

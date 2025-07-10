@@ -77,11 +77,14 @@ const CreateBranch = () => {
         .then((res) => {
           console.log(res);
           toast.success(res.data.message);
-          router("/dashboard/staff");
+          router("/staff");
         })
         .catch((err) => {
           console.log(err);
-          toast.error(err.response.data.error);
+          toast.error(err.response.data.message || err.message);
+          if (err.response.data.code === "ErrorPro") {
+            router("/subscription");
+          }
         });
     }
   };

@@ -1,6 +1,7 @@
 import type { EmployeeAttendanceType } from "@/types/res-type";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type ResponseType = {
   attendances: EmployeeAttendanceType[];
@@ -21,7 +22,8 @@ const PunchInEmployees = () => {
         setEmployeesAttendance(res.data.attendances);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.response.data.message || err.message);
+        setEmployeesAttendance([]);
       });
   };
   useEffect(() => {
