@@ -109,10 +109,10 @@ const handleUserSignUpWithRoles = async (req, res) => {
 const handleUserSignIn = async (req, res) => {
   const { email, password } = req.body;
   const user = await isRightUser(email, password);
-  if (user?.type) {
+  if (user?.code) {
     return res
-      .status(401)
-      .json({ message: user.message, type: user.type, status: user.status });
+      .status(user.status)
+      .json({ message: user.message, code: user.code, status: user.status });
   }
   const role = await Role.findOne({ user: user._id });
   req.session.user = {

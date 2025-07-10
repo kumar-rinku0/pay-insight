@@ -12,7 +12,7 @@ export const isRightUser = async function (email, password) {
   if (!user) {
     return {
       message: "email not registered.",
-      type: "UserNotFound",
+      code: "UserNotFound",
       status: 400,
     };
   }
@@ -20,14 +20,14 @@ export const isRightUser = async function (email, password) {
   if (!isOk) {
     return {
       message: "wrong password.",
-      type: "PasswordNotMatch",
+      code: "PasswordNotMatch",
       status: 401,
     };
   }
   if (!user.isVerified) {
     return {
       message: "please verify your email.",
-      type: "EmailNotVerified",
+      code: "EmailNotVerified",
       status: 403,
     };
   }

@@ -14,7 +14,7 @@ const onlyLoggedInUser = (req, res, next) => {
   if (!user) {
     return res
       .status(401)
-      .send({ type: "Unauthorized", message: "Unauthorized!" });
+      .send({ code: "Unauthorized", message: "Unauthorized!" });
   }
   return next();
 };
@@ -27,14 +27,14 @@ const onlyAdminUser = (req, res, next) => {
   }
   if (!user.role) {
     return res.status(403).send({
-      type: "Forbidden",
+      code: "Forbidden",
       message: "Forbidden!",
     });
   }
   if (user.role.role !== "admin") {
     return res
       .status(400)
-      .send({ type: "Forbidden", message: "Not an admin!" });
+      .send({ code: "Forbidden", message: "Not an admin!" });
   }
   return next();
 };
@@ -47,7 +47,7 @@ const onlyAdminOrManagerUser = (req, res, next) => {
   }
   if (!user.role) {
     return res.status(403).send({
-      type: "Forbidden",
+      code: "Forbidden",
       message: "Forbidden!",
     });
   }
@@ -55,7 +55,7 @@ const onlyAdminOrManagerUser = (req, res, next) => {
   // check if the user is admin or manager
   if (user.role.role === "employee") {
     return res.status(403).send({
-      type: "Forbidden",
+      code: "Forbidden",
       message: "Not an admin or manager!",
     });
   }
