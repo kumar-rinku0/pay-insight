@@ -32,3 +32,25 @@ export const handleGetEmployeeRoles = async (req, res) => {
     totalPage: Math.ceil(totalRoles / limit),
   });
 };
+
+// middlewares.
+export const onlyLimitedRolesAccess = async (req, res, next) => {
+  const subscription = req.subscription;
+  const { company } = req.user.role;
+  const query = {
+    $and: [
+      { company: company },
+      { role: { $in: ["employee", "manager", "admin"] } },
+      { branch: { $exists: true, $ne: null } },
+    ],
+  };
+  const totalRoles = await Role.countDocuments(query);
+  if (totalRoles <= 2) {
+    return next();
+  } else if (subscription.pro) {
+    return next();
+  }
+  return res
+    .status(403)
+    .json({ message: "upgrade subscription to pro.", code: "ErrorPro" });
+};

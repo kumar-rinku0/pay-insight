@@ -19,7 +19,7 @@ export const getSubscriptionByUser = async (req, res) => {
 };
 
 // middleware for pro users.
-export const isProUser = async (req, res, next) => {
+export const isProCompany = async (req, res, next) => {
   const user = req.user;
   const subscription = await Subscription.findOne({
     company: user.role.company,
@@ -66,7 +66,7 @@ export const isProUser = async (req, res, next) => {
 };
 
 // middleware for pro users.
-export const onlyProUser = async (req, res, next) => {
+export const onlyProCompany = (req, res, next) => {
   const subscription = req.subscription;
   if (subscription.pro) {
     return next();

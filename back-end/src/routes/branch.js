@@ -7,7 +7,7 @@ import {
   handleGetBranchInfo,
 } from "../controllers/branch.js";
 import { onlyAdminUser } from "../middlewares/auth.js";
-import { isProUser } from "../controllers/subscription.js";
+import { isProCompany } from "../controllers/subscription.js";
 
 const route = Router();
 
@@ -19,7 +19,7 @@ route
   .route("/create")
   .post(
     onlyAdminUser,
-    wrapAsync(isProUser),
+    wrapAsync(isProCompany),
     wrapAsync(onlyOneBranchAccess),
     wrapAsync(handleCreateBranch)
   );
