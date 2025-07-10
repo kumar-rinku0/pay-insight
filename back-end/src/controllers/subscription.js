@@ -19,26 +19,25 @@ export const getSubscriptionByUser = async (req, res) => {
 };
 
 // middleware for pro users.
-export const isProUser = async (req, res, next) => {
+export const isProCompany = async (req, res, next) => {
   const user = req.user;
   const subscription = await Subscription.findOne({
-    createdBy: user._id,
+    company: user.role.company,
   }).exec();
   if (!subscription) {
     const newSubscription = new Subscription({
-      createdBy: user._id,
+      company: user.role.company,
     });
     await newSubscription.save();
-    return res
-      .status(401)
-      .json({ message: "not a pro user.", code: "ErrorPro" });
+    req.subscription = newSubscription;
+    return next();
   }
+  req.subscription = subscription;
   if (
     subscription.pro &&
     subscription.type === "pro" &&
     subscription.proExpire >= Date.now()
   ) {
-    req.subscription = subscription;
     return next();
   } else if (
     subscription.pro &&
@@ -52,18 +51,25 @@ export const isProUser = async (req, res, next) => {
         new Date(subscription.proExpire).getTime() +
         plan.durationDays * 24 * 3600 * 1000;
       await subscription.save();
+      req.subscription = subscription;
       return next();
     } else {
       subscription.pro = false;
       subscription.type === "free";
       await subscription.save();
-      return res
-        .status(401)
-        .json({ message: "not a pro user, plan expired.", code: "ErrorPro" });
+      req.subscription = subscription;
+      return next();
     }
   } else {
-    return res
-      .status(401)
-      .json({ message: "not a pro user.", code: "ErrorPro" });
+    return next();
   }
+};
+
+// middleware for pro users.
+export const onlyProCompany = (req, res, next) => {
+  const subscription = req.subscription;
+  if (subscription.pro) {
+    return next();
+  }
+  return res.status(403).json({ message: "not a pro user.", code: "ErrorPro" });
 };

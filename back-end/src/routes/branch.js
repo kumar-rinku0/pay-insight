@@ -1,12 +1,13 @@
 import { Router } from "express";
 import wrapAsync from "../utils/wrap-async.js";
 import {
+  onlyOneBranchAccess,
   handleCreateBranch,
   handleFetchBranches,
   handleGetBranchInfo,
 } from "../controllers/branch.js";
 import { onlyAdminUser } from "../middlewares/auth.js";
-import { isProUser } from "../controllers/subscription.js";
+import { isProCompany } from "../controllers/subscription.js";
 
 const route = Router();
 
@@ -16,7 +17,12 @@ route.route("/").get((req, res) => {
 
 route
   .route("/create")
-  .post(onlyAdminUser, wrapAsync(isProUser), wrapAsync(handleCreateBranch));
+  .post(
+    onlyAdminUser,
+    wrapAsync(isProCompany),
+    wrapAsync(onlyOneBranchAccess),
+    wrapAsync(handleCreateBranch)
+  );
 route.route("/info").get(wrapAsync(handleGetBranchInfo));
 route.route("/company").get(wrapAsync(handleFetchBranches));
 

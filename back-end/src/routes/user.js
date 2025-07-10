@@ -19,6 +19,8 @@ import {
   onlyAdminOrManagerUser,
   onlyAdminUser,
 } from "../middlewares/auth.js";
+import { isProCompany } from "../controllers/subscription.js";
+import { onlyLimitedRolesAccess } from "../controllers/role.js";
 
 const route = Router();
 
@@ -51,6 +53,8 @@ route
   .post(
     onlyLoggedInUser,
     onlyAdminOrManagerUser,
+    wrapAsync(isProCompany),
+    wrapAsync(onlyLimitedRolesAccess),
     wrapAsync(handleUserSignUpWithRoles)
   );
 

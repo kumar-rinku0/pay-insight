@@ -3,8 +3,10 @@ import wrapAsync from "../utils/wrap-async.js";
 import {
   handleGetOneUserRoles,
   handleGetEmployeeRoles,
+  onlyLimitedRolesAccess,
 } from "../controllers/role.js";
 import { onlyAdminOrManagerUser } from "../middlewares/auth.js";
+import { isProCompany } from "../controllers/subscription.js";
 
 const route = Router();
 
@@ -16,6 +18,11 @@ route.route("/userId/:userId").get(wrapAsync(handleGetOneUserRoles));
 
 route
   .route("/employees")
-  .get(onlyAdminOrManagerUser, wrapAsync(handleGetEmployeeRoles));
+  .get(
+    onlyAdminOrManagerUser,
+    wrapAsync(isProCompany),
+    wrapAsync(onlyLimitedRolesAccess),
+    wrapAsync(handleGetEmployeeRoles)
+  );
 
 export default route;
