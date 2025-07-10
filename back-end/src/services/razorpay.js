@@ -3,8 +3,11 @@ config();
 
 import crypto from "crypto";
 import Razorpay from "razorpay";
-import Payment from "../models/payment.js";
-import { getCustomerBySubscription } from "../controllers/subscription.js";
+import {
+  getCustomerIdByUserId,
+  handleGetPaymentForGateway,
+  handleCreatePaymentByGateway,
+} from "../controllers/payment.js";
 import { getByPlanId } from "../models/payment.js";
 
 const CLIENT_ID = process.env.RAZORPAY_CLIENT_ID;
@@ -17,12 +20,12 @@ export const client = new Razorpay({
 });
 
 const handleCreatePaymentGatewayCustomer = async (id) => {
-  const sub = await getCustomerBySubscription(id);
-  console.log(sub);
-  if (sub?.customer) {
-    return sub.customer;
+  const user = await getCustomerIdByUserId({ userId: id });
+  console.log(user);
+  if (user?.customerId) {
+    return user.customerId;
   } else {
-    const { name, email, phone } = sub.createdBy;
+    const { name, email, phone } = user;
     console.log("user sub -", name, email, phone);
     const customer = client.customers
       .create({
@@ -32,8 +35,8 @@ const handleCreatePaymentGatewayCustomer = async (id) => {
         fail_existing: "1",
       })
       .then(async (res) => {
-        sub.customer = res.id;
-        await sub.save();
+        user.customerId = res.id;
+        await user.save();
         return res.id;
       })
       .catch((err) => {
@@ -48,6 +51,12 @@ export const handleCreatePaymentRequest = async (req, res) => {
   const { _id } = req.body;
   const plan = getByPlanId(_id);
   const user = req.user;
+  if (user.role.role === "employee") {
+    return res.status(400).json({
+      message: "invalid payment request.",
+      type: "BadRequest",
+    });
+  }
   if (!plan || !plan.price || isNaN(plan.price)) {
     return res.status(400).json({
       message: "Invalid or missing amount.",
@@ -64,14 +73,14 @@ export const handleCreatePaymentRequest = async (req, res) => {
 
   client.orders.create(options, async function (err, order) {
     if (order) {
-      const payment = new Payment({
+      await handleCreatePaymentByGateway({
         initiatedBy: user._id,
+        paymentFor: user.role.company,
         amount: plan.price,
         order: order.id,
         plan: plan._id,
         status: "created",
       });
-      await payment.save();
       return res.status(201).json({
         message: "okay",
         orderInfo: {
@@ -93,11 +102,9 @@ export const handleConfirmationPaymentRequest = async (req, res) => {
   const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
     req.body;
   const user = req.user;
-  const payment = await Payment.findOne({
+  const payment = await handleGetPaymentForGateway({
     initiatedBy: user._id,
     order: razorpay_order_id,
-  }).sort({
-    createdAt: -1,
   });
   if (!payment) {
     payment.status = "failed";
@@ -134,11 +141,9 @@ export const handleConfirmationPaymentRequest = async (req, res) => {
 export const handleGetPaymentStauts = async (req, res) => {
   const user = req.user;
   const { orderId } = req.query;
-  const payment = await Payment.findOne({
+  const payment = await handleGetPaymentForGateway({
     initiatedBy: user._id,
     order: orderId,
-  }).sort({
-    createdAt: -1,
   });
   if (payment.status === "captured") {
     return res.status(200).json({ message: "okay.", state: "COMPLETED" });

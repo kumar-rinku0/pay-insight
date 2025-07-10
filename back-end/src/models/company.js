@@ -50,8 +50,21 @@ const companySchema = new Schema(
   { timestamps: true }
 );
 
-const Company = model("Company", companySchema);
+companySchema.post("save", async function (company, next) {
+  const Subscription = model("Subscription");
+  const subCount = await Subscription.countDocuments({
+    company: company._id,
+  });
+  if (!subCount) {
+    const sub = new Subscription({
+      company: company._id,
+    });
+    await sub.save();
+  }
+  next();
+});
 
+const Company = model("Company", companySchema);
 export default Company;
 
 function generateRandomString(length, includeNumeric = true) {

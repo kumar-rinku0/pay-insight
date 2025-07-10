@@ -1,23 +1,11 @@
 import { getByPlanId } from "../models/payment.js";
 import Subscription from "../models/subscription.js";
 
-export const getCustomerBySubscription = async (id) => {
-  const sub = await Subscription.findOne({ createdBy: id }).populate(
-    "createdBy",
-    "name email phone"
-  );
-  if (!sub) {
-    return null;
-  }
-  return sub;
-};
-
 export const getSubscriptionByUser = async (req, res) => {
   const user = req.user;
-  const sub = await Subscription.findOne({ createdBy: user._id }).populate(
-    "createdBy",
-    "name email phone"
-  );
+  const sub = await Subscription.findOne({
+    company: user.role.company,
+  }).populate("company", "name");
   if (!sub) {
     return res.status(400).json({
       message: "user don't have any subscritpion.",

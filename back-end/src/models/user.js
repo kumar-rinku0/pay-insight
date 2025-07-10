@@ -72,6 +72,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    customerId: {
+      type: String,
+      default: null,
+    },
     verifyToken: String,
     resetToken: String,
     verifyTokenExpire: Date,
@@ -86,18 +90,6 @@ userSchema.pre("save", async function (next) {
     const salt = await bcrypt.genSalt(10);
     const hexcode = await bcrypt.hash(this.password.trim(), salt);
     this.password = hexcode;
-  }
-  next();
-});
-
-userSchema.post("save", async function (user, next) {
-  const Subscription = model("Subscription");
-  const subCount = await Subscription.countDocuments({ createdBy: user._id });
-  if (!subCount) {
-    const sub = new Subscription({
-      createdBy: user._id,
-    });
-    await sub.save();
   }
   next();
 });

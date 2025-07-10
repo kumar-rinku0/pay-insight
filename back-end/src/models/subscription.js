@@ -1,17 +1,12 @@
 import { Schema, model } from "mongoose";
 
 const subscriptionSchema = new Schema({
-  createdBy: {
+  company: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Company",
     required: true,
     unique: true,
     trim: true,
-  },
-  customer: {
-    type: String,
-    trim: true,
-    default: null,
   },
   pro: {
     type: Boolean,
