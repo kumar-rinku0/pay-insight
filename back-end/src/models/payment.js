@@ -40,6 +40,17 @@ const paymentSchema = new Schema(
         message: "User ID is required.",
       },
     },
+    paymentFor: {
+      type: Schema.Types.ObjectId,
+      ref: "Company",
+      required: [true, "Company ID is required."],
+      validate: {
+        validator: function (v) {
+          return v != null; // Ensure user ID is not null
+        },
+        message: "Company ID is required.",
+      },
+    },
     plan: {
       type: String,
       required: [true, "plan is required."],
@@ -75,9 +86,9 @@ const paymentSchema = new Schema(
 paymentSchema.post("save", async function (payment, next) {
   if (payment.status === "captured") {
     const Subscription = model("Subscription");
-    const initiatedBy = payment.initiatedBy;
+    const paymentFor = payment.paymentFor;
     const subscription = await Subscription.findOne({
-      createdBy: initiatedBy,
+      company: paymentFor,
     }).exec();
     if (!subscription) {
       return next(new Error("user subscription doesn't exist.")); // this case never exist until user subscription deleted manually.
