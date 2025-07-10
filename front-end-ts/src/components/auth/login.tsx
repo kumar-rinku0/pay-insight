@@ -234,13 +234,13 @@ const LoginOverlay = ({
         location.assign(res.data.redirect);
       })
       .catch((err) => {
-        const { type, message } = err.response.data;
+        const { code, message } = err.response.data;
         toast.error(message);
-        if (type === "EmailNotVerified") {
+        if (code === "EmailNotVerified") {
           changeLoading({ forgetPassword: false, verifyUser: true });
-        } else if (type === "UserNotFound") {
+        } else if (code === "UserNotFound") {
           toast.error(message);
-        } else if (type === "PasswordNotMatch") {
+        } else if (code === "PasswordNotMatch") {
           changeLoading({ forgetPassword: true, verifyUser: false });
         }
       })

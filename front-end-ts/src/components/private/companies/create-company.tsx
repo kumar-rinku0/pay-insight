@@ -78,19 +78,14 @@ const CreateCompany = () => {
         .post("/api/company/create", { ...data })
         .then((res) => {
           console.log(res);
-          const { role } = res.data;
+          const { message, role } = res.data;
           signIn({ ...user, role: role });
-          toast.success(
-            "Company created successfully! Add branch in your company."
-          );
+          toast.success(message);
           router("/branches");
         })
         .catch((err) => {
           console.log(err);
-          toast.error(err.response.data.message);
-          if (err.response.data.code === "ErrorPro") {
-            router("/subscription");
-          }
+          toast.error(err.response.data.message || err.message);
         });
     }
   };

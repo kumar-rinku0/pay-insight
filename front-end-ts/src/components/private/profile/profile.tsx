@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Trash } from "lucide-react";
+import { toast } from "sonner";
 
 const Profile = () => {
   const { user, signOut } = useAuth();
@@ -38,6 +39,7 @@ const Profile = () => {
       })
       .catch((err) => {
         console.error(err);
+        toast.error(err.response.data.message || err.message);
       });
   };
   return (

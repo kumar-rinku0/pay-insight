@@ -86,7 +86,7 @@ export const StaffShift = ({
         })
         .catch((err) => {
           console.log(err);
-          toast.error(err.response.data.error);
+          toast.error(err.response.data.message || err.message);
         });
     } else {
       axios
@@ -101,7 +101,7 @@ export const StaffShift = ({
         })
         .catch((err) => {
           console.log(err);
-          toast.error(err.response.data.error);
+          toast.error(err.response.data.message || err.message);
         });
     }
   };
@@ -258,7 +258,6 @@ const Shift = () => {
       })
       .catch((err) => {
         console.error(err);
-        toast.error("Failed to fetch shift data");
       })
       .finally(() => {
         setLoading(false);
