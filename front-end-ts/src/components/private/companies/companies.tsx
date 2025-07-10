@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/use-auth";
 import type { CompanyType } from "@/types/res-type";
 import axios from "axios";
+import { PlusCircle, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -88,22 +90,31 @@ const Companies = () => {
           </table>
         </div>
       )}
-      {/* <div className="flex justify-between items-center px-4">
-        <Button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-          Prev
-        </Button>
-        <span style={{ margin: "0 1rem" }}>
-          Page {page} of {content.totalPage}
-        </span>
-        <Button
-          onClick={() => handlePageChange(page + 1)}
-          disabled={page >= content.totalPage}
-        >
-          Next
-        </Button>
-      </div> */}
     </div>
   );
 };
 
-export default Companies;
+const CompaniesPage = () => {
+  const router = useNavigate();
+  return (
+    <div>
+      <div className="px-4 flex gap-4 justify-between items-center">
+        <span className="flex gap-2">
+          <Input className="w-40 md:w-60" />
+          <Button variant="outline">
+            <Search />
+          </Button>
+        </span>
+        <span>
+          <Button onClick={() => router("/companies/create")}>
+            <PlusCircle />
+            <span>Create Company</span>
+          </Button>
+        </span>
+      </div>
+      <Companies />
+    </div>
+  );
+};
+
+export default CompaniesPage;

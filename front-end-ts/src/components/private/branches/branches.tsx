@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/use-auth";
 import type { BranchType } from "@/types/res-type";
 import axios from "axios";
+import { PlusCircle, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -60,7 +62,7 @@ const Branches = () => {
                   Address
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Radius (metres)
+                  Radius
                 </th>
               </tr>
             </thead>
@@ -82,22 +84,31 @@ const Branches = () => {
           </table>
         </div>
       )}
-      {/* <div className="flex justify-between items-center px-4">
-        <Button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-          Prev
-        </Button>
-        <span style={{ margin: "0 1rem" }}>
-          Page {page} of {content.totalPage}
-        </span>
-        <Button
-          onClick={() => handlePageChange(page + 1)}
-          disabled={page >= content.totalPage}
-        >
-          Next
-        </Button>
-      </div> */}
     </div>
   );
 };
 
-export default Branches;
+const BranchesPage = () => {
+  const router = useNavigate();
+  return (
+    <div>
+      <div className="px-4 flex gap-4 justify-between items-center">
+        <span className="flex gap-2">
+          <Input className="w-40 md:w-60" />
+          <Button variant="outline">
+            <Search />
+          </Button>
+        </span>
+        <span>
+          <Button onClick={() => router("/branches/create")}>
+            <PlusCircle />
+            <span>Create Branch</span>
+          </Button>
+        </span>
+      </div>
+      <Branches />
+    </div>
+  );
+};
+
+export default BranchesPage;
