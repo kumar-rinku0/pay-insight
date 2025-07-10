@@ -52,5 +52,5 @@ export const onlyLimitedRolesAccess = async (req, res, next) => {
   }
   return res
     .status(403)
-    .json({ message: "upgrade subscription to pro.", code: "ErrorPro" });
+    .json({ message: "upgrade to pro subscription.", code: "ErrorPro" });
 };
