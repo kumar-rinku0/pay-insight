@@ -52,4 +52,23 @@ export const handleGetBranchInfo = async (req, res) => {
   });
 };
 
+// middleware.
+
+export const onlyOneBranchAccess = async (req, res, next) => {
+  const user = req.user;
+  const subscription = req.subscription;
+  const branchesCount = await Branch.countDocuments({
+    company: user.role.company,
+  });
+  if (!branchesCount) {
+    return next();
+  } else if (subscription.pro) {
+    return next();
+  }
+  return res.status(403).json({
+    message: "free subscribers can only create one branch.",
+    code: "ErrorPro",
+  });
+};
+
 export { handleCreateBranch, handleFetchBranches };

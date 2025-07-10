@@ -1,6 +1,7 @@
 import { Router } from "express";
 import wrapAsync from "../utils/wrap-async.js";
 import {
+  onlyOneBranchAccess,
   handleCreateBranch,
   handleFetchBranches,
   handleGetBranchInfo,
@@ -16,7 +17,12 @@ route.route("/").get((req, res) => {
 
 route
   .route("/create")
-  .post(onlyAdminUser, wrapAsync(isProUser), wrapAsync(handleCreateBranch));
+  .post(
+    onlyAdminUser,
+    wrapAsync(isProUser),
+    wrapAsync(onlyOneBranchAccess),
+    wrapAsync(handleCreateBranch)
+  );
 route.route("/info").get(wrapAsync(handleGetBranchInfo));
 route.route("/company").get(wrapAsync(handleFetchBranches));
 
