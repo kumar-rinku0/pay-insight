@@ -22,7 +22,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Trash } from "lucide-react";
+import { LogOut, Trash } from "lucide-react";
 import { toast } from "sonner";
 
 const Profile = () => {
@@ -46,7 +46,7 @@ const Profile = () => {
         toast.error(err.response.data.message || err.message);
       });
   };
-  const handleDeleteCompanyRole = () => {
+  const handleLeaveCompany = () => {
     axios
       .delete(`/api/role/delete`)
       .then((res) => {
@@ -113,7 +113,7 @@ const Profile = () => {
         {/* delete company role */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Delete Company Role</CardTitle>
+            <CardTitle className="text-lg">Leave Company</CardTitle>
             <CardDescription>
               If you're no longer employee to company, click the button below.
               This action cannot be undone. This will permanently unlink your
@@ -126,8 +126,8 @@ const Profile = () => {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="destructive">
-                    <Trash />
-                    Delete Company Role
+                    <LogOut />
+                    Leave Company
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -146,9 +146,9 @@ const Profile = () => {
                     <DialogClose asChild>
                       <Button
                         variant="destructive"
-                        onClick={handleDeleteCompanyRole}
+                        onClick={handleLeaveCompany}
                       >
-                        Delete
+                        Leave
                       </Button>
                     </DialogClose>
                   </DialogFooter>

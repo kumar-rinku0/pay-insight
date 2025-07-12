@@ -41,10 +41,13 @@ const companySchema = z.object({
     .min(6, "CIN is required")
     .regex(
       /^[A-Z]{5}[0-9]{4}[A-Z]$/,
-      "5 latters, 4 numeric and remaining latters! only capital allowed."
+      "5 latter, 4 numeric and 1 latter! only capital allowed."
     ),
   type: z.enum(["private", "public"]),
-  branches: z.string().min(1, "Count is required").max(2, "Max limit crossed!"),
+  branches: z
+    .string()
+    .min(1, "Branches count is required")
+    .max(2, "Max limit 99 crossed!"),
 });
 
 type CompanyFormData = z.infer<typeof companySchema>;
