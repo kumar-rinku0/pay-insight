@@ -4,8 +4,12 @@ import {
   handleGetOneUserRoles,
   handleGetEmployeeRoles,
   onlyLimitedRolesAccess,
+  handleDeleteUserCompanyRole,
 } from "../controllers/role.js";
-import { onlyAdminOrManagerUser } from "../middlewares/auth.js";
+import {
+  onlyAdminOrManagerUser,
+  onlyLoggedInUser,
+} from "../middlewares/auth.js";
 import { isProCompany } from "../controllers/subscription.js";
 
 const route = Router();
@@ -15,6 +19,9 @@ route.route("/").get((req, res) => {
 });
 
 route.route("/userId/:userId").get(wrapAsync(handleGetOneUserRoles));
+route
+  .route("/delete")
+  .delete(onlyLoggedInUser, wrapAsync(handleDeleteUserCompanyRole));
 
 route
   .route("/employees")
