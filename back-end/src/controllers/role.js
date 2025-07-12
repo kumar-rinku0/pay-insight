@@ -33,6 +33,17 @@ export const handleGetEmployeeRoles = async (req, res) => {
   });
 };
 
+export const handleDeleteUserCompanyRole = async (req, res) => {
+  const user = req.user;
+  const roleId = user.role._id;
+  const deletedRole = await Role.findOneAndDelete({ _id: roleId });
+  const role = await Role.findOne({ user: user._id });
+  req.session.user = { ...req.user, role: role };
+  return res
+    .status(200)
+    .json({ message: "role deleted.", deletedRole: deletedRole });
+};
+
 // middlewares.
 export const onlyLimitedRolesAccess = async (req, res, next) => {
   const subscription = req.subscription;

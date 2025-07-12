@@ -42,5 +42,33 @@ const roleSchema = new Schema({
   },
 });
 
+roleSchema.pre("findOneAndDelete", async function (next) {
+  const { _id } = this.getQuery();
+
+  const Shift = model("Shift");
+  const Attendance = model("Attendance");
+  const PunchIn = model("PunchIn");
+  const PunchOut = model("PunchOut");
+  await Shift.deleteOne({
+    createdFor: _id,
+  });
+  const attendanceRecords = await Attendance.find({ role: _id });
+  for (const record of attendanceRecords) {
+    await PunchIn.deleteMany({
+      _id: { $in: record.punchingInfo.map((info) => info.punchInInfo) },
+    });
+    await PunchOut.deleteMany({
+      _id: { $in: record.punchingInfo.map((info) => info.punchOutInfo) },
+    });
+  }
+  console.log(
+    "Attendance Punch In/Out deleted, associated shifts and roles removed.",
+    attendanceRecords
+  );
+  await Attendance.deleteMany({ role: _id });
+  console.log("Attendance records deleted.");
+  return next();
+});
+
 const Role = model("Role", roleSchema);
 export default Role;
