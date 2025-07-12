@@ -28,7 +28,11 @@ import { toast } from "sonner";
 const Profile = () => {
   const { user, signOut } = useAuth();
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
   const handleDeleteAccount = () => {
     axios
@@ -36,6 +40,18 @@ const Profile = () => {
       .then((res) => {
         console.log(res);
         signOut();
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.response.data.message || err.message);
+      });
+  };
+  const handleDeleteCompanyRole = () => {
+    axios
+      .delete(`/api/role/delete`)
+      .then((res) => {
+        console.log(res);
+        location.reload();
       })
       .catch((err) => {
         console.error(err);
@@ -94,7 +110,55 @@ const Profile = () => {
           </CardContent>
           <CardFooter></CardFooter>
         </Card>
-
+        {/* delete company role */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Delete Company Role</CardTitle>
+            <CardDescription>
+              If you're no longer employee to company, click the button below.
+              This action cannot be undone. This will permanently unlink your
+              account with company and your metadata with company will be
+              removed from our servers.
+            </CardDescription>
+          </CardHeader>
+          <form>
+            <CardContent>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="destructive">
+                    <Trash />
+                    Delete Company Role
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently unlink
+                      your account with company and your metadata with company
+                      will be removed from our servers.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Close</Button>
+                    </DialogClose>
+                    <DialogClose asChild>
+                      <Button
+                        variant="destructive"
+                        onClick={handleDeleteCompanyRole}
+                      >
+                        Delete
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </form>
+          <CardFooter></CardFooter>
+        </Card>
+        {/* delete account */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Delete Account</CardTitle>
