@@ -49,7 +49,7 @@ roleSchema.pre("findOneAndDelete", async function (next) {
   const Attendance = model("Attendance");
   const PunchIn = model("PunchIn");
   const PunchOut = model("PunchOut");
-  await Shift.deleteOne({
+  await Shift.findOneAndDelete({
     createdFor: _id,
   });
   const attendanceRecords = await Attendance.find({ role: _id });

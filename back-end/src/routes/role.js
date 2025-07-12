@@ -4,7 +4,8 @@ import {
   handleGetOneUserRoles,
   handleGetEmployeeRoles,
   onlyLimitedRolesAccess,
-  handleDeleteUserCompanyRole,
+  handleDeleteCompanyRole,
+  handleLeaveCompanyOrDeleteRole,
 } from "../controllers/role.js";
 import {
   onlyAdminOrManagerUser,
@@ -21,7 +22,10 @@ route.route("/").get((req, res) => {
 route.route("/userId/:userId").get(wrapAsync(handleGetOneUserRoles));
 route
   .route("/delete")
-  .delete(onlyLoggedInUser, wrapAsync(handleDeleteUserCompanyRole));
+  .delete(onlyLoggedInUser, wrapAsync(handleLeaveCompanyOrDeleteRole));
+route
+  .route("/delete/roleId/:roleId")
+  .delete(onlyLoggedInUser, wrapAsync(handleDeleteCompanyRole));
 
 route
   .route("/employees")

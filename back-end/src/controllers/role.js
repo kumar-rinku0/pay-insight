@@ -33,9 +33,25 @@ export const handleGetEmployeeRoles = async (req, res) => {
   });
 };
 
-export const handleDeleteUserCompanyRole = async (req, res) => {
+export const handleLeaveCompanyOrDeleteRole = async (req, res) => {
   const user = req.user;
   const roleId = user.role._id;
+  if (user.role.role === "admin" && !user.role.branch) {
+    return res.status(400).json({
+      message: "you can't leave own company!",
+      code: "BadRequest",
+    });
+  }
+  const deletedRole = await Role.findOneAndDelete({ _id: roleId });
+  const role = await Role.findOne({ user: user._id });
+  req.session.user = { ...req.user, role: role };
+  return res
+    .status(200)
+    .json({ message: "role deleted.", deletedRole: deletedRole });
+};
+
+export const handleDeleteCompanyRole = async (req, res) => {
+  const roleId = req.params;
   const deletedRole = await Role.findOneAndDelete({ _id: roleId });
   const role = await Role.findOne({ user: user._id });
   req.session.user = { ...req.user, role: role };
