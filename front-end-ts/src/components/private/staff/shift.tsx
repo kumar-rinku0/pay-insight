@@ -148,7 +148,7 @@ export const StaffShift = ({
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger className="w-[180px]">
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select Shift Type" />
                         </SelectTrigger>
                         <SelectContent>
