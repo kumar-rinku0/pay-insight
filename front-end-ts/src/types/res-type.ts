@@ -40,6 +40,8 @@ export type ShiftType = {
   endTime: string;
   weekOffs: string[];
   type: string;
+  lateBy: number;
+  halfDayLateBy: number;
 };
 
 export type EmployeeAttendanceType = {

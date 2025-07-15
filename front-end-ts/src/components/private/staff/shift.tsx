@@ -35,6 +35,11 @@ const shiftSchema = z.object({
   type: z.string().min(2, "type is required"),
   startTime: z.string().min(2, "start time is required").optional(),
   endTime: z.string().min(2, "end time is required").optional(),
+  lateBy: z.coerce.number().max(120, "120 minutes max!"),
+  halfDayLateBy: z.coerce
+    .number()
+    .min(10, "10 minutes is minmum.")
+    .max(360, "360 minutes max!"),
 });
 type ShiftFormData = z.infer<typeof shiftSchema>;
 
@@ -57,6 +62,8 @@ export const StaffShift = ({
       type: shift?.type || "", // Use existing shift type if available
       startTime: shift?.startTime || "09:00", // Use existing start time if available
       endTime: shift?.endTime || "16:00", // Use existing end time if available
+      lateBy: shift?.lateBy || 0, // Use existing end time if available
+      halfDayLateBy: shift?.halfDayLateBy || 30, // Use existing end time if available
     },
   });
 
@@ -190,6 +197,38 @@ export const StaffShift = ({
                         <Input type="time" {...field} className="input" />
                       </FormControl>
                       <FormMessage>{errors2.endTime?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex justify-between gap-2">
+                {/* Start Time */}
+                <FormField
+                  control={control2}
+                  name="lateBy"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Late By</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="input" />
+                      </FormControl>
+                      <FormMessage>{errors2.lateBy?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+                {/*  End Time */}
+                <FormField
+                  control={control2}
+                  name="halfDayLateBy"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Half Day Late By</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} className="input" />
+                      </FormControl>
+                      <FormMessage>
+                        {errors2.halfDayLateBy?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
