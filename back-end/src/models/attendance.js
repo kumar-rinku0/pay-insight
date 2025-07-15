@@ -54,17 +54,6 @@ const PunchOut = model("PunchOut", punchOutSchema);
 
 const attendanceSchema = new Schema(
   {
-    // user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    // company: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "Company",
-    //   required: true,
-    // },
-    // branch: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "Branch",
-    //   required: true,
-    // },
     role: {
       type: Schema.Types.ObjectId,
       ref: "Role",
@@ -106,7 +95,6 @@ const attendanceSchema = new Schema(
 );
 
 attendanceSchema.pre("save", async function (next) {
-  // if (this.isModified("punchingInfo")) {
   if (this.punchingInfo) {
     if (this.punchingInfo.length === 0) {
       return next();
@@ -140,7 +128,6 @@ attendanceSchema.pre("save", async function (next) {
     }
     this.punchingInfo.push(lastObj);
   }
-  // }
   return next();
 });
 

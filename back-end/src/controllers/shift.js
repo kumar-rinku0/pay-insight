@@ -20,7 +20,15 @@ export const getShiftByEmployeeId = async (req, res) => {
 };
 
 export const handleCreateShifts = async (req, res) => {
-  const { type, endTime, startTime, weekOffs, employeeId } = req.body;
+  const {
+    type,
+    endTime,
+    startTime,
+    weekOffs,
+    employeeId,
+    halfDayLateBy,
+    lateBy,
+  } = req.body;
   const previous = await Shift.findOne({ createdFor: employeeId });
   if (previous) {
     return res
@@ -28,6 +36,8 @@ export const handleCreateShifts = async (req, res) => {
       .send({ message: "already assigned a shift.", shift: previous });
   }
   const shift = new Shift({
+    halfDayLateBy,
+    lateBy,
     type,
     endTime,
     startTime,
@@ -40,10 +50,11 @@ export const handleCreateShifts = async (req, res) => {
 
 export const handleShiftUpdateById = async (req, res) => {
   const { shiftId } = req.params;
-  const { type, endTime, startTime, weekOffs } = req.body;
+  const { type, endTime, startTime, weekOffs, halfDayLateBy, lateBy } =
+    req.body;
   const shift = await Shift.findByIdAndUpdate(
     shiftId,
-    { type, endTime, startTime, weekOffs },
+    { type, endTime, startTime, weekOffs, halfDayLateBy, lateBy },
     { new: true }
   );
   if (!shift) {
