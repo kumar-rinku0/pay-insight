@@ -184,7 +184,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
     );
   }
   return (
-    <div className="px-4 py-8 h-[60vh]">
+    <div className="px-4 py-8 min-h-[60vh]">
       <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-4 font-bold flex justify-between items-center rounded-t-lg">
         <div className="capitalize">{user?.name}</div>
         <Select
