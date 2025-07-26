@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod"; // Import Zod for validation
@@ -23,8 +23,9 @@ import {
 } from "@/components/ui/form";
 import axios from "axios";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "@/providers/use-auth"; // Adjust the import path as necessary
+import type { BranchType } from "@/types/res-type";
 
 // Zod schema for frontend validation
 const branchSchema = z.object({
@@ -39,7 +40,7 @@ const branchSchema = z.object({
 
 type BranchFormData = z.infer<typeof branchSchema>;
 
-const CreateBranch = () => {
+const UpdateBranch = ({ branch }: { branch: BranchType }) => {
   const { isAuthenticated, user } = useAuth();
   const router = useNavigate();
   const [geolocation, setGeolocation] = React.useState<[number, number] | null>(
@@ -49,9 +50,9 @@ const CreateBranch = () => {
   const form = useForm<BranchFormData>({
     resolver: zodResolver(branchSchema),
     defaultValues: {
-      name: "",
-      address: "", // Set default if needed
-      radius: 20,
+      name: branch.name,
+      address: branch.address, // Set default if needed
+      radius: branch.radius,
       isCoordinates: false,
     },
   });
@@ -68,7 +69,7 @@ const CreateBranch = () => {
     getLocation();
     if (isAuthenticated && user && user.role) {
       axios
-        .post("/api/branch/create", {
+        .post("/api/branch/update", {
           ...data,
           _id: user._id,
           company: user.role.company,
@@ -264,7 +265,7 @@ const CreateBranch = () => {
 
               {/* Submit Button */}
               <Button type="submit" className="w-full">
-                Create Branch
+                Update Branch
               </Button>
             </form>
           </Form>
@@ -274,4 +275,38 @@ const CreateBranch = () => {
   );
 };
 
-export default CreateBranch;
+type ResponseType = {
+  message: string;
+  branch: BranchType;
+};
+
+const UpdateBranchPage = () => {
+  const [searchParams] = useSearchParams();
+  const branchId = searchParams.get("branchId");
+  const [branch, setBranch] = useState<BranchType | null>(null);
+  useEffect(() => {
+    if (branchId) {
+      axios
+        .get<ResponseType>(`/api/branch/getOneByBranchId/${branchId}`)
+        .then((res) => {
+          setBranch(res.data.branch);
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error("Failed to fetch company details.");
+        });
+    }
+  }, [branchId]);
+
+  if (!branch) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  return <UpdateBranch branch={branch} />;
+};
+
+export default UpdateBranchPage;

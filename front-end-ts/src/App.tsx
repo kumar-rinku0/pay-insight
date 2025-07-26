@@ -35,6 +35,8 @@ import Policy from "./components/root/policy";
 import Home from "./components/private/home/home";
 import Session from "./components/private/profile/session";
 import ImageUpload from "./components/root/upload";
+import UpdateCompanyPage from "./components/private/companies/update-company";
+import UpdateBranchPage from "./components/private/branches/update-branch";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -68,7 +70,9 @@ function App() {
             <Route path="/companies" element={<Companies />} />
             <Route path="/branches" element={<Branches />} />
             <Route path="/companies/create" element={<CreateCompany />} />
+            <Route path="/companies/update" element={<UpdateCompanyPage />} />
             <Route path="/branches/create" element={<CreateBranch />} />
+            <Route path="/branches/update" element={<UpdateBranchPage />} />
             <Route path="/staff" element={<Staff />} />
             <Route path="/staff/create" element={<CreateStaff />} />
             <Route path="/staff/calendar" element={<AdminCalendar />} />
