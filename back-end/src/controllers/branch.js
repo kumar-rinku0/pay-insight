@@ -64,6 +64,26 @@ export const handleGetBranchInfoByBranchId = async (req, res) => {
   });
 };
 
+export const handleUpdateBranchInfoByBranchId = async (req, res) => {
+  const { branchId } = req.params;
+  const { name, radius, address, geometry, isCoordinates } = req.body;
+  const branch = await Branch.findById(branchId);
+  if (!branch) {
+    return res.status(400).json({ message: "branch not found!" });
+  }
+  branch.name = name || branch.name;
+  branch.radius = radius || branch.radius;
+  branch.address = address || branch.address;
+  if (isCoordinates) {
+    branch.geometry = geometry;
+  }
+  await branch.save();
+  return res.status(200).json({
+    message: "branch updated.",
+    branch: branch,
+  });
+};
+
 // middleware.
 
 export const onlyOneBranchAccess = async (req, res, next) => {
