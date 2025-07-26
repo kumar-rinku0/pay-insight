@@ -44,10 +44,10 @@ const companySchema = z.object({
       "5 latter, 4 numeric and 1 latter! only capital allowed."
     ),
   type: z.enum(["private", "public"]),
-  branches: z
-    .string()
+  branches: z.coerce
+    .number()
     .min(1, "Branches count is required")
-    .max(2, "Max limit 99 crossed!"),
+    .max(99, "Max limit 99 crossed!"),
 });
 
 type CompanyFormData = z.infer<typeof companySchema>;
@@ -63,7 +63,7 @@ const CreateCompany = () => {
       phone: "",
       cin: "",
       type: undefined, // Set default if needed
-      branches: "",
+      branches: 1,
     },
   });
 
