@@ -66,19 +66,16 @@ const UpdateBranch = ({ branch }: { branch: BranchType }) => {
   const onSubmit = async (data: BranchFormData) => {
     // Handle the form data submission to the backend
     console.log(data);
-    getLocation();
     if (isAuthenticated && user && user.role) {
       axios
-        .post("/api/branch/update", {
+        .put(`/api/branch/update/branchId/${branch._id}`, {
           ...data,
-          _id: user._id,
-          company: user.role.company,
           geometry: { type: "Point", coordinates: geolocation },
         })
         .then((res) => {
           console.log(res);
           toast.success(res.data.message);
-          router("/staff");
+          router("/branches");
         })
         .catch((err) => {
           console.log(err);
@@ -177,9 +174,9 @@ const UpdateBranch = ({ branch }: { branch: BranchType }) => {
     <main className="flex h-[90vh] sm:h-screen justify-center items-center">
       <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
         <CardHeader>
-          <CardTitle className="text-xl">Create Branch</CardTitle>
+          <CardTitle className="text-xl">Update Branch</CardTitle>
           <CardDescription>
-            Enter your branch information to create branch in selected company!
+            Enter your branch information to update branch information!
           </CardDescription>
         </CardHeader>
         <CardContent>

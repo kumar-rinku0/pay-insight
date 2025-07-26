@@ -66,8 +66,8 @@ const UpdateCompany = ({ company }: { company: CompanyType }) => {
     resolver: zodResolver(companySchema),
     defaultValues: {
       name: company.name || "",
-      cin: company.code || "",
-      type: (company.type as "public") || "private", // Set default if needed
+      cin: company.cin || "",
+      type: company.type as "public" | "private", // Set default if needed
       branches: company.branches,
     },
   });
@@ -83,13 +83,13 @@ const UpdateCompany = ({ company }: { company: CompanyType }) => {
     console.log(data);
     if (isAuthenticated && user) {
       axios
-        .post("/api/company/create", { ...data })
+        .put(`/api/company/update/companyId/${company._id}`, { ...data })
         .then((res) => {
           console.log(res);
           const { message, role } = res.data;
           signIn({ ...user, role: role });
           toast.success(message);
-          router("/branches");
+          router("/companies");
         })
         .catch((err) => {
           console.log(err);
@@ -98,19 +98,6 @@ const UpdateCompany = ({ company }: { company: CompanyType }) => {
     }
   };
 
-  const getCompanyDetails = () => {
-    axios
-      .get<ResponseType>("/api/company/info")
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  useEffect(() => {
-    getCompanyDetails();
-  }, []);
   return (
     <main className="flex h-[90vh] sm:h-screen justify-center items-center">
       <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
