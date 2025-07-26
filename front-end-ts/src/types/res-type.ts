@@ -30,6 +30,7 @@ export type CompanyType = {
   name: string;
   code: string;
   type: string;
+  cin: string;
   branches: number;
 };
 

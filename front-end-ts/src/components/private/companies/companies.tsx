@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/use-auth";
 import type { CompanyType } from "@/types/res-type";
 import axios from "axios";
-import { PlusCircle, Search } from "lucide-react";
+import { Edit, PlusCircle, Search, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -58,7 +58,7 @@ const Companies = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="hidden lg:flex px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Type
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -66,6 +66,9 @@ const Companies = () => {
                 </th>
                 <th className="hidden lg:flex px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Code
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
                 </th>
               </tr>
             </thead>
@@ -75,7 +78,7 @@ const Companies = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {company.name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <td className="hidden lg:flex px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {company.type}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -83,6 +86,21 @@ const Companies = () => {
                   </td>
                   <td className="hidden lg:flex px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {company.code}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <div className="flex gap-1">
+                      <Button
+                        variant="outline"
+                        onClick={() =>
+                          router(`/companies/update?companyId=${company._id}`)
+                        }
+                      >
+                        <Edit />
+                      </Button>
+                      <Button variant="outline">
+                        <Trash />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}

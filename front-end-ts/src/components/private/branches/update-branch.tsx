@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod"; // Import Zod for validation
@@ -23,8 +23,9 @@ import {
 } from "@/components/ui/form";
 import axios from "axios";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useAuth } from "@/providers/use-auth"; // Adjust the import path as necessary
+import type { BranchType } from "@/types/res-type";
 
 // Zod schema for frontend validation
 const branchSchema = z.object({
@@ -39,7 +40,7 @@ const branchSchema = z.object({
 
 type BranchFormData = z.infer<typeof branchSchema>;
 
-const CreateBranch = () => {
+const UpdateBranch = ({ branch }: { branch: BranchType }) => {
   const { isAuthenticated, user } = useAuth();
   const router = useNavigate();
   const [geolocation, setGeolocation] = React.useState<[number, number] | null>(
@@ -49,9 +50,9 @@ const CreateBranch = () => {
   const form = useForm<BranchFormData>({
     resolver: zodResolver(branchSchema),
     defaultValues: {
-      name: "",
-      address: "", // Set default if needed
-      radius: 20,
+      name: branch.name,
+      address: branch.address, // Set default if needed
+      radius: branch.radius,
       isCoordinates: false,
     },
   });
@@ -65,19 +66,16 @@ const CreateBranch = () => {
   const onSubmit = async (data: BranchFormData) => {
     // Handle the form data submission to the backend
     console.log(data);
-    getLocation();
     if (isAuthenticated && user && user.role) {
       axios
-        .post("/api/branch/create", {
+        .put(`/api/branch/update/branchId/${branch._id}`, {
           ...data,
-          _id: user._id,
-          company: user.role.company,
           geometry: { type: "Point", coordinates: geolocation },
         })
         .then((res) => {
           console.log(res);
           toast.success(res.data.message);
-          router("/staff");
+          router("/branches");
         })
         .catch((err) => {
           console.log(err);
@@ -176,9 +174,9 @@ const CreateBranch = () => {
     <main className="flex h-[90vh] sm:h-screen justify-center items-center">
       <Card className="mx-auto min-w-[20rem] max-w-[20rem] sm:min-w-[25rem] sm:max-w-[25rem]">
         <CardHeader>
-          <CardTitle className="text-xl">Create Branch</CardTitle>
+          <CardTitle className="text-xl">Update Branch</CardTitle>
           <CardDescription>
-            Enter your branch information to create branch in selected company!
+            Enter your branch information to update branch information!
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -264,7 +262,7 @@ const CreateBranch = () => {
 
               {/* Submit Button */}
               <Button type="submit" className="w-full">
-                Create Branch
+                Update Branch
               </Button>
             </form>
           </Form>
@@ -274,4 +272,38 @@ const CreateBranch = () => {
   );
 };
 
-export default CreateBranch;
+type ResponseType = {
+  message: string;
+  branch: BranchType;
+};
+
+const UpdateBranchPage = () => {
+  const [searchParams] = useSearchParams();
+  const branchId = searchParams.get("branchId");
+  const [branch, setBranch] = useState<BranchType | null>(null);
+  useEffect(() => {
+    if (branchId) {
+      axios
+        .get<ResponseType>(`/api/branch/getOneByBranchId/${branchId}`)
+        .then((res) => {
+          setBranch(res.data.branch);
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error("Failed to fetch company details.");
+        });
+    }
+  }, [branchId]);
+
+  if (!branch) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  return <UpdateBranch branch={branch} />;
+};
+
+export default UpdateBranchPage;

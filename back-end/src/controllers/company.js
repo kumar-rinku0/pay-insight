@@ -13,7 +13,7 @@ const handleCreateCompany = async (req, res) => {
   if (!name || !phone || !branches) {
     return res
       .status(400)
-      .send({ error: "name, phone and branch count are required." });
+      .send({ message: "name, phone and branch count are required." });
   }
   const user = await User.findById(req.user._id);
   const company = new Company({
@@ -53,7 +53,7 @@ const handleSelectCompany = async (req, res) => {
   if (!role) {
     return res
       .status(400)
-      .send({ error: "you are not a member of this company!" });
+      .send({ message: "you are not a member of this company!" });
   }
   req.session.user = { ...req.user, role: role };
   return res.status(200).send({
@@ -69,9 +69,38 @@ const handleGetCompanyById = async (req, res) => {
   return res.status(200).send({ message: "your company.", company: comp });
 };
 
+const handleUpdateCompanyById = async (req, res) => {
+  const { companyId } = req.params;
+  const { name, cin, gst, logo, website, type, branches } = req.body;
+  const company = await Company.findById(companyId);
+  if (!company) {
+    return res.status(400).send({ message: "company not found!" });
+  }
+  company.name = name || company.name;
+  company.cin = cin || company.cin;
+  company.gst = gst || company.gst;
+  company.logo = logo || company.logo;
+  company.website = website || company.website;
+  company.type = type || company.type;
+  company.branches = branches || company.branches;
+  await company.save();
+  const roles = await Role.find({ company: company._id });
+  for (const role of roles) {
+    if (role.company.toString() !== company._id.toString()) continue;
+    role.name = company.name;
+    await role.save();
+  }
+  const role = await Role.findOne({ user: req.user._id, company: company._id });
+  req.session.user = { ...req.user, role: role };
+  return res
+    .status(200)
+    .send({ message: "company updated.", company: company, role: role });
+};
+
 export {
   handleCreateCompany,
   handleFetchCompanies,
   handleGetCompanyById,
   handleSelectCompany,
+  handleUpdateCompanyById,
 };

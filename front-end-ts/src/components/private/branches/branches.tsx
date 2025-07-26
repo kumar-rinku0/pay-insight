@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/use-auth";
 import type { BranchType } from "@/types/res-type";
 import axios from "axios";
-import { PlusCircle, Search } from "lucide-react";
+import { Edit, PlusCircle, Search, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -58,11 +58,14 @@ const Branches = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="hidden lg:flex px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Address
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Radius
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
                 </th>
               </tr>
             </thead>
@@ -72,11 +75,26 @@ const Branches = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {branch.name}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <td className="hidden lg:flex px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {branch.address}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {branch.radius}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <div className="flex gap-1">
+                      <Button
+                        variant="outline"
+                        onClick={() =>
+                          router(`/branches/update?branchId=${branch._id}`)
+                        }
+                      >
+                        <Edit />
+                      </Button>
+                      <Button variant="outline">
+                        <Trash />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}

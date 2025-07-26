@@ -5,7 +5,9 @@ import {
   handleFetchCompanies,
   handleGetCompanyById,
   handleSelectCompany,
+  handleUpdateCompanyById,
 } from "../controllers/company.js";
+import { onlyAdminUser, onlyLoggedInUser } from "../middlewares/auth.js";
 
 const route = Router();
 
@@ -21,6 +23,10 @@ route
 route
   .route("/getOneByCompanyId/:companyId")
   .get(wrapAsync(handleGetCompanyById));
+
+route
+  .route("/update/companyId/:companyId")
+  .put(onlyLoggedInUser, onlyAdminUser, wrapAsync(handleUpdateCompanyById));
 
 route.route("/userId/:userId").get(wrapAsync(handleFetchCompanies));
 
