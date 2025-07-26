@@ -5,6 +5,7 @@ import {
   handleCreateBranch,
   handleFetchBranches,
   handleGetBranchInfo,
+  handleGetBranchInfoByBranchId,
 } from "../controllers/branch.js";
 import { onlyAdminUser } from "../middlewares/auth.js";
 import { isProCompany } from "../controllers/subscription.js";
@@ -24,6 +25,9 @@ route
     wrapAsync(handleCreateBranch)
   );
 route.route("/info").get(wrapAsync(handleGetBranchInfo));
+route
+  .route("/getOneByBranchId/:branchId")
+  .get(wrapAsync(handleGetBranchInfoByBranchId));
 route.route("/company").get(wrapAsync(handleFetchBranches));
 
 export default route;
