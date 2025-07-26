@@ -53,7 +53,7 @@ const companySchema = z.object({
   branches: z.coerce
     .number()
     .min(1, "Branches count is required")
-    .max(2, "Max limit 99 crossed!"),
+    .max(99, "Max limit 99 crossed!"),
 });
 
 type CompanyFormData = z.infer<typeof companySchema>;
