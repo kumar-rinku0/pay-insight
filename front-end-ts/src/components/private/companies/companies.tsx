@@ -1,4 +1,14 @@
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/use-auth";
 import type { CompanyType } from "@/types/res-type";
@@ -28,6 +38,26 @@ const Companies = () => {
     }
     return;
   }, [user]);
+
+  const handleDeleteCompany = (companyId: string) => {
+    axios
+      .delete(`/api/company/delete/companyId/${companyId}`)
+      .then((res) => {
+        console.log(res.data);
+        if (user?.role.company === companyId) {
+          // If the user is deleting the company they are currently associated with, reload the page
+          location.reload();
+        }
+        toast.success(res.data.message || "Company deleted successfully!");
+        setCompanies(
+          (prev) => prev && prev.filter((company) => company._id !== companyId)
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.response.data.message || err.message);
+      });
+  };
 
   if (!companies) {
     return (
@@ -97,9 +127,37 @@ const Companies = () => {
                       >
                         <Edit />
                       </Button>
-                      <Button variant="outline">
-                        <Trash />
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline">
+                            <Trash />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                            <DialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete your company with associated
+                              branches and your metadata with company will be
+                              removed from our servers.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button variant="outline">Close</Button>
+                            </DialogClose>
+                            <DialogClose asChild>
+                              <Button
+                                variant="destructive"
+                                onClick={() => handleDeleteCompany(company._id)}
+                              >
+                                Delete Company
+                              </Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </td>
                 </tr>

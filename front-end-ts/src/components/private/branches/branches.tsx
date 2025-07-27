@@ -8,6 +8,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 const Branches = () => {
   const router = useNavigate();
   const { user } = useAuth();
@@ -28,6 +39,22 @@ const Branches = () => {
     }
     return;
   }, [user]);
+
+  const handleDeleteBranch = (branchId: string) => {
+    axios
+      .delete(`/api/branch/delete/branchId/${branchId}`)
+      .then((res) => {
+        console.log(res.data);
+        toast.success("Branch deleted successfully!");
+        setBranches(
+          (prev) => prev && prev.filter((branch) => branch._id !== branchId)
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.response.data.message || err.message);
+      });
+  };
 
   if (!branches) {
     return (
@@ -91,9 +118,37 @@ const Branches = () => {
                       >
                         <Edit />
                       </Button>
-                      <Button variant="outline">
-                        <Trash />
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline">
+                            <Trash />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                            <DialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete your branch of company and your
+                              metadata with branch will be removed from our
+                              servers.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button variant="outline">Close</Button>
+                            </DialogClose>
+                            <DialogClose asChild>
+                              <Button
+                                variant="destructive"
+                                onClick={() => handleDeleteBranch(branch._id)}
+                              >
+                                Delete Branch
+                              </Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </td>
                 </tr>
