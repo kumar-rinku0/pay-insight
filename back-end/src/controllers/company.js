@@ -1,4 +1,5 @@
 import Company from "../models/company.js";
+import Branch from "../models/branch.js";
 import Role from "../models/role.js";
 import User from "../models/user.js";
 
@@ -34,7 +35,6 @@ const handleCreateCompany = async (req, res) => {
     role: "admin",
   });
   user.phone = phone;
-  user.roles.push(role);
   await company.save();
   await role.save();
   await user.save();
@@ -97,10 +97,39 @@ const handleUpdateCompanyById = async (req, res) => {
     .send({ message: "company updated.", company: company, role: role });
 };
 
+const handleDeleteCompanyById = async (req, res) => {
+  const { companyId } = req.params;
+  const company = await Company.findById(companyId);
+  if (!company) {
+    return res.status(400).send({ message: "company not found!" });
+  }
+  await Company.deleteOne({ _id: companyId });
+  await Branch.deleteMany({ company: companyId });
+  await Role.deleteMany({ company: companyId });
+  const user = req.user;
+  if (user.role.company.toString() !== companyId.toString()) {
+    return res.status(200).send({
+      message: "company deleted.",
+      company: company,
+    });
+  }
+  const role = await Role.findOne({ user: user._id });
+  if (role) {
+    req.session.user = { ...req.user, role: role };
+  } else {
+    req.session.user = { ...req.user, role: null };
+  }
+  return res.status(200).send({
+    message: "company deleted.",
+    company: company,
+    role: role || null,
+  });
+};
 export {
   handleCreateCompany,
   handleFetchCompanies,
   handleGetCompanyById,
   handleSelectCompany,
   handleUpdateCompanyById,
+  handleDeleteCompanyById,
 };

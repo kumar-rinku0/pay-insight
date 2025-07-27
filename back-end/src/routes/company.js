@@ -6,6 +6,7 @@ import {
   handleGetCompanyById,
   handleSelectCompany,
   handleUpdateCompanyById,
+  handleDeleteCompanyById,
 } from "../controllers/company.js";
 import { onlyAdminUser, onlyLoggedInUser } from "../middlewares/auth.js";
 
@@ -27,6 +28,9 @@ route
 route
   .route("/update/companyId/:companyId")
   .put(onlyLoggedInUser, onlyAdminUser, wrapAsync(handleUpdateCompanyById));
+route
+  .route("/delete/companyId/:companyId")
+  .delete(onlyLoggedInUser, onlyAdminUser, wrapAsync(handleDeleteCompanyById));
 
 route.route("/userId/:userId").get(wrapAsync(handleFetchCompanies));
 
