@@ -70,5 +70,36 @@ roleSchema.pre("findOneAndDelete", async function (next) {
   return next();
 });
 
+roleSchema.pre("deleteMany", async function (next) {
+  const docsToDelete = await this.model.find(this.getQuery());
+  console.log("Docs to delete:", docsToDelete);
+  const Shift = model("Shift");
+  const Attendance = model("Attendance");
+  const PunchIn = model("PunchIn");
+  const PunchOut = model("PunchOut");
+  // you can perform operations like logging, archiving, etc. here
+  for (const doc of docsToDelete) {
+    await Shift.findOneAndDelete({
+      createdFor: doc._id,
+    });
+    const attendanceRecords = await Attendance.find({ role: doc._id });
+    for (const record of attendanceRecords) {
+      await PunchIn.deleteMany({
+        _id: { $in: record.punchingInfo.map((info) => info.punchInInfo) },
+      });
+      await PunchOut.deleteMany({
+        _id: { $in: record.punchingInfo.map((info) => info.punchOutInfo) },
+      });
+    }
+    console.log(
+      "Attendance Punch In/Out deleted, associated shifts and roles removed.",
+      attendanceRecords
+    );
+    await Attendance.deleteMany({ role: doc._id });
+    console.log("Attendance records deleted.");
+  }
+  return next();
+});
+
 const Role = model("Role", roleSchema);
 export default Role;

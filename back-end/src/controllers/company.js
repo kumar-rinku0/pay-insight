@@ -1,4 +1,5 @@
 import Company from "../models/company.js";
+import Branch from "../models/branch.js";
 import Role from "../models/role.js";
 import User from "../models/user.js";
 
@@ -103,6 +104,7 @@ const handleDeleteCompanyById = async (req, res) => {
     return res.status(400).send({ message: "company not found!" });
   }
   await Company.deleteOne({ _id: companyId });
+  await Branch.deleteMany({ company: companyId });
   await Role.deleteMany({ company: companyId });
   const user = req.user;
   if (user.role.company.toString() !== companyId.toString()) {

@@ -1,6 +1,7 @@
 import Branch from "../models/branch.js";
 import Company from "../models/company.js";
 import User from "../models/user.js";
+import Role from "../models/role.js";
 
 const handleFetchBranches = async (req, res) => {
   const companyId = req.user.role.company;
@@ -82,6 +83,17 @@ export const handleUpdateBranchInfoByBranchId = async (req, res) => {
     message: "branch updated.",
     branch: branch,
   });
+};
+
+export const handleDeleteBranchByBranchId = async (req, res) => {
+  const { branchId } = req.params;
+  const branch = await Branch.findById(branchId);
+  if (!branch) {
+    return res.status(400).json({ message: "branch not found!" });
+  }
+  await branch.remove();
+  await Role.deleteMany({ branch: branchId });
+  return res.status(200).json({ message: "branch deleted." });
 };
 
 // middleware.
