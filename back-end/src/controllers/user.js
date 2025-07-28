@@ -91,6 +91,7 @@ const handleUserSignUpWithRoles = async (req, res) => {
     role: role,
   });
   await newRole.save();
+  await user.save();
   await createMailSystemForEmployee({
     address: user.email,
     _id: user._id,
