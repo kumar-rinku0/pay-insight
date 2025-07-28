@@ -15,6 +15,8 @@ import { onlyAdminOrManagerUser } from "../middlewares/auth.js";
 // import { handleUploadImage } from "../util/cloud-init.js";
 import multer from "multer";
 import { handleUploadImage } from "../utils/cloud-init.js";
+import { isProCompany } from "../controllers/subscription.js";
+import { onlyLimitedRolesAccess } from "../controllers/role.js";
 const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
@@ -54,6 +56,8 @@ router
   .route("/employees")
   .get(
     onlyAdminOrManagerUser,
+    wrapAsync(isProCompany),
+    wrapAsync(onlyLimitedRolesAccess),
     wrapAsync(handleGetEmployeesAttendanceWithPunchingInfo)
   );
 
