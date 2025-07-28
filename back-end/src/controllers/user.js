@@ -90,8 +90,8 @@ const handleUserSignUpWithRoles = async (req, res) => {
     branch: branchId,
     role: role,
   });
-  await newRole.save();
   await user.save();
+  await newRole.save();
   await createMailSystemForEmployee({
     address: user.email,
     _id: user._id,

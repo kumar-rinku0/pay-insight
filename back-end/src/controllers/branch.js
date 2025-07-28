@@ -91,7 +91,7 @@ export const handleDeleteBranchByBranchId = async (req, res) => {
   if (!branch) {
     return res.status(400).json({ message: "branch not found!" });
   }
-  await branch.remove();
+  await Branch.deleteOne({ _id: branchId });
   await Role.deleteMany({ branch: branchId });
   return res.status(200).json({ message: "branch deleted." });
 };
