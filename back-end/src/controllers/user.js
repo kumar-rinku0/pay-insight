@@ -62,10 +62,7 @@ const handleUserSignUpWithRoles = async (req, res) => {
         branch: branchId,
         role: role,
       });
-      userbyemail.roles.push(newRole);
       await newRole.save();
-      await userbyemail.save();
-
       return res.status(200).send({
         message: "staff assigned a role!",
         user: userbyemail,
@@ -93,9 +90,8 @@ const handleUserSignUpWithRoles = async (req, res) => {
     branch: branchId,
     role: role,
   });
-  await newRole.save();
-  user.roles.push(newRole);
   await user.save();
+  await newRole.save();
   await createMailSystemForEmployee({
     address: user.email,
     _id: user._id,

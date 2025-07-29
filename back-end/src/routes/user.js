@@ -48,15 +48,15 @@ route
 
 route.post("/google/callback", wrapAsync(handleGoogleCallback));
 
-route
-  .route("/registerbyrole")
-  .post(
-    onlyLoggedInUser,
-    onlyAdminOrManagerUser,
-    wrapAsync(isProCompany),
-    wrapAsync(onlyLimitedRolesAccess),
-    wrapAsync(handleUserSignUpWithRoles)
-  );
+route.route("/registerbyrole").post(
+  onlyLoggedInUser,
+  onlyAdminOrManagerUser,
+  wrapAsync(isProCompany),
+  wrapAsync(async (req, res, next) => {
+    await onlyLimitedRolesAccess(req, res, next, 2);
+  }),
+  wrapAsync(handleUserSignUpWithRoles)
+);
 
 route.route("/remember").patch(onlyLoggedInUser, wrapAsync(handleRememberMe));
 

@@ -61,7 +61,7 @@ export const handleDeleteCompanyRole = async (req, res) => {
 };
 
 // middlewares.
-export const onlyLimitedRolesAccess = async (req, res, next) => {
+export const onlyLimitedRolesAccess = async (req, res, next, count = 3) => {
   const subscription = req.subscription;
   const { company } = req.user.role;
   const query = {
@@ -72,7 +72,7 @@ export const onlyLimitedRolesAccess = async (req, res, next) => {
     ],
   };
   const totalRoles = await Role.countDocuments(query);
-  if (totalRoles <= 2) {
+  if (totalRoles <= count) {
     return next();
   } else if (subscription.pro) {
     return next();
