@@ -15,7 +15,7 @@ Here are some ideas to get you started:
 - ⚡ Fun fact: ...
 -->
 
-#### _> welcome to my github profile! 👋
+#### _> 👋
 
 ##### I'm an elegant software developer, or, if I precisely say, I'm a craftsman who crafts sophisticated software solutions.
 
