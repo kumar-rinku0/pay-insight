@@ -124,7 +124,9 @@ const UpdateCompany = ({ company }: { company: CompanyType }) => {
                       <FormControl>
                         <Input placeholder="Company Name" {...field} />
                       </FormControl>
-                      <FormMessage>{errors.name?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.name?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -139,7 +141,9 @@ const UpdateCompany = ({ company }: { company: CompanyType }) => {
                       <FormControl>
                         <Input placeholder="CIN" {...field} />
                       </FormControl>
-                      <FormMessage>{errors.cin?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.cin?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -166,7 +170,9 @@ const UpdateCompany = ({ company }: { company: CompanyType }) => {
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      <FormMessage>{errors.type?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.type?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -186,7 +192,9 @@ const UpdateCompany = ({ company }: { company: CompanyType }) => {
                           className="input"
                         />
                       </FormControl>
-                      <FormMessage>{errors.branches?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.branches?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />

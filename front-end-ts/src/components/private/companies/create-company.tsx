@@ -43,7 +43,9 @@ const companySchema = z.object({
       /^[A-Z]{5}[0-9]{4}[A-Z]$/,
       "5 latter, 4 numeric and 1 latter! only capital allowed."
     ),
-  type: z.enum(["private", "public"]),
+  type: z.enum(["private", "public"], {
+    errorMap: () => ({ message: "Company type is required" }),
+  }),
   branches: z.coerce
     .number()
     .min(1, "Branches count is required")
@@ -119,7 +121,9 @@ const CreateCompany = () => {
                       <FormControl>
                         <Input placeholder="Company Name" {...field} />
                       </FormControl>
-                      <FormMessage>{errors.name?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.name?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -137,7 +141,9 @@ const CreateCompany = () => {
                           className="input"
                         />
                       </FormControl>
-                      <FormMessage>{errors.phone?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.phone?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -152,7 +158,9 @@ const CreateCompany = () => {
                       <FormControl>
                         <Input placeholder="CIN" {...field} />
                       </FormControl>
-                      <FormMessage>{errors.cin?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.cin?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -162,24 +170,28 @@ const CreateCompany = () => {
                   control={control}
                   name="type"
                   render={({ field }) => (
-                    <FormItem className="flex justify-between items-center">
-                      <FormLabel>Company Type</FormLabel>
-                      <FormControl>
-                        <Select
-                          {...field}
-                          value={field.value}
-                          onValueChange={field.onChange}
-                        >
-                          <SelectTrigger className="w-[120px] sm:w-[180px]">
-                            <SelectValue placeholder="Type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="private">Private</SelectItem>
-                            <SelectItem value="public">Public</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage>{errors.type?.message}</FormMessage>
+                    <FormItem>
+                      <div className="flex justify-between items-center">
+                        <FormLabel>Company Type</FormLabel>
+                        <FormControl>
+                          <Select
+                            {...field}
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger className="w-[120px] sm:w-[180px]">
+                              <SelectValue placeholder="Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="private">Private</SelectItem>
+                              <SelectItem value="public">Public</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </div>
+                      <FormMessage className="text-xs">
+                        {errors.type?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -199,7 +211,9 @@ const CreateCompany = () => {
                           className="input"
                         />
                       </FormControl>
-                      <FormMessage>{errors.branches?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.branches?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
