@@ -29,12 +29,12 @@ import { useAuth } from "@/providers/use-auth"; // Adjust the import path as nec
 // Zod schema for frontend validation
 const branchSchema = z.object({
   name: z.string().min(1, "Branch name is required"),
-  address: z.string().min(6, "Address is required"),
+  address: z.string().min(6, "Branch Address is required"),
   isCoordinates: z.boolean(),
   radius: z.coerce
     .number()
-    .min(10, "Count is required")
-    .max(500, "Max limit crossed!"),
+    .min(10, "Branch radius is required. It should be at least 10m!")
+    .max(1000, "Max limit 1000m crossed!"),
 });
 
 type BranchFormData = z.infer<typeof branchSchema>;
@@ -198,7 +198,9 @@ const CreateBranch = () => {
                       <FormControl>
                         <Input placeholder="Branch Name" {...field} />
                       </FormControl>
-                      <FormMessage>{errors.name?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.name?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -213,7 +215,9 @@ const CreateBranch = () => {
                       <FormControl>
                         <Input placeholder="Branch Address" {...field} />
                       </FormControl>
-                      <FormMessage>{errors.address?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.address?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -237,7 +241,9 @@ const CreateBranch = () => {
                         />
                       </FormControl>
                       <FormLabel>pick current location coordiantes?</FormLabel>
-                      <FormMessage>{errors.isCoordinates?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.isCoordinates?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -256,7 +262,9 @@ const CreateBranch = () => {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage>{errors.radius?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.radius?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />

@@ -32,9 +32,9 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const shiftSchema = z.object({
-  type: z.string().min(2, "type is required"),
-  startTime: z.string().min(2, "start time is required").optional(),
-  endTime: z.string().min(2, "end time is required").optional(),
+  type: z.string().min(2, "Type is required"),
+  startTime: z.string().min(2, "Start time is required").optional(),
+  endTime: z.string().min(2, "End time is required").optional(),
   lateBy: z.coerce.number().max(120, "120 minutes max!"),
   halfDayLateBy: z.coerce
     .number()
@@ -166,7 +166,9 @@ export const StaffShift = ({
                         </SelectContent>
                       </Select>
                     </FormControl>
-                    <FormMessage>{errors2.type?.message}</FormMessage>
+                    <FormMessage className="text-xs">
+                      {errors2.type?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -182,7 +184,9 @@ export const StaffShift = ({
                       <FormControl>
                         <Input type="time" {...field} className="input" />
                       </FormControl>
-                      <FormMessage>{errors2.startTime?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors2.startTime?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -196,7 +200,9 @@ export const StaffShift = ({
                       <FormControl>
                         <Input type="time" {...field} className="input" />
                       </FormControl>
-                      <FormMessage>{errors2.endTime?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors2.endTime?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -212,7 +218,9 @@ export const StaffShift = ({
                       <FormControl>
                         <Input type="number" {...field} className="input" />
                       </FormControl>
-                      <FormMessage>{errors2.lateBy?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors2.lateBy?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -226,7 +234,7 @@ export const StaffShift = ({
                       <FormControl>
                         <Input type="number" {...field} className="input" />
                       </FormControl>
-                      <FormMessage>
+                      <FormMessage className="text-xs">
                         {errors2.halfDayLateBy?.message}
                       </FormMessage>
                     </FormItem>

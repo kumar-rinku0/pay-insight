@@ -39,12 +39,12 @@ type ResponseProp = {
 };
 
 const formSchema = z.object({
-  email: z.string().min(2).max(50).email(),
-  password: z.string().min(8).max(50),
+  email: z.string().email("Invalid email address").min(6).max(50),
+  password: z.string().min(6, "Password must be at least 6 characters").max(50),
 });
 
 const emailFormSchema = z.object({
-  email: z.string().min(6).max(50).email(),
+  email: z.string().email("Invalid email address").min(6).max(50),
 });
 
 type LoadingProp = {
@@ -107,15 +107,14 @@ const EmailOverlay = ({
         .then((res) => {
           console.log(res.data);
           if (res.status === 200) {
+            changeLoading({ button: false, overlay: false });
             toast.success("Email sent, to reset password.");
           }
         })
         .catch((err) => {
+          changeLoading({ button: false });
           toast.error(err.response.data.error);
           console.log(err);
-        })
-        .finally(() => {
-          changeLoading({ button: false });
         });
     } else if (loading.verifyUser) {
       axios
@@ -124,14 +123,13 @@ const EmailOverlay = ({
           console.log(res.data);
           if (res.status === 200) {
             toast.success("Email sent, to verify email.");
+            changeLoading({ button: false, overlay: false });
           }
         })
         .catch((err) => {
+          changeLoading({ button: false });
           toast.error(err.response.data.error);
           console.log(err);
-        })
-        .finally(() => {
-          changeLoading({ button: false });
         });
     }
   }
@@ -174,7 +172,7 @@ const EmailOverlay = ({
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -271,7 +269,7 @@ const LoginOverlay = ({
                       <FormControl>
                         <Input placeholder="Email Address" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -294,7 +292,7 @@ const LoginOverlay = ({
                       <FormControl>
                         <Input placeholder="Password" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />

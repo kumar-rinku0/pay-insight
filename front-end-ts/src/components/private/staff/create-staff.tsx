@@ -35,12 +35,13 @@ import { StaffShift } from "./shift";
 
 // Zod schema for frontend validation
 const staffSchema = z.object({
-  givenName: z.string().min(2, "name is required"),
-  familyName: z.string().optional(),
-  email: z
+  givenName: z
     .string()
-    .email("Vailid email address?")
-    .min(6, "Address is required"),
+    .min(1, "First name is required")
+    .max(20, "First name must be less than 20 characters")
+    .regex(/^[A-Z][a-z]+$/, "First name must start with a capital letter"),
+  familyName: z.string().optional(),
+  email: z.string().email("Invalid email address"),
   role: z.enum(["admin", "manager", "employee"], {
     errorMap: () => ({ message: "Role is required" }),
   }),
@@ -274,7 +275,9 @@ const EmpoyeeDetails = ({
                     <FormControl>
                       <Input placeholder="First Name" {...field} />
                     </FormControl>
-                    <FormMessage>{errors1.givenName?.message}</FormMessage>
+                    <FormMessage className="text-xs">
+                      {errors1.givenName?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -293,7 +296,9 @@ const EmpoyeeDetails = ({
                         className="input"
                       />
                     </FormControl>
-                    <FormMessage>{errors1.familyName?.message}</FormMessage>
+                    <FormMessage className="text-xs">
+                      {errors1.familyName?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -308,7 +313,9 @@ const EmpoyeeDetails = ({
                     <FormControl>
                       <Input placeholder="Email Address" {...field} />
                     </FormControl>
-                    <FormMessage>{errors1.email?.message}</FormMessage>
+                    <FormMessage className="text-xs">
+                      {errors1.email?.message}
+                    </FormMessage>
                   </FormItem>
                 )}
               />
@@ -339,7 +346,9 @@ const EmpoyeeDetails = ({
                       </SelectContent>
                     </Select>
                   </FormControl>
-                  <FormMessage>{errors1.role?.message}</FormMessage>
+                  <FormMessage className="text-xs">
+                    {errors1.role?.message}
+                  </FormMessage>
                 </FormItem>
               )}
             />

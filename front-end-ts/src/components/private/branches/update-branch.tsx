@@ -196,7 +196,9 @@ const UpdateBranch = ({ branch }: { branch: BranchType }) => {
                       <FormControl>
                         <Input placeholder="Branch Name" {...field} />
                       </FormControl>
-                      <FormMessage>{errors.name?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.name?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -211,7 +213,9 @@ const UpdateBranch = ({ branch }: { branch: BranchType }) => {
                       <FormControl>
                         <Input placeholder="Branch Address" {...field} />
                       </FormControl>
-                      <FormMessage>{errors.address?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.address?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -235,7 +239,9 @@ const UpdateBranch = ({ branch }: { branch: BranchType }) => {
                         />
                       </FormControl>
                       <FormLabel>pick current location coordiantes?</FormLabel>
-                      <FormMessage>{errors.isCoordinates?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.isCoordinates?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -254,7 +260,9 @@ const UpdateBranch = ({ branch }: { branch: BranchType }) => {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage>{errors.radius?.message}</FormMessage>
+                      <FormMessage className="text-xs">
+                        {errors.radius?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />

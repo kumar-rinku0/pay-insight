@@ -29,10 +29,14 @@ import { useAuth } from "@/providers/use-auth";
 import { useState } from "react";
 
 const formSchema = z.object({
-  givenName: z.string().min(2, "at least 2 characters!").max(20),
-  familyName: z.string().max(20).optional(),
-  email: z.string().email(),
-  password: z.string().min(8).max(50),
+  givenName: z
+    .string()
+    .min(1, "First name is required")
+    .max(20, "First name must be less than 20 characters")
+    .regex(/^[A-Z][a-z]+$/, "First name must start with a capital letter"),
+  familyName: z.string().optional(),
+  email: z.string().email("Invalid email address").min(6).max(50),
+  password: z.string().min(6, "Password must be at least 6 characters").max(50),
 });
 
 const Register = () => {
@@ -104,7 +108,7 @@ const Register = () => {
                           <FormControl>
                             <Input placeholder="First Name" {...field} />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="flex sm:hidden text-xs" />
                         </FormItem>
                       )}
                     />
@@ -119,12 +123,15 @@ const Register = () => {
                           <FormControl>
                             <Input placeholder="Last Name" {...field} />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-xs" />
                         </FormItem>
                       )}
                     />
                   </div>
                 </div>
+                <FormMessage className="hidden sm:flex text-xs">
+                  {form.formState.errors.givenName?.message}
+                </FormMessage>
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
@@ -135,7 +142,7 @@ const Register = () => {
                         <FormControl>
                           <Input placeholder="Email" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs" />
                       </FormItem>
                     )}
                   />
@@ -150,7 +157,7 @@ const Register = () => {
                         <FormControl>
                           <Input placeholder="Password" {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs" />
                       </FormItem>
                     )}
                   />
