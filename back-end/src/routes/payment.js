@@ -4,13 +4,14 @@ import {
   handleCreatePaymentRequest,
   handleConfirmationPaymentRequest,
 } from "../services/razorpay.js";
-import { getSubscriptionByUser } from "../controllers/subscription.js";
+import wrapAsync from "../utils/wrap-async.js";
+import { getSubscriptionByUser, isProCompany } from "../controllers/subscription.js";
 
 const router = express.Router();
 
-router.post("/create", handleCreatePaymentRequest);
-router.post("/confirmation", handleConfirmationPaymentRequest);
-router.get("/status", handleGetPaymentStauts);
-router.get("/subscription", getSubscriptionByUser);
+router.post("/create", wrapAsync(handleCreatePaymentRequest));
+router.post("/confirmation", wrapAsync(handleConfirmationPaymentRequest));
+router.get("/status", wrapAsync(handleGetPaymentStauts));
+router.get("/subscription", wrapAsync(isProCompany),  wrapAsync(getSubscriptionByUser));
 
 export default router;
