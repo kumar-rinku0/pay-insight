@@ -6,7 +6,6 @@ import Header from "./components/navigation/side-nav";
 import HomePage from "./components/root/home-page";
 import Register from "./components/auth/register";
 import Login from "./components/auth/login";
-import reactsvg from "@/assets/react.svg";
 import { Toaster } from "./components/ui/sonner";
 import NoPage from "./components/root/no-page";
 import CreateCompany from "./components/private/companies/create-company";
@@ -43,7 +42,7 @@ function App() {
   if (loading) {
     return (
       <div className="app w-full h-[90vh] flex justify-center items-center lead">
-        <img src={reactsvg} className="w-20 h-20 animate-spin" alt="" />
+        <img src={"puzzle.png"} className="w-20 h-20 animate-ping" alt="" />
       </div>
     );
   }
