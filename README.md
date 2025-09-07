@@ -1,23 +1,5 @@
 ## 🙄 Hello!!
 
-<!--
-**kumar-rinku0/kumar-rinku0** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
-Here are some ideas to get you started:
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: click here.
--->
-
-#### _> 👋
-
-##### I'm an elegant software developer, or, if I precisely say, I'm a craftsman who crafts sophisticated software solutions.
-
-##### I'm currently working on ... applications _> [pay-insight](https://pay-insight.vercel.app) please... [sponsor](https://github.com/sponsors/kumar-rinku0) my projects!
-
-##### To reach me or connect with me ... visit my _> [rinkukumar.in_](https://rinkukumar.in).
-
+##### I'm currently working on this... applications _> [pay-insight](https://payinsight.rinkukumar.in) please... [sponsor](https://github.com/sponsors/kumar-rinku0) my projects!
