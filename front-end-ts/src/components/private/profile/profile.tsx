@@ -111,53 +111,55 @@ const Profile = () => {
           <CardFooter></CardFooter>
         </Card>
         {/* delete company role */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Leave Company</CardTitle>
-            <CardDescription>
-              If you're no longer employee to company, click the button below.
-              This action cannot be undone. This will permanently unlink your
-              account with company and your metadata with company will be
-              removed from our servers.
-            </CardDescription>
-          </CardHeader>
-          <form>
-            <CardContent>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="destructive">
-                    <LogOut />
-                    Leave Company
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Are you absolutely sure?</DialogTitle>
-                    <DialogDescription>
-                      This action cannot be undone. This will permanently unlink
-                      your account with company and your metadata with company
-                      will be removed from our servers.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Close</Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                      <Button
-                        variant="destructive"
-                        onClick={handleLeaveCompany}
-                      >
-                        Leave
-                      </Button>
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </CardContent>
-          </form>
-          <CardFooter></CardFooter>
-        </Card>
+        {user.role && user.role.role !== "admin" && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Leave Company</CardTitle>
+              <CardDescription>
+                If you're no longer employee to company, click the button below.
+                This action cannot be undone. This will permanently unlink your
+                account with company and your metadata with company will be
+                removed from our servers.
+              </CardDescription>
+            </CardHeader>
+            <form>
+              <CardContent>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="destructive">
+                      <LogOut />
+                      Leave Company
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogDescription>
+                        This action cannot be undone. This will permanently
+                        unlink your account with company and your metadata with
+                        company will be removed from our servers.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">Close</Button>
+                      </DialogClose>
+                      <DialogClose asChild>
+                        <Button
+                          variant="destructive"
+                          onClick={handleLeaveCompany}
+                        >
+                          Leave
+                        </Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </CardContent>
+            </form>
+            <CardFooter></CardFooter>
+          </Card>
+        )}
         {/* delete account */}
         <Card>
           <CardHeader>

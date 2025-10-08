@@ -15,6 +15,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
+import { useAuth } from "@/providers/use-auth";
 
 const FormSchema = z.object({
   selfieeAttendance: z.boolean().default(false).optional(),
@@ -22,6 +23,8 @@ const FormSchema = z.object({
 });
 
 const ATSettings = () => {
+  const { user } = useAuth();
+  if (!user) return null;
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -44,7 +47,14 @@ const ATSettings = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <div>
-          <h3 className="mb-4 text-lg font-medium">Attendance Settings</h3>
+          <h3 className="mb-4 text-lg font-medium">
+            Attendance Settings
+            {user.role.role !== "admin" && (
+              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                (Read-Only)
+              </span>
+            )}
+          </h3>
           <div className="space-y-4">
             <FormField
               control={form.control}
@@ -62,6 +72,7 @@ const ATSettings = () => {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      disabled={user.role.role !== "admin"}
                     />
                   </FormControl>
                 </FormItem>
@@ -83,7 +94,7 @@ const ATSettings = () => {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      disabled
+                      disabled={user.role.role !== "admin"} // Make it read-only for non-admin users
                       aria-readonly
                     />
                   </FormControl>
