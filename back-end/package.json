@@ -30,7 +30,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.12.1",
     "multer": "^2.0.2",
-    "nodemailer": "^6.10.0",
+    "nodemailer": "^7.0.9",
     "razorpay": "^2.9.6"
   },
   "devDependencies": {
