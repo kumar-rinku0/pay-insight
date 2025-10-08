@@ -2,7 +2,8 @@
 
 import {
   LayoutDashboard,
-  Search,
+  Sparkles,
+  // Search,
   User,
   Users,
   AlertTriangle,
@@ -69,39 +70,23 @@ export const NavItems = () => {
           icon: LayoutDashboard,
           isActive: isNavItemActive(pathname, `/dashboard`),
         },
-        {
-          title: "Search",
-          url: "/search",
-          icon: Search,
-          isActive: isNavItemActive(pathname, `/search`),
-        },
+        // {
+        //   title: "Search",
+        //   url: "/search",
+        //   icon: Search,
+        //   isActive: isNavItemActive(pathname, `/search`),
+        // },
         {
           title: "Companies",
           url: "/companies",
           icon: Building2,
           isActive: isNavItemActive(pathname, `/companies`),
-          // items: [
-          //   {
-          //     title: "Create Company",
-          //     url: "/companies/create",
-          //   },
-          // ],
         },
         {
           title: "Branches",
           url: "/branches",
           icon: GitBranch,
           isActive: isNavItemActive(pathname, `/branches`),
-          // items: [
-          //   {
-          //     title: "Create Branch",
-          //     url: "/branches/create",
-          //   },
-          //   {
-          //     title: "Create Staff",
-          //     url: "/staff/create",
-          //   },
-          // ],
         },
         {
           title: "Staff",
@@ -121,6 +106,12 @@ export const NavItems = () => {
           icon: Settings,
           isActive: isNavItemActive(pathname, `/settings`),
         },
+        {
+          title: "Subscription",
+          url: "/subscription",
+          icon: Sparkles,
+          isActive: isNavItemActive(pathname, `/subscription`),
+        },
       ],
       managerNavigation: [
         {
@@ -135,12 +126,12 @@ export const NavItems = () => {
           icon: AlertTriangle,
           isActive: isNavItemActive(pathname, `/attendance`),
         },
-        {
-          title: "Search",
-          url: "/search",
-          icon: Search,
-          isActive: isNavItemActive(pathname, `/search`),
-        },
+        // {
+        //   title: "Search",
+        //   url: "/search",
+        //   icon: Search,
+        //   isActive: isNavItemActive(pathname, `/search`),
+        // },
         {
           title: "Calendar",
           url: "/calendar",
@@ -164,6 +155,12 @@ export const NavItems = () => {
           url: "/settings",
           icon: Settings,
           isActive: isNavItemActive(pathname, `/settings`),
+        },
+        {
+          title: "Subscription",
+          url: "/subscription",
+          icon: Sparkles,
+          isActive: isNavItemActive(pathname, `/subscription`),
         },
       ],
     },
