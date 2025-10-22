@@ -1,6 +1,0 @@
-# Allow all search engines to crawl all content
-User-agent: *
-Disallow: /login
-Disallow: /admin
-Disallow: /checkout
-Sitemap: https://payinsight.rinkukumar.in/sitemap.xml
