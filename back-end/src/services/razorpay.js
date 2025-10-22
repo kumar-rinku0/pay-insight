@@ -10,8 +10,8 @@ import {
 } from "../controllers/payment.js";
 import { getByPlanId } from "../models/payment.js";
 
-const CLIENT_ID = process.env.RAZORPAY_CLIENT_ID;
-const SECRET_KEY = process.env.RAZORPAY_SECRET_KEY;
+const CLIENT_ID = process.env.RAZORPAY_KEY_ID;
+const SECRET_KEY = process.env.RAZORPAY_KEY_SECRET;
 const DOMAIN = process.env.DOMAIN;
 
 export const client = new Razorpay({
