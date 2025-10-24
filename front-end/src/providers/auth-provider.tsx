@@ -29,8 +29,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       .get("/api/user/logout")
       .then(() => {
         router("/");
-        setUser(null);
-        setIsAuthenticated(false);
+        setTimeout(() => {
+          setUser(null);
+          setIsAuthenticated(false);
+        }, 10);
       })
       .catch(() => {
         // console.log("Logout error: ", err);
