@@ -1,5 +1,12 @@
-## 🙄 Hello!!
+## Staff Management System
 
+[visit](https://payinsight.rinkukumar.in) for live demo of application.
 
+#### Spend less time and manage your employees smartly
 
-##### I'm currently working on this... applications _> [pay-insight](https://payinsight.rinkukumar.in) please... [sponsor](https://github.com/sponsors/kumar-rinku0) my projects!
+> Easy to use
+
+> Safe and secured
+
+> 100% data backup
+
