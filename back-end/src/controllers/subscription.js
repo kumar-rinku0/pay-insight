@@ -74,7 +74,7 @@ export const isProCompany = async (req, res, next) => {
       return next();
     } else {
       subscription.pro = false;
-      subscription.type === "free";
+      // subscription.type = "pro expired";
       await subscription.save();
       req.subscription = subscription;
       return next();
