@@ -42,6 +42,7 @@ type BranchFormData = z.infer<typeof branchSchema>;
 const CreateBranch = () => {
   const { isAuthenticated, user } = useAuth();
   const router = useNavigate();
+  const [loadingLocation, setLoadingLocation] = React.useState(false);
   const [geolocation, setGeolocation] = React.useState<[number, number] | null>(
     null
   );
@@ -89,71 +90,59 @@ const CreateBranch = () => {
     }
   };
 
-  function getLocation(): Promise<void> {
+  const getLocation = async (): Promise<GeolocationPosition> => {
     return new Promise((resolve, reject) => {
-      if (navigator.geolocation) {
-        getCurrentPositionAsync()
-          .then((position) => {
-            showPosition(position);
-            resolve();
-          })
-          .catch((error) => {
-            showError(error);
-            reject();
-          });
-      } else {
+      if (!navigator.geolocation) {
         alert("Geolocation is not supported by this browser.");
         reject();
+        return;
       }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          return resolve(position);
+        },
+        (error) => {
+          let message = "";
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              message = "User denied the request for Geolocation.";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              message = "Location information is unavailable.";
+              break;
+            case error.TIMEOUT:
+              message = "The request to get user location timed out.";
+              break;
+            default:
+              message = "An unknown error occurred.";
+              break;
+          }
+          alert(message);
+          return reject();
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 20000,
+          maximumAge: 0,
+        }
+      );
     });
-  }
+  };
 
-  interface Position {
-    coords: {
-      latitude: number;
-      longitude: number;
-      accuracy: number;
-    };
-  }
-
-  function getCurrentPositionAsync(): Promise<Position> {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      });
-    });
-  }
-
-  async function showPosition(position: Position) {
+  function showPosition(position: GeolocationPosition) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
     const acc = position.coords.accuracy;
-    console.log("lat:", lat, "lon:", lon, "acc:", acc);
 
-    if (acc > 50) {
-      alert(`Accuracy is too large: ${acc}`);
-    } else {
-      setGeolocation([lon, lat]);
+    if (acc > 100) {
+      alert("GPS signal is weak. Try moving to an open area.");
+      return;
     }
-  }
 
-  function showError(error: GeolocationPositionError) {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        alert("User denied the request for Geolocation.");
-        break;
-      case error.POSITION_UNAVAILABLE:
-        alert("Location information is unavailable.");
-        break;
-      case error.TIMEOUT:
-        alert("The request to get user location timed out.");
-        break;
-      default:
-        alert("An unknown error occurred.");
-        break;
-    }
+    const coordinates = [lon, lat];
+    const geoPoint = { type: "Point", coordinates };
+    setGeolocation(geoPoint.coordinates as [number, number]);
   }
 
   // Handle checkbox change event
@@ -163,8 +152,11 @@ const CreateBranch = () => {
     const isChecked = event.target.checked;
     if (isChecked) {
       event.target.checked = false;
-      await getLocation();
-      if (!geolocation) {
+      setLoadingLocation(true);
+      const position = await getLocation();
+      setLoadingLocation(false);
+      showPosition(position);
+      if (!position) {
         event.target.checked = false;
       } else {
         event.target.checked = true;
@@ -222,6 +214,7 @@ const CreateBranch = () => {
                   )}
                 />
                 {/* Coordiantes Select */}
+                {loadingLocation && <p>Loading current location...</p>}
                 <FormField
                   control={control}
                   name="isCoordinates"
