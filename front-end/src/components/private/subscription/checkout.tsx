@@ -53,7 +53,7 @@ const loadScript = (src: string): Promise<boolean> => {
 
 const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
   const [loading, setLoading] = useState(false);
-  const CLIENT_ID = import.meta.env.VITE_RAZORPAY_CLIENT_ID;
+  const CLIENT_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
   console.log("clientId", CLIENT_ID, "orderObj", orderInfo);
 
   const displayRazorpay = async () => {
