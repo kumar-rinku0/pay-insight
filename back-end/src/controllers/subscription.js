@@ -12,6 +12,25 @@ export const getSubscriptionByUser = async (req, res) => {
       subscription: sub,
     });
   }
+  if (sub.pro && sub.type === "pro" && sub.proExpire < Date.now()) {
+    if (sub.upcoming && sub.upcoming.length >= 1) {
+      const upcomingPlanId = sub.upcoming.shift();
+      const plan = getByPlanId(upcomingPlanId);
+      sub.proExpire =
+        new Date(sub.proExpire).getTime() +
+        plan.durationDays * 24 * 3600 * 1000;
+      await sub.save();
+    } else {
+      sub.pro = false;
+      await sub.save();
+    }
+  } else if (!sub.pro && sub.type === "pro") {
+    return res.status(200).json({
+      message: `your ${sub.type} subscritpion expired.`,
+      subscription: sub,
+    });
+  }
+
   return res.status(200).json({
     message: `user have ${sub.type} subscritpion.`,
     subscription: sub,
@@ -55,7 +74,7 @@ export const isProCompany = async (req, res, next) => {
       return next();
     } else {
       subscription.pro = false;
-      subscription.type === "free";
+      // subscription.type = "pro expired";
       await subscription.save();
       req.subscription = subscription;
       return next();
