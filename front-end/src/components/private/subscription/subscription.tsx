@@ -4,6 +4,29 @@ import { useEffect, useState } from "react";
 import Checkout from "./checkout";
 import type { SubscriptionType } from "@/types/res-type";
 
+type PlanType = {
+  _id: string;
+  duration: string;
+  durationDays: number;
+  price: number;
+};
+export type OrderType = {
+  _id: string;
+  customer_id: string;
+  amount: string;
+  redirectUrl: string;
+};
+
+type ResponseType = {
+  orderInfo: OrderType;
+  message: string;
+};
+
+type SubscriptionResponseType = {
+  subscription: SubscriptionType;
+  message: string;
+};
+
 const plans = [
   {
     _id: "001",
@@ -31,35 +54,12 @@ const plans = [
   },
 ] as PlanType[];
 
-type ResponseType = {
-  orderInfo: OrderType;
-  message: string;
-};
-
-type SubscriptionResponseType = {
-  subscription: SubscriptionType;
-  message: string;
-};
-
-type PlanType = {
-  _id: string;
-  duration: string;
-  durationDays: number;
-  price: number;
-};
-export type OrderType = {
-  _id: string;
-  customer_id: string;
-  amount: string;
-  redirectUrl: string;
-};
-
 const Subscription = () => {
   const [order, setOrder] = useState<OrderType | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionType | null>(
     null
   );
-  const handleCreatePaymentRequiest = (plan: PlanType) => {
+  const handleCreatePaymentRequest = (plan: PlanType) => {
     axios
       .post<ResponseType>("/api/payment/create", plan)
       .then((res) => {
@@ -95,33 +95,21 @@ const Subscription = () => {
   }
   return (
     <div className="flex flex-col justify-center items-center p-4">
-      <div>
-        <h3>current subscription</h3>
-        <h4>
-          <span>type : </span>
-          <span>{subscription?.type}</span>
-        </h4>
-        <p>
-          <span>expire : </span>
-          <span>
-            {subscription?.proExpire
-              ? new Date(subscription?.proExpire).toLocaleString("en-US", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                  hour: "numeric",
-                  minute: "numeric",
-                })
-              : "never"}
-          </span>
-        </p>
-        <p>
-          <span>upcoming plan : </span>
-          <span>{subscription?.upcoming.length}</span>
-        </p>
-      </div>
+      {!subscription && <p>Loading subscription...</p>}
+      {subscription && subscription.pro && subscription.type === "pro" && (
+        <div className="mb-4 p-4 bg-green-200 text-green-800">
+          You are currently on a Pro plan. Thank you for being a valued
+          customer!
+        </div>
+      )}
+      {subscription && !subscription.pro && subscription.type === "pro" && (
+        <div className="mb-4 p-4 bg-red-200 text-red-800">
+          Your Pro subscription has expired. Please choose a plan to continue
+          enjoying Pro features.
+        </div>
+      )}
       <div className="flex flex-col justify-center items-center">
-        <div className="p-4">choose a plan!</div>
+        <div className="mb-4">choose a plan</div>
         <div className="flex justify-center flex-wrap gap-2">
           {plans.map((plan: PlanType) => (
             <div
@@ -130,7 +118,7 @@ const Subscription = () => {
             >
               <div>{plan.duration}</div>
               <Button
-                onClick={() => handleCreatePaymentRequiest(plan)}
+                onClick={() => handleCreatePaymentRequest(plan)}
                 variant="outline"
               >
                 {plan.price} &#x20B9;
@@ -139,6 +127,39 @@ const Subscription = () => {
           ))}
         </div>
       </div>
+      {subscription && (
+        <div className="mt-8 p-4 border-t w-full max-w-md">
+          <h3 className="text-lg font-bold mb-2">current subscription</h3>
+          <h4 className="font-semibold">
+            <span>type : </span>
+            <span>
+              {subscription?.type === "pro"
+                ? subscription.pro
+                  ? "Pro"
+                  : "Pro (expired)"
+                : "Free"}
+            </span>
+          </h4>
+          <p>
+            <span>expire : </span>
+            <span className="font-monospace">
+              {subscription?.proExpire
+                ? new Date(subscription?.proExpire).toLocaleString("en-US", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  })
+                : "never"}
+            </span>
+          </p>
+          <p>
+            <span>upcoming plan : </span>
+            <span>{subscription?.upcoming.length}</span>
+          </p>
+        </div>
+      )}
     </div>
   );
 };
