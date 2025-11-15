@@ -136,13 +136,14 @@ const CreateBranch = () => {
     const acc = position.coords.accuracy;
 
     if (acc > 100) {
-      alert("GPS signal is weak. Try moving to an open area.");
-      return;
+      toast.error("GPS signal is weak. Try moving to an open area.");
+      return false;
     }
 
     const coordinates = [lon, lat];
     const geoPoint = { type: "Point", coordinates };
     setGeolocation(geoPoint.coordinates as [number, number]);
+    return true;
   }
 
   // Handle checkbox change event
@@ -155,8 +156,8 @@ const CreateBranch = () => {
       setLoadingLocation(true);
       const position = await getLocation();
       setLoadingLocation(false);
-      showPosition(position);
-      if (!position) {
+      const isPositionValid = showPosition(position);
+      if (!isPositionValid) {
         event.target.checked = false;
       } else {
         event.target.checked = true;
@@ -214,7 +215,9 @@ const CreateBranch = () => {
                   )}
                 />
                 {/* Coordiantes Select */}
-                {loadingLocation && <p>Loading current location...</p>}
+                {loadingLocation && (
+                  <p className="text-sm">Loading current location...</p>
+                )}
                 <FormField
                   control={control}
                   name="isCoordinates"
