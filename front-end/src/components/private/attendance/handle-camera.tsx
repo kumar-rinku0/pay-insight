@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 const HandleCamera = ({
   onChangePunchingPhoto,
@@ -24,7 +25,8 @@ const HandleCamera = ({
       })
       .catch((err) => {
         console.error("Camera error:", err);
-        alert("Could not access the camera. Please check permissions.");
+        toast.error("Could not access the camera. Please check permissions.");
+        // alert("Could not access the camera. Please check permissions.");
         throw err;
       });
   };
