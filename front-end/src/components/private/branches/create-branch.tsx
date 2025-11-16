@@ -93,7 +93,8 @@ const CreateBranch = () => {
   const getLocation = async (): Promise<GeolocationPosition> => {
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
-        alert("Geolocation is not supported by this browser.");
+        setLoadingLocation(false);
+        toast.error("Geolocation is not supported by this browser.");
         reject();
         return;
       }
@@ -118,7 +119,8 @@ const CreateBranch = () => {
               message = "An unknown error occurred.";
               break;
           }
-          alert(message);
+          setLoadingLocation(false);
+          toast.error(message);
           return reject();
         },
         {
