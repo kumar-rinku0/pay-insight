@@ -26,10 +26,8 @@ export const getCustomerIdByUserId = async ({ userId }) => {
   return user;
 };
 
-export const handleGetPaymentForGateway = async ({ initiatedBy, order }) => {
-  const payment = await Payment.findOne({ initiatedBy, order }).sort({
-    createdAt: -1,
-  });
+export const handleGetPaymentForGateway = async ({ order }) => {
+  const payment = await Payment.findOne({ order });
   return payment;
 };
 
