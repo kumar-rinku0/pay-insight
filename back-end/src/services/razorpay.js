@@ -157,18 +157,18 @@ export const handleGetPaymentStauts = async (req, res) => {
 };
 
 export const handleRazorpayWebhook = async (req, res) => {
-  const rawBody = req.body.toString(); // 🔹 raw body as text
+  const rawBody = req.body.toString();
   const signature = req.headers["x-razorpay-signature"];
   const secret = WEBHOOK_SECRET;
 
-  // ✅ Verify signature
+  // Verify signature
   const expectedSignature = crypto
     .createHmac("sha256", secret)
     .update(rawBody)
     .digest("hex");
 
   if (signature !== expectedSignature) {
-    console.error("❌ Invalid Razorpay signature");
+    console.error("Invalid Razorpay signature");
     return res.status(400).send("Invalid signature");
   }
 
@@ -177,32 +177,23 @@ export const handleRazorpayWebhook = async (req, res) => {
 
   console.log("✅ Verified webhook event:", event);
 
-  // -------------------------
-  // 🔥 Handle events
-  // -------------------------
-
   if (event === "payment.captured") {
     const payment = payload.payload.payment.entity;
 
-    console.log("💰 Payment captured:", payment.id);
-
-    await Payment.updateOne({
-      where: { order_id: payment.order_id },
-      data: { status: "captured", payment: payment.id },
-    });
+    await Payment.updateOne(
+      { order_id: payment.order_id },
+      { $set: { status: "captured", payment: payment.id } }
+    );
   }
 
   if (event === "payment.failed") {
     const payment = payload.payload.payment.entity;
 
-    console.log("❌ Payment failed:", payment.id);
-
-    await Payment.updateOne({
-      where: { order_id: payment.order_id },
-      data: { status: "failed", payment: payment.id },
-    });
+    await Payment.updateOne(
+      { order_id: payment.order_id },
+      { $set: { status: "failed", payment: payment.id } }
+    );
   }
 
-  // Razorpay requires quick 2xx response
   return res.status(200).send("OK");
 };
