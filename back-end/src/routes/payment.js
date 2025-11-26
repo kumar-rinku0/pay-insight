@@ -3,16 +3,14 @@ import {
   handleGetPaymentStauts,
   handleCreatePaymentRequest,
   handleConfirmationPaymentRequest,
+  handleRazorpayWebhook,
 } from "../services/razorpay.js";
 import wrapAsync from "../utils/wrap-async.js";
 import {
   getSubscriptionByUser,
   isProCompany,
 } from "../controllers/subscription.js";
-import {
-  handleGetPaymentsInitiatedBy,
-  handleWebhook,
-} from "../controllers/payment.js";
+import { handleGetPaymentsInitiatedBy } from "../controllers/payment.js";
 
 const router = express.Router();
 
@@ -24,7 +22,7 @@ router.get("/status", wrapAsync(handleGetPaymentStauts));
 router.post(
   "/razorpay/webhook",
   express.raw({ type: "application/json" }),
-  wrapAsync(handleWebhook)
+  wrapAsync(handleRazorpayWebhook)
 );
 
 // subscription
