@@ -77,7 +77,7 @@ app.use("/api/branch", onlyLoggedInUser, branchRouter);
 app.use("/api/attendance", onlyLoggedInUser, attendanceRouter);
 app.use("/api/shift", onlyLoggedInUser, shiftRouter);
 app.use("/api/role", onlyLoggedInUser, roleRouter);
-app.use("/api/payment", onlyLoggedInUser, paymentRouter);
+app.use("/api/payment", paymentRouter);
 app.use("/api/contact", contectRouter);
 
 app.use((err, req, res, next) => {
