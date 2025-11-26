@@ -58,7 +58,11 @@ const sessionOptions = {
 
 app.set("trust proxy", 1);
 app.use(session(sessionOptions));
+app.use(cookieParser());
 
+app.use(isLoggedInCheck);
+
+// api route for checking if user is logged in
 app.get("/api", (req, res) => {
   const user = req.user;
   if (!user) {
@@ -74,11 +78,8 @@ app.post(
   wrapAsync(handleRazorpayWebhook)
 );
 
-app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(isLoggedInCheck);
 
 app.use("/api/user", userRouter);
 app.use("/api/company", onlyLoggedInUser, companyRouter);
