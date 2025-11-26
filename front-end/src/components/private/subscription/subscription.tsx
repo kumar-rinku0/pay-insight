@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Checkout from "./checkout";
+// import Checkout from "./checkout";
 import type { SubscriptionType } from "@/types/res-type";
+import { useNavigate } from "react-router";
 
 type PlanType = {
   _id: string;
@@ -11,10 +12,10 @@ type PlanType = {
   price: number;
 };
 export type OrderType = {
-  _id: string;
-  customer_id: string;
+  id: string;
   amount: string;
-  redirectUrl: string;
+  status: string;
+  attempts: number;
 };
 
 type ResponseType = {
@@ -55,7 +56,8 @@ const plans = [
 ] as PlanType[];
 
 const Subscription = () => {
-  const [order, setOrder] = useState<OrderType | null>(null);
+  const navigate = useNavigate();
+  // const [order, setOrder] = useState<OrderType | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionType | null>(
     null
   );
@@ -64,7 +66,8 @@ const Subscription = () => {
       .post<ResponseType>("/api/payment/create", plan)
       .then((res) => {
         console.log(res.data);
-        setOrder(res.data.orderInfo);
+        // setOrder(res.data.orderInfo);
+        navigate(`/subscription/payment?orderId=${res.data.orderInfo.id}`);
       })
       .catch((err) => {
         console.log(err);
@@ -84,15 +87,15 @@ const Subscription = () => {
   useEffect(() => {
     handleGetSubscription();
   }, []);
-  if (order) {
-    return (
-      <div className="h-[80vh] flex justify-center items-center">
-        <div className="flex justify-center items-center">
-          <Checkout orderInfo={order} />
-        </div>
-      </div>
-    );
-  }
+  // if (order) {
+  //   return (
+  //     <div className="h-[80vh] flex justify-center items-center">
+  //       <div className="flex justify-center items-center">
+  //         <Checkout orderInfo={order} />
+  //       </div>
+  //     </div>
+  //   );
+  // }
   return (
     <div className="flex flex-col justify-center items-center p-4">
       {!subscription && <p>Loading subscription...</p>}

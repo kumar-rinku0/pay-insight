@@ -2,16 +2,16 @@ import type { OrderType } from "./subscription";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 
 type RazorpayOptions = {
   key: string;
   amount: string;
   currency: string;
   name: string;
-  description: string;
+  // description: string;
   image: string;
   order_id: string | null;
-  customer_id: string;
   notes?: Record<string, unknown>;
   theme?: {
     color: string;
@@ -69,14 +69,12 @@ const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
   const handleRazorPayClick = async () => {
     const options = {
       key: CLIENT_ID!, // Public key
-      order_id: orderInfo._id,
+      order_id: orderInfo.id,
       amount: orderInfo.amount, // in paise
       currency: "INR",
       name: "Rinku Kumar",
-      description: "pay it.",
       image:
         "https://rinkukumar.in/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Frinku_sign.ec451a48.png&w=96&q=100",
-      customer_id: orderInfo.customer_id,
       handler: function (response: {
         razorpay_payment_id: string;
         razorpay_order_id: string;
@@ -85,7 +83,9 @@ const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
         // alert(response.razorpay_payment_id);
         console.log(response);
         axios.post("/api/payment/confirmation", response).finally(() => {
-          location.assign(`/status?orderId=${response.razorpay_order_id}`);
+          location.assign(
+            `/subscription/payment?orderId=${response.razorpay_order_id}`
+          );
         });
         // alert(response.razorpay_order_id);
         // alert(response.razorpay_signature);
@@ -112,12 +112,12 @@ const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
       await displayRazorpay();
       const paymentObject = new window.Razorpay(options);
       paymentObject.on("payment.failed", function (response) {
-        alert(response.error.description);
-        location.assign(`/status?orderId=${orderInfo._id}`);
+        toast.error(response.error.description);
+        location.assign(`/subscription/payment?orderId=${orderInfo.id}`);
       });
       paymentObject.open();
     } else {
-      alert("Missing ORDERID OR CLIENTID!");
+      toast.error("Missing ORDERID OR CLIENTID!");
     }
   };
 

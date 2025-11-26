@@ -83,7 +83,7 @@ function App() {
             <Route path="/account/onetap" element={<Session />} />
 
             <Route path="/subscription" element={<Subscription />} />
-            <Route path="/status" element={<PayStatus />} />
+            <Route path="/subscription/payment" element={<PayStatus />} />
             <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/upload" element={<ImageUpload />} />
