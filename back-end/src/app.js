@@ -21,6 +21,8 @@ import paymentRouter from "./routes/payment.js";
 
 //middlewares
 import { isLoggedInCheck, onlyLoggedInUser } from "./middlewares/auth.js";
+import { handleRazorpayWebhook } from "./services/razorpay.js";
+import wrapAsync from "./utils/wrap-async.js";
 
 const app = express();
 const port = process.env.PORT || "8000";
@@ -28,10 +30,6 @@ const SECRET = process.env.SESSION_SECRET || "KEYBOARD & mE!";
 const MONGO_URI = process.env.MONGO_URI;
 
 connectDatabase(MONGO_URI);
-
-app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const store = MongoStore.create({
   mongoUrl: MONGO_URI,
@@ -61,8 +59,6 @@ const sessionOptions = {
 app.set("trust proxy", 1);
 app.use(session(sessionOptions));
 
-app.use(isLoggedInCheck);
-
 app.get("/api", (req, res) => {
   const user = req.user;
   if (!user) {
@@ -71,13 +67,26 @@ app.get("/api", (req, res) => {
   return res.status(200).send({ user: user });
 });
 
+// payment webhook
+app.post(
+  "/api/razorpay/webhook",
+  express.raw({ type: "application/json" }),
+  wrapAsync(handleRazorpayWebhook)
+);
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(isLoggedInCheck);
+
 app.use("/api/user", userRouter);
 app.use("/api/company", onlyLoggedInUser, companyRouter);
 app.use("/api/branch", onlyLoggedInUser, branchRouter);
 app.use("/api/attendance", onlyLoggedInUser, attendanceRouter);
 app.use("/api/shift", onlyLoggedInUser, shiftRouter);
 app.use("/api/role", onlyLoggedInUser, roleRouter);
-app.use("/api/payment", paymentRouter);
+app.use("/api/payment", onlyLoggedInUser, paymentRouter);
 app.use("/api/contact", contectRouter);
 
 app.use((err, req, res, next) => {
