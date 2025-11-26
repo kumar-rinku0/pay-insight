@@ -97,9 +97,8 @@ export const handleCreatePaymentRequest = async (req, res) => {
 export const handleConfirmationPaymentRequest = async (req, res) => {
   const { razorpay_payment_id, razorpay_order_id, razorpay_signature } =
     req.body;
-  const user = req.user;
+
   const payment = await handleGetPaymentForGateway({
-    initiatedBy: user._id,
     order: razorpay_order_id,
   });
   if (!payment) {
@@ -129,10 +128,8 @@ export const handleConfirmationPaymentRequest = async (req, res) => {
 };
 
 export const handleGetPaymentStauts = async (req, res) => {
-  const user = req.user;
   const { orderId } = req.query;
   const payment = await handleGetPaymentForGateway({
-    initiatedBy: user._id,
     order: orderId,
   });
   client.orders
@@ -182,7 +179,6 @@ export const handleRazorpayWebhook = async (req, res) => {
   const payment = payload.payload.payment.entity;
 
   const paymentInfo = await handleGetPaymentForGateway({
-    initiatedBy: payment.customer,
     order: payment.order_id,
   });
   if (!paymentInfo) {
