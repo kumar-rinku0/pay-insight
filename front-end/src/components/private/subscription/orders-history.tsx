@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/providers/use-auth";
 import type { PaymentType } from "@/types/res-type";
+import { Button } from "@/components/ui/button";
 
 type ResponseType = {
   payments: PaymentType[];
@@ -14,15 +15,18 @@ const OrdersHistory = () => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (user) {
+      console.log(user);
       axios
         .get<ResponseType>(`/api/payment/initiatedBy/${user._id}`)
         .then((res) => {
+          // console.log(res.data);
           setPayments(res.data.payments);
           setLoading(false);
         })
         .catch((err) => {
           console.log(err);
           setLoading(false);
+          setPayments([]);
         });
     }
   }, [user]);
@@ -43,12 +47,23 @@ const OrdersHistory = () => {
   return (
     <div className="flex flex-col justify-center items-center gap-4 p-4">
       <h3 className="text-2xl font-bold">all payment initiated by you</h3>
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-4">
         {payments.map((payment) => (
           <div key={payment._id} className="flex flex-col gap-1">
             <div>
               <p>Amount: {payment.amount}</p>
               <p>Status: {payment.status}</p>
+              <p>Attempts: {new Date(payment.createdAt).toLocaleString()}</p>
+              <Button
+                onClick={() => {
+                  location.assign(
+                    `/subscription/payment?orderId=${payment.order}`
+                  );
+                }}
+                className="w-full"
+              >
+                Try Again
+              </Button>
             </div>
           </div>
         ))}

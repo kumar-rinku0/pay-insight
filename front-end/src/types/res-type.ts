@@ -96,6 +96,7 @@ export type SubscriptionType = {
 export type PaymentType = {
   _id: string;
   initiatedBy: string;
+  createdAt: Date;
   paymentFor: string;
   amount: number;
   order: string;

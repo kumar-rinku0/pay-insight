@@ -39,7 +39,7 @@ export const handleGetPaymentsInitiatedBy = async (req, res) => {
   if (!payments) {
     return res.status(404).json({ message: "No payments found", payments: [] });
   }
-  return res.status(200).json({ message: "Payment found", payments });
+  return res.status(200).json({ message: "Payments found", payments });
 };
 
 import crypto from "crypto";
