@@ -92,3 +92,13 @@ export type SubscriptionType = {
   proExpire: Date;
   upcoming: [string];
 };
+
+export type PaymentType = {
+  _id: string;
+  initiatedBy: string;
+  paymentFor: string;
+  amount: number;
+  order: string;
+  plan: string;
+  status: string;
+};

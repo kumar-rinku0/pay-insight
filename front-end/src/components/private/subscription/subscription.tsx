@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useEffect, useState } from "react";
-// import Checkout from "./checkout";
 import type { SubscriptionType } from "@/types/res-type";
 import { useNavigate } from "react-router";
 
@@ -57,7 +56,6 @@ const plans = [
 
 const Subscription = () => {
   const navigate = useNavigate();
-  // const [order, setOrder] = useState<OrderType | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionType | null>(
     null
   );
@@ -87,18 +85,16 @@ const Subscription = () => {
   useEffect(() => {
     handleGetSubscription();
   }, []);
-  // if (order) {
-  //   return (
-  //     <div className="h-[80vh] flex justify-center items-center">
-  //       <div className="flex justify-center items-center">
-  //         <Checkout orderInfo={order} />
-  //       </div>
-  //     </div>
-  //   );
-  // }
+
+  if (!subscription) {
+    return (
+      <div className="flex h-[60vh] flex-col justify-center items-center p-4">
+        <p>Loading subscription...</p>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col justify-center items-center p-4">
-      {!subscription && <p>Loading subscription...</p>}
       {subscription && subscription.pro && subscription.type === "pro" && (
         <div className="mb-4 p-4 bg-green-200 text-green-800">
           You are currently on a Pro plan. Thank you for being a valued
@@ -112,7 +108,15 @@ const Subscription = () => {
         </div>
       )}
       <div className="flex flex-col justify-center items-center">
-        <div className="mb-4">choose a plan</div>
+        <div className="flex gap-4 items-center mb-4">
+          <div>Select Plan</div>
+          <Button
+            variant="outline"
+            onClick={() => location.assign("/subscription/orders")}
+          >
+            Order History
+          </Button>
+        </div>
         <div className="flex justify-center flex-wrap gap-2">
           {plans.map((plan: PlanType) => (
             <div

@@ -28,7 +28,7 @@ import Branches from "./components/private/branches/branches";
 import Shift from "./components/private/staff/shift";
 import Settings from "./components/private/settings/settings";
 import Subscription from "./components/private/subscription/subscription";
-import PayStatus from "./components/private/subscription/status";
+import PayStatus from "./components/private/subscription/payment-status";
 import Terms from "./components/root/terms";
 import Privacy from "./components/root/privacy";
 import Policy from "./components/root/policy";
@@ -37,6 +37,7 @@ import Session from "./components/private/profile/session";
 import ImageUpload from "./components/root/upload";
 import UpdateCompanyPage from "./components/private/companies/update-company";
 import UpdateBranchPage from "./components/private/branches/update-branch";
+import OrdersHistory from "./components/private/subscription/orders-history";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -84,6 +85,7 @@ function App() {
 
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/subscription/payment" element={<PayStatus />} />
+            <Route path="/subscription/orders" element={<OrdersHistory />} />
             <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/upload" element={<ImageUpload />} />
