@@ -83,12 +83,7 @@ export const handleCreatePaymentRequest = async (req, res) => {
       });
       return res.status(201).json({
         message: "okay",
-        orderInfo: {
-          _id: order.id,
-          customer_id: customer_id,
-          amount: order.amount,
-          redirectUrl: `${DOMAIN}/payment-status`,
-        },
+        orderInfo: order,
       });
     } else {
       return res
@@ -145,8 +140,23 @@ export const handleGetPaymentStauts = async (req, res) => {
     initiatedBy: user._id,
     order: orderId,
   });
-  if (payment.status === "captured") {
-    return res.status(200).json({ message: "okay.", state: "COMPLETED" });
-  }
-  return res.status(200).json({ message: "not okay", state: "FAILED" });
+  client.orders
+    .fetch(orderId)
+    .then((order) => {
+      if (payment.status === "captured" && order.status === "paid") {
+        return res
+          .status(200)
+          .json({ message: "okay.", state: "COMPLETED", orderInfo: order });
+      }
+      return res
+        .status(200)
+        .json({ message: "okay.", state: "PENDING", orderInfo: order });
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(200).json({
+        message: "order not found.",
+        state: "ORDER_NOT_FOUND",
+      });
+    });
 };
