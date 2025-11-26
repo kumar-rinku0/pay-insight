@@ -58,14 +58,7 @@ const sessionOptions = {
 
 app.set("trust proxy", 1);
 app.use(session(sessionOptions));
-
-app.get("/api", (req, res) => {
-  const user = req.user;
-  if (!user) {
-    return res.status(200).send({ user: null });
-  }
-  return res.status(200).send({ user: user });
-});
+app.use(cookieParser());
 
 // payment webhook
 app.post(
@@ -74,11 +67,18 @@ app.post(
   wrapAsync(handleRazorpayWebhook)
 );
 
-app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(isLoggedInCheck);
+
+app.get("/api", (req, res) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(200).send({ user: null });
+  }
+  return res.status(200).send({ user: user });
+});
 
 app.use("/api/user", userRouter);
 app.use("/api/company", onlyLoggedInUser, companyRouter);
