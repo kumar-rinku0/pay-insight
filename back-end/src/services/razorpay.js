@@ -8,7 +8,7 @@ import {
   handleGetPaymentForGateway,
   handleCreatePaymentByGateway,
 } from "../controllers/payment.js";
-import { getByPlanId } from "../models/payment.js";
+import Payment, { getByPlanId } from "../models/payment.js";
 
 const CLIENT_ID = process.env.RAZORPAY_KEY_ID;
 const SECRET_KEY = process.env.RAZORPAY_KEY_SECRET;
