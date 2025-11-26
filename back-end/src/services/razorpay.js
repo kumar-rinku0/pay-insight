@@ -8,7 +8,6 @@ import {
   handleGetPaymentForGateway,
   handleCreatePaymentByGateway,
 } from "../controllers/payment.js";
-import Payment, { getByPlanId } from "../models/payment.js";
 
 const CLIENT_ID = process.env.RAZORPAY_KEY_ID;
 const SECRET_KEY = process.env.RAZORPAY_KEY_SECRET;
@@ -179,22 +178,24 @@ export const handleRazorpayWebhook = async (req, res) => {
 
   console.log("✅ Verified webhook event:", event);
 
-  if (event === "payment.captured") {
-    const payment = payload.payload.payment.entity;
+  const payment = payload.payload.payment.entity;
 
-    await Payment.updateOne(
-      { order_id: payment.order_id },
-      { $set: { status: "captured", payment: payment.id } }
-    );
+  const paymentInfo = await handleGetPaymentForGateway({
+    initiatedBy: payment.customer,
+    order: payment.order_id,
+  });
+  if (!paymentInfo) {
+    return res.status(400).send("Not OK");
+  }
+  paymentInfo.payment = payment.id;
+  if (event === "payment.captured") {
+    paymentInfo.status = "captured";
+    await paymentInfo.save();
   }
 
   if (event === "payment.failed") {
-    const payment = payload.payload.payment.entity;
-
-    await Payment.updateOne(
-      { order_id: payment.order_id },
-      { $set: { status: "failed", payment: payment.id } }
-    );
+    paymentInfo.status = "failed";
+    await paymentInfo.save();
   }
 
   return res.status(200).send("OK");
