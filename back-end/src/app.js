@@ -60,6 +60,17 @@ app.set("trust proxy", 1);
 app.use(session(sessionOptions));
 app.use(cookieParser());
 
+app.use(isLoggedInCheck);
+
+// api route for checking if user is logged in
+app.get("/api", (req, res) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(200).send({ user: null });
+  }
+  return res.status(200).send({ user: user });
+});
+
 // payment webhook
 app.post(
   "/api/razorpay/webhook",
@@ -69,16 +80,6 @@ app.post(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(isLoggedInCheck);
-
-app.get("/api", (req, res) => {
-  const user = req.user;
-  if (!user) {
-    return res.status(200).send({ user: null });
-  }
-  return res.status(200).send({ user: user });
-});
 
 app.use("/api/user", userRouter);
 app.use("/api/company", onlyLoggedInUser, companyRouter);
