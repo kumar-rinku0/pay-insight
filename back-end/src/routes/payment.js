@@ -35,6 +35,9 @@ router.get(
 );
 
 // payments initiated by user
-router.get("/initiatedBy/:userId", wrapAsync(handleGetPaymentsInitiatedBy));
+router.get(
+  "/initiatedBy/:initiatedBy",
+  wrapAsync(handleGetPaymentsInitiatedBy)
+);
 
 export default router;
