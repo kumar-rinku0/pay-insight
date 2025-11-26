@@ -83,12 +83,7 @@ export const handleCreatePaymentRequest = async (req, res) => {
       });
       return res.status(201).json({
         message: "okay",
-        orderInfo: {
-          _id: order.id,
-          customer_id: customer_id,
-          amount: order.amount,
-          redirectUrl: `${DOMAIN}/payment-status`,
-        },
+        orderInfo: order,
       });
     } else {
       return res
@@ -107,34 +102,28 @@ export const handleConfirmationPaymentRequest = async (req, res) => {
     order: razorpay_order_id,
   });
   if (!payment) {
-    payment.status = "failed";
-    await payment.save();
     return res
       .status(400)
-      .json({ message: "payment failed.", status: "not okay" });
+      .json({ message: "payment not found.", status: "not okay" });
   }
   const order_id = payment.order;
   const generated_signature = crypto
     .createHmac("sha256", SECRET_KEY)
     .update(order_id + "|" + razorpay_payment_id)
     .digest("hex");
-  payment.payment = razorpay_payment_id;
-  payment.sign = razorpay_signature;
   if (
     razorpay_order_id === payment.order &&
     generated_signature === razorpay_signature
   ) {
-    payment.status = "captured";
+    payment.sign = razorpay_signature;
     await payment.save();
     return res
       .status(200)
-      .json({ message: "payment captured.", status: "okay" });
+      .json({ message: "payment verified.", status: "okay" });
   } else {
-    payment.status = "failed";
-    await payment.save();
     return res
       .status(400)
-      .json({ message: "payment failed.", status: "not okay" });
+      .json({ message: "payment verification failed.", status: "not okay" });
   }
 };
 
@@ -145,8 +134,23 @@ export const handleGetPaymentStauts = async (req, res) => {
     initiatedBy: user._id,
     order: orderId,
   });
-  if (payment.status === "captured") {
-    return res.status(200).json({ message: "okay.", state: "COMPLETED" });
-  }
-  return res.status(200).json({ message: "not okay", state: "FAILED" });
+  client.orders
+    .fetch(orderId)
+    .then((order) => {
+      if (payment.status === "captured" && order.status === "paid") {
+        return res
+          .status(200)
+          .json({ message: "okay.", state: "COMPLETED", orderInfo: order });
+      }
+      return res
+        .status(200)
+        .json({ message: "okay.", state: "PENDING", orderInfo: order });
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(200).json({
+        message: "order not found.",
+        state: "ORDER_NOT_FOUND",
+      });
+    });
 };
