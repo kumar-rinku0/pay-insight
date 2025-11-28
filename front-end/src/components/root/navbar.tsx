@@ -1,5 +1,7 @@
 import { Link, Outlet } from "react-router";
 import { Button } from "../ui/button";
+import { useAuth } from "@/providers/use-auth";
+import { NavUserBubble } from "@/components/navigation/nav-user";
 
 const navLinks = [
   { name: "About", href: "/about" },
@@ -7,6 +9,8 @@ const navLinks = [
 ];
 
 const RootNavbar = () => {
+  const { isAuthenticated, user, signOut } = useAuth();
+
   return (
     <div>
       <nav className="px-4 w-full h-16 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
@@ -24,9 +28,13 @@ const RootNavbar = () => {
             </Link>
           ))}
         </div>
-        <Link to="/login" className="mr-2">
-          <Button variant="outline">Login</Button>
-        </Link>
+        {isAuthenticated ? (
+          <NavUserBubble user={user!} logoutHandler={signOut} />
+        ) : (
+          <Link to="/login" className="mr-2">
+            <Button variant="outline">Login</Button>
+          </Link>
+        )}
       </nav>
       <Outlet />
     </div>
