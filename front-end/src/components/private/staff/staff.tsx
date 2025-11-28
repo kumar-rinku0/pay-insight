@@ -98,7 +98,7 @@ const Staff = ({ page }: { page: number }) => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex gap-2">
                     <Button
                       onClick={() =>
-                        router(`/staff/calendar?roleId=${role._id}`)
+                        router(`/app/staff/calendar?roleId=${role._id}`)
                       }
                       variant="outline"
                       className="flex justify-center items-center cursor-pointer"
@@ -107,7 +107,7 @@ const Staff = ({ page }: { page: number }) => {
                     </Button>
                     <Button
                       onClick={() =>
-                        router(`/staff/shift?employeeId=${role._id}`)
+                        router(`/app/staff/shift?employeeId=${role._id}`)
                       }
                       variant="outline"
                       className="flex justify-center items-center cursor-pointer"
@@ -153,7 +153,7 @@ const StaffPage = () => {
           </Button>
         </span>
         <span>
-          <Button onClick={() => router("/staff/create")}>
+          <Button onClick={() => router("/app/staff/create")}>
             <PlusCircle />
             <span>Add Staff</span>
           </Button>

@@ -56,39 +56,38 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/policy" element={<Policy />} />
+        <Route path="/" element={<HomePage />} />
 
         {!isAuthenticated && (
           <>
-            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </>
         )}
         {isAuthenticated && (
-          <Route path="/" element={<Header />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/companies" element={<Companies />} />
-            <Route path="/branches" element={<Branches />} />
-            <Route path="/companies/create" element={<CreateCompany />} />
-            <Route path="/companies/update" element={<UpdateCompanyPage />} />
-            <Route path="/branches/create" element={<CreateBranch />} />
-            <Route path="/branches/update" element={<UpdateBranchPage />} />
-            <Route path="/staff" element={<Staff />} />
-            <Route path="/staff/create" element={<CreateStaff />} />
-            <Route path="/staff/calendar" element={<AdminCalendar />} />
-            <Route path="/staff/shift" element={<Shift />} />
-            <Route path="/calendar" element={<EmployeeCalendar />} />
-            <Route path="/attendance" element={<Attendance />} />
-            <Route path="/account" element={<Profile />} />
-            <Route path="/account/onetap" element={<Session />} />
-
-            <Route path="/subscription" element={<Subscription />} />
-            <Route path="/subscription/payment" element={<PayStatus />} />
-            <Route path="/subscription/orders" element={<OrdersHistory />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/upload" element={<ImageUpload />} />
+          <Route path="/app" element={<Header />}>
+            <Route index element={<Home />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="companies" element={<Companies />} />
+            <Route path="branches" element={<Branches />} />
+            <Route path="companies/create" element={<CreateCompany />} />
+            <Route path="companies/update" element={<UpdateCompanyPage />} />
+            <Route path="branches/create" element={<CreateBranch />} />
+            <Route path="branches/update" element={<UpdateBranchPage />} />
+            <Route path="staff" element={<Staff />} />
+            <Route path="staff/create" element={<CreateStaff />} />
+            <Route path="staff/calendar" element={<AdminCalendar />} />
+            <Route path="staff/shift" element={<Shift />} />
+            <Route path="calendar" element={<EmployeeCalendar />} />
+            <Route path="attendance" element={<Attendance />} />
+            <Route path="account" element={<Profile />} />
+            <Route path="account/onetap" element={<Session />} />
+            <Route path="subscription" element={<Subscription />} />
+            <Route path="subscription/payment" element={<PayStatus />} />
+            <Route path="subscription/orders" element={<OrdersHistory />} />
+            <Route path="search" element={<Search />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="upload" element={<ImageUpload />} />
           </Route>
         )}
         <Route path="/*" element={<NoPage />} />

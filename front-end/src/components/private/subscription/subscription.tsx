@@ -65,7 +65,7 @@ const Subscription = () => {
       .then((res) => {
         console.log(res.data);
         // setOrder(res.data.orderInfo);
-        navigate(`/subscription/payment?orderId=${res.data.orderInfo.id}`);
+        navigate(`/app/subscription/payment?orderId=${res.data.orderInfo.id}`);
       })
       .catch((err) => {
         console.log(err);
@@ -112,7 +112,7 @@ const Subscription = () => {
           <div>Select Plan</div>
           <Button
             variant="outline"
-            onClick={() => location.assign("/subscription/orders")}
+            onClick={() => location.assign("/app/subscription/orders")}
           >
             Order History
           </Button>

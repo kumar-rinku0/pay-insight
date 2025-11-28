@@ -13,19 +13,19 @@ const Session = () => {
       axios
         .patch(`/api/user/remember`)
         .then((res) => {
-          router(next || "/");
+          router(next || "/app");
           toast.success(res.data.message);
         })
         .catch((err) => {
           console.log(err);
         });
     } else {
-      router(next || "/");
+      router(next || "/app");
     }
   };
   useEffect(() => {
     if (!next) {
-      location.assign("/");
+      location.assign("/app");
     }
   }, [next]);
 

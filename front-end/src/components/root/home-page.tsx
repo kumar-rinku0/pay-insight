@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
+import { useAuth } from "@/providers/use-auth";
 
 const HomePage = () => {
+  const { isAuthenticated } = useAuth();
   return (
     <>
       <div className="bg-[#f2fafc] dark:bg-transparent w-full h-[80vh] flex flex-col justify-center lg:flex-row gap-4">
@@ -11,11 +13,25 @@ const HomePage = () => {
             Meet the smartest staff management system to manage attendance,
             payroll, compliances, and much more.
           </p>
-          <Link to="/login" className="self-center w-60">
-            <Button variant="outline" className="cursor-pointer w-full h-full">
-              Login
-            </Button>
-          </Link>
+          {isAuthenticated ? (
+            <Link to="/app" className="self-center w-60">
+              <Button
+                variant="outline"
+                className="cursor-pointer w-full h-full"
+              >
+                Go to Dashboard
+              </Button>
+            </Link>
+          ) : (
+            <Link to="/register" className="self-center w-60">
+              <Button
+                className="cursor-pointer w-full h-full"
+                variant="secondary"
+              >
+                Get Started
+              </Button>
+            </Link>
+          )}
         </div>
         <div className="w-full lg:w-1/2 flex items-center ">
           <div className="w-full relative h-96">
