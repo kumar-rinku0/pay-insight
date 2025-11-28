@@ -3,7 +3,7 @@ import "./App.css";
 import { Route, Routes } from "react-router";
 import { useAuth } from "./providers/use-auth";
 import Header from "./components/navigation/side-nav";
-import HomePage from "./components/root/home-page";
+import RootHomePage from "./components/root/home-page";
 import Register from "./components/auth/register";
 import Login from "./components/auth/login";
 import reactsvg from "@/assets/react.svg";
@@ -38,6 +38,7 @@ import ImageUpload from "./components/root/upload";
 import UpdateCompanyPage from "./components/private/companies/update-company";
 import UpdateBranchPage from "./components/private/branches/update-branch";
 import OrdersHistory from "./components/private/subscription/orders-history";
+import RootNavbar from "./components/root/navbar";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -56,7 +57,9 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/policy" element={<Policy />} />
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<RootNavbar />}>
+          <Route index element={<RootHomePage />} />
+        </Route>
 
         {!isAuthenticated && (
           <>
