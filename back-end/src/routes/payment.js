@@ -9,7 +9,10 @@ import {
   getSubscriptionByUser,
   isProCompany,
 } from "../controllers/subscription.js";
-import { handleGetPaymentsInitiatedBy } from "../controllers/payment.js";
+import {
+  handleGetPaymentsInitiatedBy,
+  handleDeletePayment,
+} from "../controllers/payment.js";
 
 const router = express.Router();
 
@@ -29,5 +32,7 @@ router.get(
   "/initiatedBy/:initiatedBy",
   wrapAsync(handleGetPaymentsInitiatedBy)
 );
+
+router.delete("/paymentId/:paymentId", wrapAsync(handleDeletePayment));
 
 export default router;

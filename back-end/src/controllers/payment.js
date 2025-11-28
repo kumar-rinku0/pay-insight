@@ -40,19 +40,13 @@ export const handleGetPaymentsInitiatedBy = async (req, res) => {
   return res.status(200).json({ message: "Payments found", payments });
 };
 
-// ✅ Razorpay webhook MUST use raw body
+//
 
-// app.post(
-//   "/api/razorpay/webhook",
-//   express.raw({ type: "application/json" }),
-//   async (req, res) => {
-//     try {
-
-//     } catch (error) {
-//       console.error("Webhook error:", error);
-//       return res.status(500).send("Internal Server Error");
-//     }
-//   }
-// );
-
-// app.listen(3000, () => console.log("Server running on port 3000"));
+export const handleDeletePayment = async (req, res) => {
+  const paymentId = req.params.paymentId;
+  const payment = await Payment.findByIdAndDelete(paymentId);
+  if (!payment) {
+    return res.status(404).json({ message: "Payment not found" });
+  }
+  return res.status(200).json({ message: "Payment deleted" });
+};
