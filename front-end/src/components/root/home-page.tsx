@@ -2,11 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import { useAuth } from "@/providers/use-auth";
 
-const HomePage = () => {
+const RootHomePage = () => {
   const { isAuthenticated } = useAuth();
   return (
     <>
-      <div className="bg-[#f2fafc] dark:bg-transparent w-full h-[80vh] flex flex-col justify-center lg:flex-row gap-4">
+      <div className="bg-[#f2fafc] dark:bg-transparent h-full md:min-h-[80vh] w-full flex flex-col justify-center lg:flex-row gap-4">
         <div className="w-full lg:w-1/2 lg:min-h-1/2 flex flex-col gap-4 text-center sm:text-start sm:gap-8 justify-center px-8 lg:px-16 xl:px-32 py-4">
           <h3 className="text-3xl font-semibold">Simplify Staff Management</h3>
           <p className="text-sm">
@@ -51,7 +51,7 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default RootHomePage;
 
 const Tips = () => {
   return (
@@ -86,11 +86,6 @@ const Tips = () => {
             management information are automatically updated on cloud.
           </p>
         </div>
-        <Link to="/register" className="self-start">
-          <Button className="cursor-pointer w-full h-full" variant="secondary">
-            Create Account!
-          </Button>
-        </Link>
       </div>
     </div>
   );
