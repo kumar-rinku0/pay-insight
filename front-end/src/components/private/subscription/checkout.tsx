@@ -1,3 +1,4 @@
+import { Spinner } from "@/components/ui/spinner";
 import type { OrderType } from "./subscription";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -54,7 +55,6 @@ const loadScript = (src: string): Promise<boolean> => {
 const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
   const [loading, setLoading] = useState(false);
   const CLIENT_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
-  console.log("clientId", CLIENT_ID, "orderObj", orderInfo);
 
   const displayRazorpay = async () => {
     const res = await loadScript(
@@ -84,7 +84,7 @@ const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
         console.log(response);
         axios.post("/api/payment/confirmation", response).finally(() => {
           location.assign(
-            `/subscription/payment?orderId=${response.razorpay_order_id}`
+            `/app/subscription/payment?orderId=${response.razorpay_order_id}`
           );
         });
         // alert(response.razorpay_order_id);
@@ -112,8 +112,8 @@ const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
       await displayRazorpay();
       const paymentObject = new window.Razorpay(options);
       paymentObject.on("payment.failed", function (response) {
-        toast.error(response.error.description);
-        location.assign(`/subscription/payment?orderId=${orderInfo.id}`);
+        console.error(response.error.description);
+        location.assign(`/app/subscription/payment?orderId=${orderInfo.id}`);
       });
       paymentObject.open();
     } else {
@@ -122,8 +122,22 @@ const Checkout = ({ orderInfo }: { orderInfo: OrderType }) => {
   };
 
   return (
-    <Button id="paymentBTN" onClick={handleRazorPayClick} disabled={loading}>
-      Pay {Number(orderInfo.amount) / 100}₹
+    <Button
+      id="paymentBTN"
+      onClick={handleRazorPayClick}
+      variant="secondary"
+      className="size-12 w-fit flex justify-between"
+      disabled={loading}
+    >
+      {loading ? (
+        <span className="w-40 flex gap-1 items-center">
+          <Spinner className="mr-2" />
+          Processing...
+        </span>
+      ) : (
+        <span className="w-40 flex gap-1 items-center">Pay </span>
+      )}
+      <span>&#8377; {Number(orderInfo.amount) / 100}</span>
     </Button>
   );
 };

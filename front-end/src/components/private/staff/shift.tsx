@@ -89,7 +89,7 @@ export const StaffShift = ({
         .then((res) => {
           console.log(res);
           toast.success(res.data.message);
-          router("/staff");
+          router("/app/staff");
         })
         .catch((err) => {
           console.log(err);
@@ -104,7 +104,7 @@ export const StaffShift = ({
         .then((res) => {
           console.log(res);
           toast.success(res.data.message);
-          router("/staff");
+          router("/app/staff");
         })
         .catch((err) => {
           console.log(err);

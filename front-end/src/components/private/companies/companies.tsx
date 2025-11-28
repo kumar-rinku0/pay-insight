@@ -76,7 +76,7 @@ const Companies = () => {
             You have not created any companies yet. Please create a company and
             its first branch to get started.
           </span>
-          <Button onClick={() => router("/companies/create")}>
+          <Button onClick={() => router("/app/companies/create")}>
             Create New Company
           </Button>
         </div>
@@ -122,7 +122,9 @@ const Companies = () => {
                       <Button
                         variant="outline"
                         onClick={() =>
-                          router(`/companies/update?companyId=${company._id}`)
+                          router(
+                            `/app/companies/update?companyId=${company._id}`
+                          )
                         }
                       >
                         <Edit />
@@ -182,7 +184,7 @@ const CompaniesPage = () => {
           </Button>
         </span>
         <span>
-          <Button onClick={() => router("/companies/create")}>
+          <Button onClick={() => router("/app/companies/create")}>
             <PlusCircle />
             <span>Create Company</span>
           </Button>

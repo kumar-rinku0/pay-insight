@@ -53,17 +53,28 @@ const OrdersHistory = () => {
             <div>
               <p>Amount: {payment.amount}</p>
               <p>Status: {payment.status}</p>
-              <p>Attempts: {new Date(payment.createdAt).toLocaleString()}</p>
-              <Button
-                onClick={() => {
-                  location.assign(
-                    `/subscription/payment?orderId=${payment.order}`
-                  );
-                }}
-                className="w-full"
-              >
-                Try Again
-              </Button>
+              <p>Attempted: {new Date(payment.createdAt).toLocaleString()}</p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    location.assign(
+                      `/app/subscription/payment?orderId=${payment.order}`
+                    );
+                  }}
+                >
+                  {payment.status === "failed" ? "Try Again" : "View"}
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    axios.delete(`/api/payment/paymentId/${payment._id}`);
+                    setPayments(payments.filter((p) => p._id !== payment._id));
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
             </div>
           </div>
         ))}

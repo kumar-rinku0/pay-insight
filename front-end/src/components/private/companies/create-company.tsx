@@ -86,7 +86,7 @@ const CreateCompany = () => {
           const { message, role } = res.data;
           signIn({ ...user, role: role });
           toast.success(message);
-          router("/branches");
+          router("/app/branches");
         })
         .catch((err) => {
           console.log(err);

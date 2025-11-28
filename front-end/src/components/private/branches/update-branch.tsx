@@ -75,13 +75,13 @@ const UpdateBranch = ({ branch }: { branch: BranchType }) => {
         .then((res) => {
           console.log(res);
           toast.success(res.data.message);
-          router("/branches");
+          router("/app/branches");
         })
         .catch((err) => {
           console.log(err);
           toast.error(err.response.data.message || err.message);
           if (err.response.data.code === "ErrorPro") {
-            router("/subscription");
+            router("/app/subscription");
           }
         });
     }

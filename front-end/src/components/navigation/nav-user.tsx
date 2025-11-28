@@ -83,7 +83,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => location.assign("/account")}>
+              <DropdownMenuItem onClick={() => location.assign("/app/account")}>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>

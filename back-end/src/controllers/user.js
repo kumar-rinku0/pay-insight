@@ -118,7 +118,7 @@ const handleUserSignIn = async (req, res) => {
     role: role,
   };
   const DOMAIN = process.env.DOMAIN;
-  const redirect = `${DOMAIN}/account/onetap?next=%2F`;
+  const redirect = `${DOMAIN}/app/account/onetap?next=%2Fapp`;
   return res.status(200).json({
     user: user,
     role: role,

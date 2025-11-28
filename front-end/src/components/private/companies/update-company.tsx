@@ -89,7 +89,7 @@ const UpdateCompany = ({ company }: { company: CompanyType }) => {
           const { message, role } = res.data;
           signIn({ ...user, role: role });
           toast.success(message);
-          router("/companies");
+          router("/app/companies");
         })
         .catch((err) => {
           console.log(err);

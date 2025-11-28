@@ -73,7 +73,7 @@ const Branches = () => {
             You have not created any branches yet. Please create a branch and
             add employees.
           </span>
-          <Button onClick={() => router("/branches/create")}>
+          <Button onClick={() => router("/app/branches/create")}>
             Create New Branch
           </Button>
         </div>
@@ -113,7 +113,7 @@ const Branches = () => {
                       <Button
                         variant="outline"
                         onClick={() =>
-                          router(`/branches/update?branchId=${branch._id}`)
+                          router(`/app/branches/update?branchId=${branch._id}`)
                         }
                       >
                         <Edit />
@@ -173,7 +173,7 @@ const BranchesPage = () => {
           </Button>
         </span>
         <span>
-          <Button onClick={() => router("/branches/create")}>
+          <Button onClick={() => router("/app/branches/create")}>
             <PlusCircle />
             <span>Create Branch</span>
           </Button>
