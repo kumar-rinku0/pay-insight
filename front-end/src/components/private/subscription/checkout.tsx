@@ -1,5 +1,5 @@
 import { Spinner } from "@/components/ui/spinner";
-import type { OrderType } from "./subscription";
+import type { OrderType } from "./plans";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useState } from "react";

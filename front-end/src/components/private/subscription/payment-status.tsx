@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import Checkout from "./checkout";
-import type { OrderType } from "./subscription";
+import type { OrderType } from "./plans";
 
 const PayStatus = () => {
   const [searchParams] = useSearchParams();
