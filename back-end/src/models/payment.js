@@ -3,27 +3,27 @@ import { Schema, model } from "mongoose";
 export const plans = [
   {
     _id: "001",
-    duration: "1 month",
+    duration: "1 Month",
     durationDays: 30,
-    price: 2,
+    price: 49,
   },
   {
     _id: "002",
-    duration: "3 month",
+    duration: "3 Months",
     durationDays: 90,
-    price: 6,
+    price: 129,
   },
   {
     _id: "003",
-    duration: "6 month",
+    duration: "6 Months",
     durationDays: 180,
-    price: 11,
+    price: 249,
   },
   {
     _id: "004",
-    duration: "1 year",
+    duration: "1 Year",
     durationDays: 365,
-    price: 21,
+    price: 449,
   },
 ];
 
