@@ -88,6 +88,7 @@ export type SubscriptionType = {
   _id: string;
   type: string;
   pro: boolean;
+  company: CompanyType;
   createdBy: UserType;
   proExpire: Date;
   upcoming: [string];

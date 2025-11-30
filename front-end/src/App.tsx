@@ -39,6 +39,9 @@ import UpdateCompanyPage from "./components/private/companies/update-company";
 import UpdateBranchPage from "./components/private/branches/update-branch";
 import OrdersHistory from "./components/private/subscription/orders-history";
 import RootNavbar from "./components/root/navbar";
+import AboutPage from "./components/root/about";
+import ContactPage from "./components/root/contact";
+import Plans from "./components/private/subscription/plans";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -52,13 +55,18 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/verify" element={<VerifyPage />} />
-        <Route path="/reset" element={<ResetPage />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/policy" element={<Policy />} />
         <Route path="/" element={<RootNavbar />}>
           <Route index element={<RootHomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+
+          {/* Informational Pages */}
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/policy" element={<Policy />} />
+          <Route path="/privacy" element={<Privacy />} />
+          {/* Authentication Pages */}
+          <Route path="/reset" element={<ResetPage />} />
+          <Route path="/verify" element={<VerifyPage />} />
         </Route>
 
         {!isAuthenticated && (
@@ -86,6 +94,7 @@ function App() {
             <Route path="account" element={<Profile />} />
             <Route path="account/onetap" element={<Session />} />
             <Route path="subscription" element={<Subscription />} />
+            <Route path="subscription/plans" element={<Plans />} />
             <Route path="subscription/payment" element={<PayStatus />} />
             <Route path="subscription/orders" element={<OrdersHistory />} />
             <Route path="search" element={<Search />} />

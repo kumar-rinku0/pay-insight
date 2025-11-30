@@ -1,76 +1,16 @@
-import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import type { SubscriptionType } from "@/types/res-type";
-import { useNavigate } from "react-router";
-
-type PlanType = {
-  _id: string;
-  duration: string;
-  durationDays: number;
-  price: number;
-};
-export type OrderType = {
-  id: string;
-  amount: string;
-  status: string;
-  attempts: number;
-};
-
-type ResponseType = {
-  orderInfo: OrderType;
-  message: string;
-};
-
+import { Link } from "react-router";
 type SubscriptionResponseType = {
   subscription: SubscriptionType;
   message: string;
 };
 
-const plans = [
-  {
-    _id: "001",
-    duration: "1 month",
-    durationDays: 30,
-    price: 2,
-  },
-  {
-    _id: "002",
-    duration: "3 month",
-    durationDays: 90,
-    price: 6,
-  },
-  {
-    _id: "003",
-    duration: "6 month",
-    durationDays: 180,
-    price: 11,
-  },
-  {
-    _id: "004",
-    duration: "1 year",
-    durationDays: 365,
-    price: 21,
-  },
-] as PlanType[];
-
 const Subscription = () => {
-  const navigate = useNavigate();
   const [subscription, setSubscription] = useState<SubscriptionType | null>(
     null
   );
-  const handleCreatePaymentRequest = (plan: PlanType) => {
-    axios
-      .post<ResponseType>("/api/payment/create", plan)
-      .then((res) => {
-        console.log(res.data);
-        // setOrder(res.data.orderInfo);
-        navigate(`/app/subscription/payment?orderId=${res.data.orderInfo.id}`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   const handleGetSubscription = () => {
     axios
       .get<SubscriptionResponseType>("/api/payment/subscription")
@@ -93,80 +33,132 @@ const Subscription = () => {
       </div>
     );
   }
+  const isExpired = new Date(subscription.proExpire) < new Date();
+
   return (
-    <div className="flex flex-col justify-center items-center p-4">
-      {subscription && subscription.pro && subscription.type === "pro" && (
-        <div className="mb-4 p-4 bg-green-200 text-green-800">
-          You are currently on a Pro plan. Thank you for being a valued
-          customer!
-        </div>
-      )}
-      {subscription && !subscription.pro && subscription.type === "pro" && (
-        <div className="mb-4 p-4 bg-red-200 text-red-800">
-          Your Pro subscription has expired. Please choose a plan to continue
-          enjoying Pro features.
-        </div>
-      )}
-      <div className="flex flex-col justify-center items-center">
-        <div className="flex gap-4 items-center mb-4">
-          <div>Select Plan</div>
-          <Button
-            variant="outline"
-            onClick={() => location.assign("/app/subscription/orders")}
+    <div className="min-h-screen bg-gray-50 text-gray-800">
+      {/* Header */}
+      <section className="bg-blue-600 text-white py-12 px-6">
+        <div className="max-w-4xl mx-auto flex justify-between items-end">
+          <div>
+            <h1 className="text-4xl font-bold">Your Subscription</h1>
+            <p className="mt-3 text-lg opacity-90">
+              Manage your Pro plan and billing details.
+            </p>
+          </div>
+
+          <a
+            href="/app/subscription/orders"
+            className="text-white underline hover:text-gray-200 transition text-lg"
           >
-            Order History
-          </Button>
+            Payment History
+          </a>
         </div>
-        <div className="flex justify-center flex-wrap gap-2">
-          {plans.map((plan: PlanType) => (
-            <div
-              key={plan._id}
-              className="flex flex-col justify-center items-center gap-4 bg-accent w-32 h-40"
-            >
-              <div>{plan.duration}</div>
-              <Button
-                onClick={() => handleCreatePaymentRequest(plan)}
-                variant="outline"
+      </section>
+
+      {/* Subscription Card */}
+      <section className="py-16 px-6">
+        <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8">
+          {/* Company */}
+          <div>
+            <h2 className="text-xl font-semibold text-gray-700">Company</h2>
+            <p className="mt-1 text-lg font-medium">
+              {subscription.company.name}
+            </p>
+          </div>
+
+          <hr className="my-6" />
+
+          {/* Subscription Status */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700">
+                Subscription Type
+              </h3>
+              <p className="mt-1 text-gray-900 font-medium capitalize">
+                {subscription.type}
+              </p>
+
+              <h3 className="text-lg font-semibold text-gray-700 mt-5">
+                Pro Status
+              </h3>
+              <p
+                className={`mt-1 font-medium ${
+                  subscription.pro ? "text-green-600" : "text-red-600"
+                }`}
               >
-                {plan.price} &#x20B9;
-              </Button>
+                {subscription.pro ? "Active" : "Inactive"}
+              </p>
             </div>
-          ))}
+
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700">
+                Expiration Date
+              </h3>
+              <p className="mt-1 text-gray-900 font-medium">
+                {new Date(subscription.proExpire).toLocaleDateString()}
+              </p>
+
+              <h3 className="text-lg font-semibold text-gray-700 mt-5">
+                Upcoming Renewals
+              </h3>
+
+              {subscription.upcoming.length > 0 ? (
+                <ul className="mt-2 list-disc ml-6 text-gray-700">
+                  {subscription.upcoming.map((item, index) => (
+                    <li key={index}>{JSON.stringify(item)}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-1 text-gray-500">No upcoming renewals.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Message */}
+          {/* {subscription.message && (
+            <div className="mt-8 p-4 bg-red-100 text-red-700 rounded-lg border border-red-300">
+              {subscription.message}
+            </div>
+          )} */}
+
+          {/* Expiration Warning */}
+          {isExpired && (
+            <div className="mt-8 p-5 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded-xl">
+              <h3 className="font-semibold text-lg">
+                Your Pro Subscription Has Expired
+              </h3>
+              <p className="mt-1">
+                To continue adding more than 5 staff members and access premium
+                features, please renew your plan.
+              </p>
+
+              <Link to="/app/subscription/plans">
+                <button className="mt-5 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                  Renew Subscription
+                </button>
+              </Link>
+            </div>
+          )}
+
+          {/* Active Subscription CTA */}
+          {!isExpired && (
+            <div className="mt-8 p-5 bg-green-100 text-green-800 border border-green-300 rounded-xl">
+              <h3 className="font-semibold text-lg">
+                Your Subscription is Active
+              </h3>
+              <p className="mt-1">
+                Enjoy unlimited staff, advanced tracking, reports, and more.
+              </p>
+            </div>
+          )}
         </div>
-      </div>
-      {subscription && (
-        <div className="mt-8 p-4 border-t w-full max-w-md">
-          <h3 className="text-lg font-bold mb-2">current subscription</h3>
-          <h4 className="font-semibold">
-            <span>type : </span>
-            <span>
-              {subscription?.type === "pro"
-                ? subscription.pro
-                  ? "Pro"
-                  : "Pro (expired)"
-                : "Free"}
-            </span>
-          </h4>
-          <p>
-            <span>expire : </span>
-            <span className="font-monospace">
-              {subscription?.proExpire
-                ? new Date(subscription?.proExpire).toLocaleString("en-US", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  })
-                : "never"}
-            </span>
-          </p>
-          <p>
-            <span>upcoming plan : </span>
-            <span>{subscription?.upcoming.length}</span>
-          </p>
-        </div>
-      )}
+      </section>
+
+      {/* Footer */}
+      {/* <footer className="bg-blue-600 text-white text-center py-5">
+        © {new Date().getFullYear()} Staff Management App. All Rights Reserved.
+      </footer> */}
     </div>
   );
 };
