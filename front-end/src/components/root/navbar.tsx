@@ -41,6 +41,17 @@ const RootNavbar = () => {
         )}
       </nav>
       <Outlet />
+      {/* Footer */}
+      <footer className="bg-blue-600 text-white py-6 text-center">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-x-5 text-xs md:gap-x-10 mb-4 space-y-2 md:space-y-0">
+          <Link to="/terms">Terms and conditions</Link>
+          <Link to="/privacy">Privacy policy</Link>
+          <Link to="/policy">Refund policy</Link>
+          <Link to="/contact">Contact</Link>
+          <Link to="/">API docs</Link>
+        </div>
+        <p>© {new Date().getFullYear()} PayInsight. All Rights Reserved.</p>
+      </footer>
     </div>
   );
 };
