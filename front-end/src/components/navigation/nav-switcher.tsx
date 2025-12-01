@@ -45,7 +45,7 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
       .get(`/api/company/select-rolebased-company/roleid/${roleId}`)
       .then((res) => {
         console.log(res);
-        location.assign("/");
+        location.assign("/app");
       })
       .catch((err) => {
         console.log(err);
@@ -55,7 +55,7 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
   if (!company) {
     return (
       <SidebarMenuButton
-        onClick={() => location.assign("/companies/create")}
+        onClick={() => location.assign("/app/companies/create")}
         size="lg"
         className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
       >
@@ -125,7 +125,7 @@ export function NavSwitcher({ company }: { company: RoleType | null }) {
               </div>
               <div
                 className="text-muted-foreground font-medium"
-                onClick={() => location.assign("/companies/create")}
+                onClick={() => location.assign("/app/companies/create")}
               >
                 Create Company
               </div>
