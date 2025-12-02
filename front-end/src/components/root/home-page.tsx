@@ -180,14 +180,6 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-blue-600 text-white py-6 text-center">
-        <p>
-          © {new Date().getFullYear()} Staff Management App. All Rights
-          Reserved.
-        </p>
-      </footer>
     </div>
   );
 };
