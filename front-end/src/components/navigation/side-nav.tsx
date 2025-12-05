@@ -2,11 +2,12 @@ import { Outlet } from "react-router";
 import {
   SidebarInset,
   SidebarProvider,
+  SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
 import { Separator } from "../ui/separator";
-import BreadCrumb from "./bread-curmb";
+// import BreadCrumb from "./bread-curmb";
 
 // const Header = () => {
 //   return (
@@ -31,12 +32,26 @@ const Header = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
+      <SidebarRail className="relative">
+        <SidebarTrigger
+          className="
+          absolute bottom-1/4 left-1/2 -translate-x-1/2
+          h-8 w-8 rounded-full 
+          bg-muted hover:bg-muted/70 
+          flex items-center justify-center
+          transition
+        "
+        >
+          <span className="text-lg sidebar-open:hidden rotate-180">&gt;</span>
+          <span className="text-lg sidebar-closed:hidden">&gt;</span>
+        </SidebarTrigger>
+      </SidebarRail>
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
+          <div className="flex md:hidden items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <BreadCrumb />
+            {/* <BreadCrumb /> */}
           </div>
         </header>
         <Outlet />
