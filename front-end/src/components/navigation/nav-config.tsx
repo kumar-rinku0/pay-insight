@@ -12,6 +12,7 @@ import {
   GitBranch,
   Settings,
   ScanFace,
+  SwatchBook,
 } from "lucide-react";
 import { useLocation } from "react-router";
 // This is sample data.
@@ -49,6 +50,12 @@ export const NavItems = () => {
           url: "/app/calendar",
           icon: Calendar,
           isActive: isNavItemActive(pathname, `/app/calendar`),
+        },
+        {
+          title: "Shifts",
+          url: "/app/shifts",
+          icon: SwatchBook,
+          isActive: isNavItemActive(pathname, `/app/shifts`),
         },
         {
           title: "Account",

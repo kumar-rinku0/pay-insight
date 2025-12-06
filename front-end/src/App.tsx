@@ -42,6 +42,7 @@ import RootNavbar from "./components/root/navbar";
 import AboutPage from "./components/root/about";
 import ContactPage from "./components/root/contact";
 import Plans from "./components/private/subscription/plans";
+import ShowShifts from "./components/private/shifts/show-shifts";
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -91,6 +92,7 @@ function App() {
             <Route path="staff/shift" element={<Shift />} />
             <Route path="calendar" element={<EmployeeCalendar />} />
             <Route path="attendance" element={<Attendance />} />
+            <Route path="shifts" element={<ShowShifts />} />
             <Route path="account" element={<Profile />} />
             <Route path="account/onetap" element={<Session />} />
             <Route path="subscription" element={<Subscription />} />
