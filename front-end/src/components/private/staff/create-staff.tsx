@@ -158,7 +158,11 @@ const ShowBranches = ({
   }, []);
 
   if (!branches) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-[80vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   return (
@@ -180,7 +184,9 @@ const ShowBranches = ({
         <>
           <CardHeader>
             <CardTitle className="text-xl">Select Branch</CardTitle>
-            <CardDescription>Select a branch to add!</CardDescription>
+            <CardDescription>
+              Please select a branch to add staff!
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-4">

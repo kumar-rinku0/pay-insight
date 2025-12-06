@@ -36,8 +36,8 @@ const ShowShifts = () => {
   };
   if (loading) {
     return (
-      <div className="min-h-[80vh] w-full flex justify-center items-center">
-        Loading...
+      <div className="flex justify-center items-center h-[80vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
       </div>
     );
   }
@@ -82,7 +82,7 @@ const ShiftDetailsCard = ({ shift }: { shift: ShiftType }) => {
 };
 
 const DetailRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between border-b pb-2">
+  <div className="flex justify-between gap-4 border-b pb-2">
     <span className="font-medium">{label}:</span>
     <span>{value}</span>
   </div>

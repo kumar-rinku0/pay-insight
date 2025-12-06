@@ -12,9 +12,11 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/providers/use-auth";
 import { NavSwitcher } from "./nav-switcher";
+import { ChevronLeft } from "lucide-react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const data = NavItems();
@@ -52,7 +54,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <NavUser user={user} logoutHandler={signOut} />
       </SidebarFooter>
-      <SidebarRail />
+      <SidebarRail>
+        <SidebarTrigger
+          className=" absolute bottom-1/4 left-1/2 -translate-x-1/2 flex items-center justify-center h-9 w-9 rounded-full shadow-md bg-muted text-foreground hover:bg-muted/70 active:bg-muted/60 border border-border transition-all duration-200"
+          icon={ChevronLeft}
+        />
+      </SidebarRail>
     </Sidebar>
   );
 }
