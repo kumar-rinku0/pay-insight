@@ -8,8 +8,19 @@ const navLinks = [
   { name: "Contact", href: "/contact" },
 ];
 
+const adminNavLinks = [
+  { name: "Dashboard", href: "/app/dashboard" },
+  { name: "Staff", href: "/app/staff" },
+];
+const employeeNavLinks = [
+  { name: "AT Report", href: "/app/calendar" },
+  { name: "Shifts", href: "/app/shifts" },
+];
+
 const RootNavbar = () => {
   const { isAuthenticated, user, signOut } = useAuth();
+  const authNavLinks =
+    user?.role?.role !== "admin" ? employeeNavLinks : adminNavLinks;
 
   return (
     <div>
@@ -20,17 +31,29 @@ const RootNavbar = () => {
           </Button>
         </Link>
         <div className="hidden md:flex ml-auto mr-4 justify-center items-center gap-2">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.href}
-              className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-white"
-            >
-              <Button variant="link" size="sm">
-                {link.name}
-              </Button>
-            </Link>
-          ))}
+          {!isAuthenticated
+            ? navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-white"
+                >
+                  <Button variant="link" size="sm">
+                    {link.name}
+                  </Button>
+                </Link>
+              ))
+            : authNavLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-white"
+                >
+                  <Button variant="link" size="sm">
+                    {link.name}
+                  </Button>
+                </Link>
+              ))}
         </div>
         {isAuthenticated ? (
           <NavUserBubble user={user!} logoutHandler={signOut} />

@@ -1,5 +1,7 @@
+import { useAuth } from "@/providers/use-auth";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 type PlanType = {
   _id: string;
@@ -61,7 +63,19 @@ const proBenefits = [
 
 const Plans = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+  if (!isAuthenticated) {
+    navigate("/login");
+  }
   const handleCreatePaymentRequest = (plan: PlanType) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    if (user.role.role === "employee") {
+      toast.error("Only admins & managers can purchase subscription plans.");
+      return;
+    }
     axios
       .post<ResponseType>("/api/payment/create", plan)
       .then((res) => {

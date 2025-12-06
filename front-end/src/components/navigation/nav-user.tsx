@@ -6,6 +6,8 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
+  Settings,
+  Sparkles,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -166,17 +168,21 @@ export function NavUserBubble({
             <BadgeCheck />
             Account
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <CreditCard />
-            Billing
+          <DropdownMenuItem onClick={() => location.assign("/app/settings")}>
+            <Settings />
+            Settings
           </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Bell />
-            Notifications
-          </DropdownMenuItem>
+          {user.role.role !== "employee" && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => location.assign("/app/subscription")}
+              >
+                <Sparkles />
+                Subscription
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logoutHandler}>
