@@ -36,8 +36,8 @@ const ShowShifts = () => {
   };
   if (loading) {
     return (
-      <div className="min-h-[80vh] w-full flex justify-center items-center">
-        Loading...
+      <div className="flex justify-center items-center h-[80vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
       </div>
     );
   }

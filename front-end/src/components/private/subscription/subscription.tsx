@@ -28,8 +28,8 @@ const Subscription = () => {
 
   if (!subscription) {
     return (
-      <div className="flex h-[60vh] flex-col justify-center items-center p-4">
-        <p>Loading subscription...</p>
+      <div className="flex justify-center items-center h-[80vh]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500"></div>
       </div>
     );
   }
