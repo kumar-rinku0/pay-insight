@@ -7,7 +7,7 @@ type DayButtonProps = {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
-const DayButton = ({ day, color, status, onClick }: DayButtonProps) => {
+const CalendarDayButton = ({ day, color, status, onClick }: DayButtonProps) => {
   return (
     <Button
       onClick={(e) => {
@@ -29,4 +29,4 @@ const DayButton = ({ day, color, status, onClick }: DayButtonProps) => {
   );
 };
 
-export default DayButton;
+export default CalendarDayButton;
