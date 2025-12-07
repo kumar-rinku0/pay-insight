@@ -296,6 +296,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
           const { color, status, attendanceId } = getDayStatus(day);
           return (
             <CalendarDayButton
+              key={i}
               color={color}
               day={day}
               status={status}
