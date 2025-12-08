@@ -75,12 +75,14 @@ const PunchInEmployees = () => {
                 {empoyeeAttendance.status}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {new Date(
-                  empoyeeAttendance.punchingInfo[0].punchInInfo.createdAt
-                ).toLocaleTimeString("en-US", {
-                  hour: "numeric",
-                  minute: "numeric",
-                })}
+                {empoyeeAttendance?.punchingInfo[0]?.punchInInfo?.createdAt
+                  ? new Date(
+                      empoyeeAttendance.punchingInfo[0].punchInInfo.createdAt
+                    ).toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                    })
+                  : "N/A"}
               </td>
             </tr>
           ))}
