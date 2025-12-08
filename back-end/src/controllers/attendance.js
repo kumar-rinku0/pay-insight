@@ -223,7 +223,9 @@ const handleUpdateAttandance = async (req, res) => {
     if (!attendance) {
       return res.status(400).json({ message: "invalid attendance id." });
     }
-    return res.status(200).json({ message: "attendance status updated." });
+    return res
+      .status(200)
+      .json({ message: "attendance status updated.", attendance });
   }
 
   const role = await Role.findById(roleId);
@@ -237,7 +239,7 @@ const handleUpdateAttandance = async (req, res) => {
     month: monthName,
   });
   await attendance.save();
-  return res.status(200).json({ message: "attandance created." });
+  return res.status(200).json({ message: "attandance created.", attendance });
 };
 
 export {

@@ -11,7 +11,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { UserType } from "@/types/auth";
-import CalendarDrawer from "./cal-drawer";
+// import { Button } from "@/components/ui/button";
+import CalendarStatus from "./cal-status";
+import CalendarDayButton from "@/components/private/calendar/cal-daybtn";
 
 type ResponseType = {
   message: string;
@@ -41,14 +43,59 @@ interface AttendancePageProps {
 interface DayStatus {
   color: string;
   status: string;
-  attendanceId?: string;
+  attendanceId: string | null;
 }
+
+export interface DayStatusWithRole extends DayStatus {
+  day: number;
+  selectedMonth: number;
+  roleId: string;
+}
+
+interface AttendanceStat {
+  id: keyof AttendanceSummary;
+  label: string;
+  color: string;
+  border: string;
+}
+
+const attendanceStats = [
+  {
+    id: "present",
+    label: "Present",
+    color: "bg-green-200",
+    border: "border-green-500",
+  },
+  {
+    id: "absent",
+    label: "Absent",
+    color: "bg-red-200",
+    border: "border-red-500",
+  },
+  {
+    id: "halfDay",
+    label: "Half day",
+    color: "bg-yellow-200",
+    border: "border-yellow-500",
+  },
+  {
+    id: "paidLeave",
+    label: "Paid Leave",
+    color: "bg-purple-200",
+    border: "border-purple-500",
+  },
+  {
+    id: "weekOff",
+    label: "Week Off",
+    color: "bg-gray-200",
+    border: "border-gray-500",
+  },
+] as AttendanceStat[];
 
 const getMonthName = (year: number, month: number) =>
   new Date(year, month).toLocaleString("en-IN", { month: "long" });
 
 export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
-  // const router = useNavigate();
   const today = React.useMemo(() => new Date(), []);
   const currentYear = today.getFullYear();
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
@@ -63,6 +110,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
     paidLeave: 0,
     weekOff: 0,
   });
+  const [status, setStatus] = useState<DayStatusWithRole | null>(null);
 
   const daysInMonth = new Date(currentYear, selectedMonth + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentYear, selectedMonth, 1).getDay();
@@ -77,7 +125,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
         selectedMonth === today.getMonth() &&
         currentDate.getDate() > today.getDate()
       ) {
-        return { color: "bg-gray-300", status: "future" };
+        return { color: "bg-gray-300", status: "future", attendanceId: null };
       }
       const info = content.find((item) => item.date === formattedDate);
       if (info) {
@@ -108,15 +156,19 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
               attendanceId: info._id,
             };
           default:
-            return { color: "bg-gray-500", status: "absent", attendanceId: "" };
+            return {
+              color: "bg-gray-500",
+              status: "absent",
+              attendanceId: null,
+            };
         }
       }
 
       if (weekOffs.includes(dayOfWeek)) {
-        return { color: "bg-gray-500", status: "week off" };
+        return { color: "bg-gray-500", status: "week off", attendanceId: null };
       }
 
-      return { color: "bg-red-500", status: "absent" };
+      return { color: "bg-red-500", status: "absent", attendanceId: null };
     },
     [currentYear, selectedMonth, today, content, weekOffs]
   );
@@ -165,16 +217,18 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
     setAttendance({ present, absent, halfDay, paidLeave: 0, weekOff });
   }, [content, selectedMonth, daysInMonth, currentYear, getDayStatus]);
 
-  // const handleDayClick = (day: number) => {
-  //   const { status, attendanceId } = getDayStatus(day);
-  //   if (status === "future") return;
-  //   // const selectedDate = formatDateForComparison(
-  //   //   new Date(currentYear, selectedMonth, day)
-  //   // );
-  //   router(
-  //     `/users/calendar/${day}?roleId=${roleId}&attendanceId=${attendanceId}&month=${selectedMonth}`
-  //   );
-  // };
+  const handleDayClick = ({
+    color,
+    day,
+    status,
+    attendanceId,
+    selectedMonth,
+    roleId,
+  }: DayStatusWithRole) => {
+    if (status === "future") return;
+
+    setStatus({ color, day, status, attendanceId, selectedMonth, roleId });
+  };
 
   if (loading) {
     return (
@@ -183,6 +237,43 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
       </div>
     );
   }
+
+  if (status) {
+    return (
+      <CalendarStatus
+        status={status}
+        closeStatus={() => {
+          setStatus(null);
+        }}
+        updateStatus={(newStatus: string, attendanceId: string | null) => {
+          setContent((prev) => {
+            const date = formatDateForComparison(
+              new Date(currentYear, status.selectedMonth, status.day)
+            );
+            const existingIndex = prev.findIndex((item) => item.date === date);
+            if (existingIndex !== -1) {
+              const updated = [...prev];
+              updated[existingIndex] = {
+                ...updated[existingIndex],
+                status: newStatus as AttendanceData["status"],
+              };
+              return updated;
+            } else {
+              return [
+                ...prev,
+                {
+                  _id: attendanceId || Date.now().toString(), // New entries might not have an ID yet
+                  date,
+                  status: newStatus as AttendanceData["status"],
+                },
+              ];
+            }
+          });
+        }}
+      />
+    );
+  }
+
   return (
     <div className="px-4 py-8 min-h-[60vh]">
       <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-4 font-bold flex justify-between items-center rounded-t-lg">
@@ -209,44 +300,13 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
       </div>
 
       <div className="grid grid-cols-5 gap-2 mt-4 text-center">
-        {[
-          {
-            label: "Present",
-            value: attendance.present,
-            color: "bg-green-200",
-            border: "border-green-500",
-          },
-          {
-            label: "Absent",
-            value: attendance.absent,
-            color: "bg-red-200",
-            border: "border-red-500",
-          },
-          {
-            label: "Half day",
-            value: attendance.halfDay,
-            color: "bg-yellow-200",
-            border: "border-yellow-500",
-          },
-          {
-            label: "Paid Leave",
-            value: attendance.paidLeave,
-            color: "bg-purple-200",
-            border: "border-purple-500",
-          },
-          {
-            label: "Week Off",
-            value: attendance.weekOff,
-            color: "bg-gray-200",
-            border: "border-gray-500",
-          },
-        ].map((item, idx) => (
+        {attendanceStats.map((item, idx) => (
           <div
             key={idx}
             className={`p-3 border-l-4 ${item.border} ${item.color} rounded-md`}
           >
             <p className="text-sm">{item.label}</p>
-            <p className="font-bold">{item.value}</p>
+            <p className="font-bold">{attendance[item.id]}</p>
           </div>
         ))}
       </div>
@@ -266,32 +326,22 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
           const day = i + 1;
           const { color, status, attendanceId } = getDayStatus(day);
           return (
-            <CalendarDrawer
-              key={day}
-              day={day}
+            <CalendarDayButton
+              key={i}
               color={color}
+              day={day}
               status={status}
-              attendanceId={attendanceId || ""}
-              roleId={roleId}
-              month={selectedMonth}
+              onClick={() => {
+                handleDayClick({
+                  color,
+                  day,
+                  status,
+                  attendanceId,
+                  selectedMonth,
+                  roleId,
+                });
+              }}
             />
-            // <Button
-            //   key={day}
-            //   className={`p-1 h-12 text-xs relative rounded-md text-white font-bold cursor-pointer ${color} hover:opacity-80`}
-            //   title={status}
-            //   // onClick={() => handleDayClick(day)}
-            // >
-            //   <span className="absolute top-1 left-0 right-0 text-[0.8rem]">
-            //     {day}
-            //   </span>
-            //   <span
-            //     className={`absolute bottom-1 left-0 right-0 text-[0.6rem] ${
-            //       ["late", "half day"].includes(status) ? "" : "opacity-0"
-            //     }`}
-            //   >
-            //     {status}
-            //   </span>
-            // </Button>
           );
         })}
       </div>
@@ -335,3 +385,31 @@ export const AdminCalendar = () => {
 };
 
 export default EmployeeCalendar;
+
+// calendar day button
+
+// <Button
+//   key={day}
+//   className={`p-1 h-12 text-xs relative rounded-md text-white font-bold cursor-pointer ${color} hover:opacity-80`}
+//   title={status}
+//   onClick={() =>
+//     handleDayClick({
+//       color,
+//       day,
+//       status,
+//       attendanceId,
+//       selectedMonth,
+//     })
+//   }
+// >
+//   <span className="absolute top-1 left-0 right-0 text-[0.8rem]">
+//     {day}
+//   </span>
+//   <span
+//     className={`absolute bottom-1 left-0 right-0 text-[0.6rem] ${
+//       ["late", "half day"].includes(status) ? "" : "opacity-0"
+//     }`}
+//   >
+//     {status}
+//   </span>
+// </Button>
