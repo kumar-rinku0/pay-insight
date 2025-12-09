@@ -26,6 +26,7 @@ interface AttendanceData {
   _id: string;
   date: string;
   status: "on time" | "late" | "half day" | "holiday" | "absent";
+  workHours?: number;
 }
 
 interface AttendanceSummary {
@@ -41,7 +42,6 @@ interface AttendancePageProps {
 }
 
 interface DayStatus {
-  color: string;
   status: string;
   attendanceId: string | null;
 }
@@ -125,39 +125,19 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
         selectedMonth === today.getMonth() &&
         currentDate.getDate() > today.getDate()
       ) {
-        return { color: "bg-gray-300", status: "future", attendanceId: null };
+        return { status: "future", attendanceId: null };
       }
       const info = content.find((item) => item.date === formattedDate);
       if (info) {
         switch (info.status) {
-          case "on time":
-          case "late":
+          case `${info.status}`: {
             return {
-              color: "bg-green-500",
               status: info.status,
               attendanceId: info._id,
             };
-          case "half day":
-            return {
-              color: "bg-yellow-500",
-              status: "half day",
-              attendanceId: info._id,
-            };
-          case "holiday":
-            return {
-              color: "bg-gray-500",
-              status: "holiday",
-              attendanceId: info._id,
-            };
-          case "absent":
-            return {
-              color: "bg-red-500",
-              status: "absent",
-              attendanceId: info._id,
-            };
+          }
           default:
             return {
-              color: "bg-gray-500",
               status: "absent",
               attendanceId: null,
             };
@@ -165,10 +145,10 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
       }
 
       if (weekOffs.includes(dayOfWeek)) {
-        return { color: "bg-gray-500", status: "week off", attendanceId: null };
+        return { status: "week off", attendanceId: null };
       }
 
-      return { color: "bg-red-500", status: "absent", attendanceId: null };
+      return { status: "absent", attendanceId: null };
     },
     [currentYear, selectedMonth, today, content, weekOffs]
   );
@@ -218,7 +198,6 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
   }, [content, selectedMonth, daysInMonth, currentYear, getDayStatus]);
 
   const handleDayClick = ({
-    color,
     day,
     status,
     attendanceId,
@@ -227,7 +206,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
   }: DayStatusWithRole) => {
     if (status === "future") return;
 
-    setStatus({ color, day, status, attendanceId, selectedMonth, roleId });
+    setStatus({ day, status, attendanceId, selectedMonth, roleId });
   };
 
   if (loading) {
@@ -324,16 +303,14 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
 
         {Array.from({ length: daysInMonth }, (_, i) => {
           const day = i + 1;
-          const { color, status, attendanceId } = getDayStatus(day);
+          const { status, attendanceId } = getDayStatus(day);
           return (
             <CalendarDayButton
               key={i}
-              color={color}
               day={day}
               status={status}
               onClick={() => {
                 handleDayClick({
-                  color,
                   day,
                   status,
                   attendanceId,

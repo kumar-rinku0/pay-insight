@@ -50,6 +50,7 @@ export type EmployeeAttendanceType = {
   status: string;
   date: string;
   month: string;
+  workHours: number | null;
   punchingInfo: PunchingInfoType[];
   role: {
     _id: string;
