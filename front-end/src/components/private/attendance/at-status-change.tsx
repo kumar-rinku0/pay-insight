@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { type DayStatusWithRole } from "@/components/private/calendar/calendar";
+import {
+  getMonthName,
+  type DayStatusWithRole,
+} from "@/components/private/calendar/calendar";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -57,7 +60,10 @@ const ATStatusChange = ({
 
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
-      Day: {day} Status: {currentStatus}
+      <h2 className="text-lg font-semibold">{`${day} ${getMonthName(
+        new Date().getFullYear(),
+        selectedMonth
+      )}`}</h2>
       <div className="flex flex-wrap gap-2 mt-2">
         {["on time", "late", "half day", "absent", "holiday"].map((s) => (
           <Button

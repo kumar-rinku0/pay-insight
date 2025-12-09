@@ -48,83 +48,93 @@ const CalendarStatus = ({
         <Undo2 />
       </Button>
       <ATStatusChange {...status} updateStatus={updateStatus} />
-      <div>
-        <h3 className="font-semibold mb-2">Punching Info:</h3>
-        {!punchingInfo && <div>No Punching Info Available</div>}
-        {punchingInfo && punchingInfo.length === 0 && (
-          <div>No Punching Info Available</div>
-        )}
-        {punchingInfo && punchingInfo.length > 0 && (
-          <ul>
-            {punchingInfo.map((item, idx) => (
-              <li
-                key={idx}
-                className="flex flex-col lg:flex-row lg:justify-between gap-4 mb-4"
-              >
-                {item.punchInInfo && (
-                  <div className="flex gap-1">
-                    <Avatar className="h-16 w-16 rounded-lg">
-                      <AvatarImage
-                        src={item.punchInInfo?.punchInImg}
-                        alt={item.punchInInfo?.status}
-                      />
-                      <AvatarFallback className="rounded-lg bg-white">
-                        IN
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col justify-center gap-1">
-                      <div className="text-start">
-                        <span>IN : </span>
-                        <span>
-                          {new Date(
-                            item.punchInInfo.createdAt
-                          ).toLocaleTimeString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                          })}
-                        </span>
-                      </div>
-                      <div className="text-start text-sm text-slate-600">
-                        {item.punchInInfo.punchInAddress}
-                      </div>
+      <PunchingInformation punchingInfo={punchingInfo || []} />
+    </div>
+  );
+};
+
+const PunchingInformation = ({
+  punchingInfo,
+}: {
+  punchingInfo: PunchingInfoType[];
+}) => {
+  return (
+    <div>
+      <h3 className="font-semibold mb-2">Punching Info:</h3>
+      {!punchingInfo && <div>No Punching Info Available</div>}
+      {punchingInfo && punchingInfo.length === 0 && (
+        <div>No Punching Info Available</div>
+      )}
+      {punchingInfo && punchingInfo.length > 0 && (
+        <ul>
+          {punchingInfo.map((item, idx) => (
+            <li
+              key={idx}
+              className="flex flex-col lg:flex-row lg:justify-between gap-4 mb-4"
+            >
+              {item.punchInInfo && (
+                <div className="flex gap-1">
+                  <Avatar className="h-16 w-16 rounded-lg">
+                    <AvatarImage
+                      src={item.punchInInfo?.punchInImg}
+                      alt={item.punchInInfo?.status}
+                    />
+                    <AvatarFallback className="rounded-lg bg-white">
+                      IN
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col justify-center gap-1">
+                    <div className="text-start">
+                      <span>IN : </span>
+                      <span>
+                        {new Date(
+                          item.punchInInfo.createdAt
+                        ).toLocaleTimeString("en-US", {
+                          hour: "numeric",
+                          minute: "numeric",
+                        })}
+                      </span>
+                    </div>
+                    <div className="text-start text-sm text-slate-600">
+                      {item.punchInInfo.punchInAddress}
                     </div>
                   </div>
-                )}
-                {/* <hr className="my-2" /> */}
-                {item.punchOutInfo && (
-                  <div className="flex gap-1">
-                    <Avatar className="h-16 w-16 rounded-lg">
-                      <AvatarImage
-                        src={item.punchOutInfo?.punchOutImg}
-                        alt={item.punchOutInfo?.status}
-                      />
-                      <AvatarFallback className="rounded-lg bg-white">
-                        OUT
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col justify-center gap-1">
-                      <div className="text-start">
-                        <span>OUT : </span>
-                        <span>
-                          {new Date(
-                            item.punchOutInfo.createdAt
-                          ).toLocaleTimeString("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                          })}
-                        </span>
-                      </div>
-                      <div className="text-start text-sm text-slate-600">
-                        {item.punchOutInfo.punchOutAddress}
-                      </div>
+                </div>
+              )}
+              {/* <hr className="my-2" /> */}
+              {item.punchOutInfo && (
+                <div className="flex gap-1">
+                  <Avatar className="h-16 w-16 rounded-lg">
+                    <AvatarImage
+                      src={item.punchOutInfo?.punchOutImg}
+                      alt={item.punchOutInfo?.status}
+                    />
+                    <AvatarFallback className="rounded-lg bg-white">
+                      OUT
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col justify-center gap-1">
+                    <div className="text-start">
+                      <span>OUT : </span>
+                      <span>
+                        {new Date(
+                          item.punchOutInfo.createdAt
+                        ).toLocaleTimeString("en-US", {
+                          hour: "numeric",
+                          minute: "numeric",
+                        })}
+                      </span>
+                    </div>
+                    <div className="text-start text-sm text-slate-600">
+                      {item.punchOutInfo.punchOutAddress}
                     </div>
                   </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

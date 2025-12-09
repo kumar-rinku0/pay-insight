@@ -92,7 +92,7 @@ const attendanceStats = [
   },
 ] as AttendanceStat[];
 
-const getMonthName = (year: number, month: number) =>
+export const getMonthName = (year: number, month: number) =>
   new Date(year, month).toLocaleString("en-IN", { month: "long" });
 
 export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
