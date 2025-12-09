@@ -156,7 +156,7 @@ const handleGetOneSpecificMonthAttendance = async (req, res) => {
 const handleGetOneSpecificDateAttendance = async (req, res) => {
   const { attendanceId } = req.params;
   const attendance = await Attendance.findById(attendanceId)
-    .select("punchingInfo date month status")
+    .select("punchingInfo date month status workHours")
     .populate(
       "punchingInfo.punchInInfo",
       "status punchInImg punchInAddress createdAt"
