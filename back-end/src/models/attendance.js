@@ -75,6 +75,11 @@ const attendanceSchema = new Schema(
       },
       default: "absent",
     },
+    // working hours calculation can be added later
+    workHours: {
+      type: Number,
+      default: null,
+    },
     punchingInfo: {
       type: [
         {
@@ -100,15 +105,19 @@ attendanceSchema.pre("save", async function (next) {
       return next();
     }
     const lastObj = this.punchingInfo.pop();
-    if (lastObj?.punchOutInfo) {
-      this.punchingInfo.push(lastObj);
-      return next();
-    }
-    const currTime = new Date(lastObj?.punchInInfo.createdAt).getTime();
-    console.log("currTime", currTime);
+    const inTime = new Date(lastObj?.punchInInfo.createdAt).getTime();
+    console.log("inTime", inTime);
     const shift = await Shift.findOne({ createdFor: this.role });
     if (!shift) {
       return next(new Error("doesn't assigned any shift!"));
+    }
+    if (lastObj?.punchOutInfo) {
+      const outTime = new Date(lastObj?.punchOutInfo.createdAt).getTime();
+      const diffMs = outTime - inTime; // difference in milliseconds
+      const diffHours = diffMs / (1000 * 60 * 60); // convert ms → hours
+      this.workHours = parseFloat(diffHours.toFixed(2));
+      if (shift.workHours) this.punchingInfo.push(lastObj);
+      return next();
     }
     const shiftStartTime = getTodayTimestamp(shift.startTime, shift.lateBy);
     const shiftStartTimeWithDelay = getTodayTimestamp(
@@ -116,14 +125,11 @@ attendanceSchema.pre("save", async function (next) {
       shift.halfDayLateBy
     );
     console.log(shiftStartTime, shiftStartTimeWithDelay);
-    if (shiftStartTime >= currTime) {
+    if (shiftStartTime >= inTime) {
       this.status = "on time";
-    } else if (
-      shiftStartTime < currTime &&
-      shiftStartTimeWithDelay >= currTime
-    ) {
+    } else if (shiftStartTime < inTime && shiftStartTimeWithDelay >= inTime) {
       this.status = "late";
-    } else if (shiftStartTimeWithDelay < currTime) {
+    } else if (shiftStartTimeWithDelay < inTime) {
       this.status = "half day";
     }
     this.punchingInfo.push(lastObj);

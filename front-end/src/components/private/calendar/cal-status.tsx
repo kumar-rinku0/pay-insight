@@ -27,6 +27,8 @@ const CalendarStatus = ({
   const [punchingInfo, setPunchingInfo] = useState<PunchingInfoType[] | null>(
     null
   );
+
+  const [workHours, setWorkHours] = useState<number | null>(null);
   useEffect(() => {
     if (status.attendanceId) {
       axios
@@ -36,6 +38,7 @@ const CalendarStatus = ({
         .then((res) => {
           console.log(res);
           setPunchingInfo(res.data.attendance.punchingInfo);
+          setWorkHours(res.data.attendance.workHours);
         })
         .catch((err) => {
           console.log(err);
@@ -48,18 +51,33 @@ const CalendarStatus = ({
         <Undo2 />
       </Button>
       <ATStatusChange {...status} updateStatus={updateStatus} />
-      <PunchingInformation punchingInfo={punchingInfo || []} />
+      <PunchingInformation
+        punchingInfo={punchingInfo || []}
+        workHours={workHours}
+      />
     </div>
   );
 };
 
 const PunchingInformation = ({
   punchingInfo,
+  workHours,
 }: {
   punchingInfo: PunchingInfoType[];
+  workHours: number | null;
 }) => {
   return (
     <div>
+      <div className="py-4">
+        {/* work hours of any day */}
+        {workHours === null ? (
+          <span className="italic text-sm text-gray-500">
+            No work hours recorded
+          </span>
+        ) : (
+          <span className="font-semibold">Work Hours: {workHours} hrs</span>
+        )}
+      </div>
       <h3 className="font-semibold mb-2">Punching Info:</h3>
       {!punchingInfo && <div>No Punching Info Available</div>}
       {punchingInfo && punchingInfo.length === 0 && (
