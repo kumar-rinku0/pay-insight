@@ -64,7 +64,15 @@ const ATStatusChange = ({
         selectedMonth
       )}`}</h2>
       <div className="flex flex-wrap gap-2 mt-2">
-        {["on time", "late", "half day", "absent", "holiday"].map((s) => (
+        {[
+          "on time",
+          "late",
+          "half day",
+          "absent",
+          "holiday",
+          "paid leave",
+          "week off",
+        ].map((s) => (
           <Button
             key={s}
             variant="outline"

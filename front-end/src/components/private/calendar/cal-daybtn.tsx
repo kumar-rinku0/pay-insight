@@ -12,24 +12,25 @@ const colorMap = [
   { id: "half day", name: "Half Day", color: "bg-yellow-500" },
   { id: "absent", name: "Absent", color: "bg-red-500" },
   { id: "holiday", name: "Holiday", color: "bg-gray-500" },
+  { id: "paid leave", name: "Paid Leave", color: "bg-purple-500" },
+  { id: "week off", name: "Week Off", color: "bg-neutral-500" },
 ];
 
 const CalendarDayButton = ({ day, status, onClick }: DayButtonProps) => {
+  const color = colorMap.find((c) => c.id === status)?.color || "bg-gray-300";
   return (
     <Button
       onClick={(e) => {
         e.currentTarget.blur();
         onClick?.(e);
       }}
-      className={`p-1 h-12 text-xs relative rounded-md text-white font-bold cursor-pointer ${
-        colorMap.find((c) => c.id === status)?.color || "bg-gray-300"
-      } hover:opacity-80`}
+      className={`p-1 h-12 text-xs relative rounded-md text-white  font-bold cursor-pointer ${color} hover:${color} hover:opacity-60`}
       title={status}
     >
       <span className="absolute top-1 left-0 right-0 text-[0.8rem]">{day}</span>
       <span
-        className={`absolute bottom-1 left-0 right-0 text-[0.6rem] ${
-          ["late", "half day"].includes(status) ? "" : "opacity-0"
+        className={`truncate absolute bottom-1 left-0 right-0 text-[0.6rem] ${
+          ["late", "holiday"].includes(status) ? "" : "opacity-0"
         }`}
       >
         {status}
