@@ -105,6 +105,7 @@ attendanceSchema.pre("save", async function (next) {
       return next();
     }
     const lastObj = this.punchingInfo.pop();
+    console.log("lastObj", lastObj);
     const inTime = new Date(lastObj?.punchInInfo.createdAt).getTime();
     console.log("inTime", inTime);
     const shift = await Shift.findOne({ createdFor: this.role });
