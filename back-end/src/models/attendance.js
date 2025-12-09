@@ -114,9 +114,10 @@ attendanceSchema.pre("save", async function (next) {
     if (lastObj?.punchOutInfo) {
       const outTime = new Date(lastObj?.punchOutInfo.createdAt).getTime();
       const diffMs = outTime - inTime; // difference in milliseconds
+      console.log("diffMs", diffMs, "inTime", inTime, "outTime", outTime);
       const diffHours = diffMs / (1000 * 60 * 60); // convert ms → hours
       this.workHours = parseFloat(diffHours.toFixed(2));
-      if (shift.workHours) this.punchingInfo.push(lastObj);
+      this.punchingInfo.push(lastObj);
       return next();
     }
     const shiftStartTime = getTodayTimestamp(shift.startTime, shift.lateBy);
