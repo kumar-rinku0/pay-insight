@@ -5,10 +5,12 @@ import { useAuth } from "@/providers/use-auth";
 import { Button } from "@/components/ui/button";
 import HandleLocation from "./handle-location";
 import HandleCamera from "./handle-camera";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 const Attendance = () => {
   const { isAuthenticated, user } = useAuth();
-
+  const router = useNavigate();
   const [hasPunchedIn, setHasPunchedIn] = useState(false);
   const [allowLocation, setAllowLocation] = useState(false);
   const [allowedCamera, setAllowedCamera] = useState(false);
@@ -108,7 +110,8 @@ const Attendance = () => {
       }
     )
       .then((res) => {
-        console.log("Punch successful:", res.data);
+        console.log(res.data.message, res.data);
+        toast.success(res.data.message);
         setHasPunchedIn(!hasPunchedIn);
         setPhotoCaptured(false);
         setInputs({
@@ -118,6 +121,7 @@ const Attendance = () => {
           punchOutPhoto: null,
         });
         setAllowLocation(false);
+        router("/app/calendar");
       })
       .catch((err) => {
         console.error("Punch error:", err);

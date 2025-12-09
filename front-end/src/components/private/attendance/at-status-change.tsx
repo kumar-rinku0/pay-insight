@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { type DayStatusWithRole } from "@/components/private/calendar/calendar";
+import {
+  getMonthName,
+  type DayStatusWithRole,
+} from "@/components/private/calendar/calendar";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useAuth } from "@/providers/use-auth";
 
 const ATStatusChange = ({
   status,
-  color,
   day,
   selectedMonth,
   attendanceId,
@@ -15,6 +18,7 @@ const ATStatusChange = ({
 }: DayStatusWithRole & {
   updateStatus: (newStatus: string, attendanceId: string | null) => void;
 }) => {
+  const { user } = useAuth();
   const [currentAttendanceId, setCurrentAttendanceId] = useState<string | null>(
     attendanceId
   );
@@ -22,10 +26,8 @@ const ATStatusChange = ({
   const [currentStatus, setCurrentStatus] = useState(status);
 
   const handleStatusChange = (newStatus: string) => {
-    if (newStatus !== "week off") {
+    if (user?.role.role !== "employee") {
       handleUpdateStatus(newStatus);
-    } else {
-      toast.error("Cannot set status to week off");
     }
   };
 
@@ -57,14 +59,17 @@ const ATStatusChange = ({
 
   return (
     <div className="flex flex-col gap-2 justify-center items-center">
-      Day: {day} Status: {currentStatus}
+      <h2 className="text-lg font-semibold">{`${day} ${getMonthName(
+        new Date().getFullYear(),
+        selectedMonth
+      )}`}</h2>
       <div className="flex flex-wrap gap-2 mt-2">
         {["on time", "late", "half day", "absent", "holiday"].map((s) => (
           <Button
             key={s}
             variant="outline"
-            className={`py-1 px-2 border uppercase border-gray-500 rounded-2xl ${
-              currentStatus === s ? `${color}` : "text-gray-500"
+            className={`py-1 px-2 border uppercase border-slate-300 rounded-2xl ${
+              currentStatus === s ? "bg-slate-300" : "text-slate-900"
             }`}
             disabled={currentStatus === s || loading}
             onClick={() => handleStatusChange(s)}
