@@ -56,7 +56,9 @@ const Attendance = () => {
     const photo = hasPunchedIn ? inputs.punchOutPhoto : inputs.punchInPhoto;
 
     if (!geo || geo.coordinates.length !== 2) {
-      alert("Invalid or missing coordinates.");
+      toast.error("invalid or missing coordinates.");
+      // alert("invalid or missing coordinates.");
+      setAllowLocation(false);
       setLoading(false);
       return;
     }
