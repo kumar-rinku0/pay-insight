@@ -70,7 +70,15 @@ const attendanceSchema = new Schema(
     status: {
       type: String,
       enum: {
-        values: ["on time", "late", "half day", "holiday", "absent"],
+        values: [
+          "on time",
+          "late",
+          "half day",
+          "holiday",
+          "absent",
+          "week off",
+          "paid leave",
+        ],
         message: "invailid status!",
       },
       default: "absent",
@@ -106,13 +114,11 @@ attendanceSchema.pre("save", async function (next) {
     }
     const lastObj = this.punchingInfo.pop();
     console.log("lastObj", lastObj);
-    const inTime = new Date(lastObj?.punchInInfo.createdAt).getTime();
-    console.log("inTime", inTime);
-    const shift = await Shift.findOne({ createdFor: this.role });
-    if (!shift) {
-      return next(new Error("doesn't assigned any shift!"));
-    }
     if (lastObj?.punchOutInfo) {
+      const punchInData = await PunchIn.findById(lastObj.punchInInfo).select(
+        "createdAt"
+      );
+      const inTime = new Date(punchInData.createdAt).getTime();
       const outTime = new Date(lastObj?.punchOutInfo.createdAt).getTime();
       const diffMs = outTime - inTime; // difference in milliseconds
       console.log("diffMs", diffMs, "inTime", inTime, "outTime", outTime);
@@ -120,6 +126,12 @@ attendanceSchema.pre("save", async function (next) {
       this.workHours = parseFloat(diffHours.toFixed(2));
       this.punchingInfo.push(lastObj);
       return next();
+    }
+    const inTime = new Date(lastObj?.punchInInfo.createdAt).getTime();
+    console.log("inTime", inTime);
+    const shift = await Shift.findOne({ createdFor: this.role });
+    if (!shift) {
+      return next(new Error("doesn't assigned any shift!"));
     }
     const shiftStartTime = getTodayTimestamp(shift.startTime, shift.lateBy);
     const shiftStartTimeWithDelay = getTodayTimestamp(
