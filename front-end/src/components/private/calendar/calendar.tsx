@@ -35,6 +35,7 @@ interface AttendanceSummary {
   halfDay: number;
   paidLeave: number;
   weekOff: number;
+  holiday: number;
 }
 
 interface AttendancePageProps {
@@ -87,6 +88,12 @@ const attendanceStats = [
   {
     id: "weekOff",
     label: "Week Off",
+    color: "bg-neutral-200",
+    border: "border-neutral-500",
+  },
+  {
+    id: "holiday",
+    label: "Holiday",
     color: "bg-gray-200",
     border: "border-gray-500",
   },
@@ -109,6 +116,7 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
     halfDay: 0,
     paidLeave: 0,
     weekOff: 0,
+    holiday: 0,
   });
   const [status, setStatus] = useState<DayStatusWithRole | null>(null);
 
@@ -184,17 +192,21 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
     let present = 0,
       absent = 0,
       halfDay = 0,
-      weekOff = 0;
+      weekOff = 0,
+      paidLeave = 0,
+      holiday = 0;
 
     for (let day = 1; day <= daysInMonth; day++) {
       const { status } = getDayStatus(day);
       if (status === "on time" || status === "late") present++;
       else if (status === "half day") halfDay++;
       else if (status === "absent") absent++;
+      else if (status === "paid leave") paidLeave++;
       else if (status === "week off") weekOff++;
+      else if (status === "holiday") holiday++;
     }
 
-    setAttendance({ present, absent, halfDay, paidLeave: 0, weekOff });
+    setAttendance({ present, absent, halfDay, paidLeave, weekOff, holiday });
   }, [content, selectedMonth, daysInMonth, currentYear, getDayStatus]);
 
   const handleDayClick = ({
@@ -278,13 +290,15 @@ export const AttendancePage: React.FC<AttendancePageProps> = ({ roleId }) => {
         </Select>
       </div>
 
-      <div className="grid grid-cols-5 gap-2 mt-4 text-center">
+      <div className="grid grid-cols-6 gap-2 mt-4 text-center">
         {attendanceStats.map((item, idx) => (
           <div
             key={idx}
-            className={`p-3 border-l-4 ${item.border} ${item.color} rounded-md`}
+            className={`py-4 px-1 lg:px-3 border-l-4 ${item.border} ${item.color} rounded-md`}
           >
-            <p className="text-sm">{item.label}</p>
+            <p className="truncate text-xs md:text-sm lowercase">
+              {item.label}
+            </p>
             <p className="font-bold">{attendance[item.id]}</p>
           </div>
         ))}

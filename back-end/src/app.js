@@ -29,8 +29,6 @@ const port = process.env.PORT || "8000";
 const SECRET = process.env.SESSION_SECRET || "KEYBOARD & mE!";
 const MONGO_URI = process.env.MONGO_URI;
 
-connectDatabase(MONGO_URI);
-
 const store = MongoStore.create({
   mongoUrl: MONGO_URI,
   touchAfter: 2 * 3600,
@@ -100,6 +98,7 @@ app.use((err, req, res, next) => {
 
 app.listen(port, () => {
   console.log(`attendance app listening on port ${port}`);
+  connectDatabase(MONGO_URI);
 });
 
 // oops!
