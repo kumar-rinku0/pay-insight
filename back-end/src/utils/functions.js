@@ -86,8 +86,8 @@ export function getTodayTimestamp(timeStr, extraMinutes = 0) {
   );
 }
 
-export function getLocaleDateStringByTimeZone() {
-  return new Date().toLocaleDateString("en-US", {
+export function getLocaleDateStringByTimeZone(date = new Date()) {
+  return new Date(date).toLocaleDateString("en-US", {
     timeZone: "Asia/Kolkata",
   });
 }
@@ -96,6 +96,16 @@ export function getLocaleMonthStringByTimeZone() {
     timeZone: "Asia/Kolkata",
     month: "long",
   });
+}
+export function getPreviousDayDateByTimeZone() {
+  const previousDate = new Date(getLocaleDateStringByTimeZone());
+  previousDate.setDate(previousDate.getDate() - 1);
+  const newDate = formatDateForComparison(
+    getLocaleDateStringByTimeZone(previousDate)
+  );
+  console.log("previousDate", previousDate, "newDate", newDate);
+
+  return newDate;
 }
 
 // Function to reverse geocode (coordinates to address)
