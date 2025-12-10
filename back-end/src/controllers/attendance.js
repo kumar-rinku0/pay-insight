@@ -6,8 +6,11 @@ import {
   formatDateForComparison,
   getLocaleDateStringByTimeZone,
   getLocaleMonthStringByTimeZone,
+  getPreviousDayDateByTimeZone,
+  getTodayTimestamp,
 } from "../utils/functions.js";
 import { reverseGeocode } from "../utils/functions.js";
+import { shiftWithPunchingDiffrence } from "./shift.js";
 
 const handlemarkPunchIn = async (req, res) => {
   const { roleId, punchInGeometry } = req.body;
@@ -15,7 +18,6 @@ const handlemarkPunchIn = async (req, res) => {
     return res.json({ message: "file not found." });
   }
   const punchInImg = req.url;
-  const date = formatDateForComparison(getLocaleDateStringByTimeZone());
   const month = getLocaleMonthStringByTimeZone();
   const punchInAddress = await reverseGeocode(
     punchInGeometry.coordinates[1],
@@ -27,9 +29,21 @@ const handlemarkPunchIn = async (req, res) => {
     punchInImg,
   });
   await punchIn.save();
-  const prevAttendance = await Attendance.findOne({
+  const date = formatDateForComparison(getLocaleDateStringByTimeZone());
+  let query = {
     $and: [{ date: date, role: roleId }],
-  });
+  };
+  const shiftObj = await shiftWithPunchingDiffrence(roleId);
+  if (!shiftObj.success) {
+    return res.status(400).json(shiftObj);
+  }
+  if (shiftObj.diffrence) {
+    const newDate = getPreviousDayDateByTimeZone();
+    query = {
+      $and: [{ date: newDate, role: roleId }],
+    };
+  }
+  const prevAttendance = await Attendance.findOne(query);
   if (prevAttendance) {
     prevAttendance.punchingInfo.push({ punchInInfo: punchIn });
     await prevAttendance.save();
@@ -64,10 +78,21 @@ const handlemarkPunchOut = async (req, res) => {
   });
   await punchOut.save();
   const date = formatDateForComparison(getLocaleDateStringByTimeZone());
-
-  const attendance = await Attendance.findOne({
+  let query = {
     $and: [{ date: date, role: roleId }],
-  });
+  };
+  const shiftObj = await shiftWithPunchingDiffrence(roleId);
+  if (!shiftObj.success) {
+    return res.status(400).json(shiftObj);
+  }
+  if (shiftObj.diffrence) {
+    const newDate = getPreviousDayDateByTimeZone();
+    query = {
+      $and: [{ date: newDate, role: roleId }],
+    };
+  }
+
+  const attendance = await Attendance.findOne(query);
   const lastPunchInInfo = attendance.punchingInfo.pop();
   lastPunchInInfo.punchOutInfo = punchOut;
   attendance.punchingInfo.push(lastPunchInInfo);
@@ -89,26 +114,41 @@ const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
   const { role } = user;
   const date = formatDateForComparison(getLocaleDateStringByTimeZone());
 
-  const attendance = await Attendance.findOne({
-    $and: [{ date: date, role: role._id }],
-  });
   const branch = await Branch.findById(role.branch);
+  const shiftObj = await shiftWithPunchingDiffrence(role._id);
+
+  if (!shiftObj.success) {
+    return res.status(200).json(shiftObj);
+  }
+
+  let query = {
+    $and: [{ date: date, role: role._id }],
+  };
+
+  if (shiftObj.diffrence) {
+    const newDate = getPreviousDayDateByTimeZone();
+    query = {
+      $and: [{ date: newDate, role: role._id }],
+    };
+  }
+
+  const attendance = await Attendance.findOne(query);
   if (!attendance) {
     return res.status(200).json({
       message: "user isn't punched in yet!",
       lastPuchedOut: true,
-      branch: branch,
       radius: branch.radius,
       coordinates: branch.geometry.coordinates,
+      shift: shiftObj.shift,
     });
   }
   if (attendance && attendance.punchingInfo.length === 0) {
     return res.status(200).json({
       message: "info doesnt exist!",
       lastPuchedOut: true,
-      branch: branch,
       radius: branch.radius,
       coordinates: branch.geometry.coordinates,
+      shift: shiftObj.shift,
     });
   }
   const lastPunchingInfo = attendance.punchingInfo.pop();
@@ -118,12 +158,10 @@ const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
   }
   return res.status(200).json({
     message: "user already punched in!",
-    lastPunchingInfo: lastPunchingInfo,
     lastPuchedOut: lastPuchedOut,
-    attendance: attendance,
-    branch: branch,
     radius: branch.radius,
     coordinates: branch.geometry.coordinates,
+    shift: shiftObj.shift,
   });
 };
 
