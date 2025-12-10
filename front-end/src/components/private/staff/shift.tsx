@@ -153,7 +153,22 @@ export const StaffShift = ({
                     <FormControl>
                       <Select
                         value={field.value}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          if (value === "morning") {
+                            form2.setValue("startTime", "09:00");
+                            form2.setValue("endTime", "16:00");
+                          } else if (value === "night") {
+                            form2.setValue("startTime", "22:00");
+                            form2.setValue("endTime", "06:00");
+                          } else if (value === "noon") {
+                            form2.setValue("startTime", "12:00");
+                            form2.setValue("endTime", "19:00");
+                          } else if (value === "evening") {
+                            form2.setValue("startTime", "15:00");
+                            form2.setValue("endTime", "22:00");
+                          }
+                          field.onChange(value);
+                        }}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select Shift Type" />
