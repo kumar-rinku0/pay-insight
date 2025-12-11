@@ -9,7 +9,7 @@ import {
   getPreviousDayDateByTimeZone,
 } from "../utils/functions.js";
 import { reverseGeocode } from "../utils/functions.js";
-import { shiftAndPunchingDiffrence } from "./shift.js";
+import { shiftAndPunchingTodayOrPreviousDay } from "./shift.js";
 
 const handlemarkPunchIn = async (req, res) => {
   const { roleId, punchInGeometry } = req.body;
@@ -29,11 +29,11 @@ const handlemarkPunchIn = async (req, res) => {
   });
   await punchIn.save();
   let date = formatDateForComparison(getLocaleDateStringByTimeZone());
-  const shiftObj = await shiftAndPunchingDiffrence(roleId);
+  const shiftObj = await shiftAndPunchingTodayOrPreviousDay(roleId);
   if (!shiftObj.success) {
     return res.status(400).json(shiftObj);
   }
-  if (shiftObj.diffrence) {
+  if (!shiftObj.isToday) {
     const newDate = getPreviousDayDateByTimeZone();
     date = newDate;
   }
@@ -75,11 +75,11 @@ const handlemarkPunchOut = async (req, res) => {
   });
   await punchOut.save();
   let date = formatDateForComparison(getLocaleDateStringByTimeZone());
-  const shiftObj = await shiftAndPunchingDiffrence(roleId);
+  const shiftObj = await shiftAndPunchingTodayOrPreviousDay(roleId);
   if (!shiftObj.success) {
     return res.status(400).json(shiftObj);
   }
-  if (shiftObj.diffrence) {
+  if (!shiftObj.isToday) {
     const newDate = getPreviousDayDateByTimeZone();
     date = newDate;
   }
@@ -109,7 +109,7 @@ const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
   const date = formatDateForComparison(getLocaleDateStringByTimeZone());
 
   const branch = await Branch.findById(role.branch);
-  const shiftObj = await shiftAndPunchingDiffrence(role._id);
+  const shiftObj = await shiftAndPunchingTodayOrPreviousDay(role._id);
 
   if (!shiftObj.success) {
     return res.status(200).json(shiftObj);
@@ -119,7 +119,7 @@ const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
     $and: [{ date: date, role: role._id }],
   };
 
-  if (shiftObj.diffrence) {
+  if (!shiftObj.isToday) {
     const newDate = getPreviousDayDateByTimeZone();
     query = {
       $and: [{ date: newDate, role: role._id }],

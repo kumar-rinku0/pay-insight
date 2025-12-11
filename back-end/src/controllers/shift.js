@@ -4,6 +4,8 @@ import {
   getTodayTimestamp,
   getLocaleDateStringByTimeZone,
   formatDateForComparison,
+  currntTimeInFixedFomat,
+  getLocaleMonthStringByTimeZone,
 } from "../utils/functions.js";
 
 export const getAllShifts = async (req, res) => {
@@ -73,7 +75,7 @@ export const handleShiftUpdateById = async (req, res) => {
 
 // function
 
-export const shiftAndPunchingDiffrence = async (roleId) => {
+export const shiftAndPunchingTodayOrPreviousDay = async (roleId) => {
   const shift = await Shift.findOne({
     createdFor: roleId,
   });
@@ -82,7 +84,7 @@ export const shiftAndPunchingDiffrence = async (roleId) => {
       success: false,
       message: "Shift is not assigned to user.",
       shift,
-      diffrence: false,
+      isToday: true,
     };
   }
 
@@ -91,83 +93,32 @@ export const shiftAndPunchingDiffrence = async (roleId) => {
       success: false,
       message: "Today is a week off!",
       shift,
-      diffrence: false,
+      isToday: true,
     };
   }
 
   if (shift.startTime > shift.endTime) {
-    const shfitStartTime = getTodayTimestamp(shift.startTime);
-    const shiftEndTime = getTodayTimestamp(shift.endTime);
-    //  + 24 * 60 * 60 * 1000; // adding 24 hours for next day
-    const currentTime = Date.now();
-    console.log(
-      "shfitStartTime",
-      shfitStartTime,
-      "shiftEndTime",
-      shiftEndTime,
-      "currentTime",
-      currentTime
-    );
+    const currTime = "08:05";
+    const currTimeValue = Number(currTime.replace(":", "."));
+    const startTimeValue = Number(shift.startTime.replace(":", "."));
+    const endTimeValue = Number(shift.endTime.replace(":", "."));
 
-    const startTimeDiff = shfitStartTime - currentTime;
-    const endTimeDiff = shiftEndTime - currentTime;
-    console.log("startTimeDiff", startTimeDiff, "endTimeDiff", endTimeDiff);
-    const diffrence = startTimeDiff > endTimeDiff;
+    const startTimeDif = Math.abs(currTimeValue - startTimeValue);
+    const endTimeDiff = Math.abs(currTimeValue - endTimeValue);
+    const isToday = startTimeDif < endTimeDiff;
+    console.log("isToday", isToday);
     return {
       success: true,
-      diffrence,
-      message: diffrence
-        ? "StartTime - CurrentTime Diffrence is Large!"
-        : "EndTime - CurrentTime Diffrence is Large!",
+      isToday: isToday,
+      message: isToday ? "Yes Today!" : "Pervious Day!",
       shift,
-    };
-    // if (startTimeDiff > endTimeDiff) {
-    //   const previousDate = new Date(getLocaleDateStringByTimeZone());
-    //   previousDate.setDate(previousDate.getDate() - 1);
-    //   const date = formatDateForComparison(
-    //     getLocaleDateStringByTimeZone(previousDate)
-    //   );
-    //   console.log("previousDate", previousDate, "date", date);
-    //   const attendance = await Attendance.findOne({
-    //     $and: [{ date: date, role: role._id }],
-    //   });
-    //   if (!attendance) {
-    //     return res.status(200).json({
-    //       message: "user isn't punched in yet!",
-    //       lastPuchedOut: true,
-    //       radius: branch.radius,
-    //       coordinates: branch.geometry.coordinates,
-    //       shift,
-    //     });
-    //   }
-    //   if (attendance && attendance.punchingInfo.length === 0) {
-    //     return res.status(200).json({
-    //       message: "info doesnt exist!",
-    //       lastPuchedOut: true,
-    //       radius: branch.radius,
-    //       coordinates: branch.geometry.coordinates,
-    //       shift,
-    //     });
-    //   }
-    //   const lastPunchingInfo = attendance.punchingInfo.pop();
-    //   let lastPuchedOut = false;
-    //   if (lastPunchingInfo.punchOutInfo) {
-    //     lastPuchedOut = true;
-    //   }
-    //   return res.status(200).json({
-    //     message: "user already punched in!",
-    //     lastPuchedOut: lastPuchedOut,
-    //     radius: branch.radius,
-    //     coordinates: branch.geometry.coordinates,
-    //     shift,
-    //   });
-    // }
-  } else {
-    return {
-      success: true,
-      message: "Start Time Smaller Then End Time!",
-      shift,
-      diffrence: false,
     };
   }
+
+  return {
+    success: true,
+    message: "Start Time Smaller Then End Time!",
+    shift,
+    isToday: true,
+  };
 };
