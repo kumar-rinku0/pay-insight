@@ -7,7 +7,6 @@ import {
   getLocaleDateStringByTimeZone,
   getLocaleMonthStringByTimeZone,
   getPreviousDayDateByTimeZone,
-  getTodayTimestamp,
 } from "../utils/functions.js";
 import { reverseGeocode } from "../utils/functions.js";
 import { shiftWithPunchingDiffrence } from "./shift.js";
@@ -29,20 +28,18 @@ const handlemarkPunchIn = async (req, res) => {
     punchInImg,
   });
   await punchIn.save();
-  const date = formatDateForComparison(getLocaleDateStringByTimeZone());
-  let query = {
-    $and: [{ date: date, role: roleId }],
-  };
+  let date = formatDateForComparison(getLocaleDateStringByTimeZone());
   const shiftObj = await shiftWithPunchingDiffrence(roleId);
   if (!shiftObj.success) {
     return res.status(400).json(shiftObj);
   }
   if (shiftObj.diffrence) {
     const newDate = getPreviousDayDateByTimeZone();
-    query = {
-      $and: [{ date: newDate, role: roleId }],
-    };
+    date = newDate;
   }
+  const query = {
+    $and: [{ date: date, role: roleId }],
+  };
   const prevAttendance = await Attendance.findOne(query);
   if (prevAttendance) {
     prevAttendance.punchingInfo.push({ punchInInfo: punchIn });
@@ -77,21 +74,18 @@ const handlemarkPunchOut = async (req, res) => {
     punchOutImg,
   });
   await punchOut.save();
-  const date = formatDateForComparison(getLocaleDateStringByTimeZone());
-  let query = {
-    $and: [{ date: date, role: roleId }],
-  };
+  let date = formatDateForComparison(getLocaleDateStringByTimeZone());
   const shiftObj = await shiftWithPunchingDiffrence(roleId);
   if (!shiftObj.success) {
     return res.status(400).json(shiftObj);
   }
   if (shiftObj.diffrence) {
     const newDate = getPreviousDayDateByTimeZone();
-    query = {
-      $and: [{ date: newDate, role: roleId }],
-    };
+    date = newDate;
   }
-
+  const query = {
+    $and: [{ date: date, role: roleId }],
+  };
   const attendance = await Attendance.findOne(query);
   const lastPunchInInfo = attendance.punchingInfo.pop();
   lastPunchInInfo.punchOutInfo = punchOut;
