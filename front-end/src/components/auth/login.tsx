@@ -233,13 +233,14 @@ const LoginOverlay = ({
       })
       .catch((err) => {
         const { code, message } = err.response.data;
-        toast.error(message);
         if (code === "EmailNotVerified") {
           changeLoading({ forgetPassword: false, verifyUser: true });
         } else if (code === "UserNotFound") {
           toast.error(message);
         } else if (code === "PasswordNotMatch") {
           changeLoading({ forgetPassword: true, verifyUser: false });
+        } else {
+          toast.error(message || err.message);
         }
       })
       .finally(() => {

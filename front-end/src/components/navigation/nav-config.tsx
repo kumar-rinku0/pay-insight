@@ -3,10 +3,8 @@
 import {
   LayoutDashboard,
   Sparkles,
-  // Search,
   User,
   Users,
-  AlertTriangle,
   Calendar,
   Building2,
   GitBranch,
@@ -130,20 +128,20 @@ export const NavItems = () => {
         {
           title: "Attandance",
           url: "/app/attendance",
-          icon: AlertTriangle,
+          icon: ScanFace,
           isActive: isNavItemActive(pathname, `/app/attendance`),
         },
-        // {
-        //   title: "Search",
-        //   url: "/search",
-        //   icon: Search,
-        //   isActive: isNavItemActive(pathname, `/search`),
-        // },
         {
           title: "Calendar",
           url: "/app/calendar",
           icon: Calendar,
           isActive: isNavItemActive(pathname, `/app/calendar`),
+        },
+        {
+          title: "Shifts",
+          url: "/app/shifts",
+          icon: SwatchBook,
+          isActive: isNavItemActive(pathname, `/app/shifts`),
         },
         {
           title: "Staff",
