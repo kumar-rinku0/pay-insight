@@ -9,7 +9,7 @@ import {
   getPreviousDayDateByTimeZone,
 } from "../utils/functions.js";
 import { reverseGeocode } from "../utils/functions.js";
-import { shiftWithPunchingDiffrence } from "./shift.js";
+import { shiftAndPunchingDiffrence } from "./shift.js";
 
 const handlemarkPunchIn = async (req, res) => {
   const { roleId, punchInGeometry } = req.body;
@@ -29,7 +29,7 @@ const handlemarkPunchIn = async (req, res) => {
   });
   await punchIn.save();
   let date = formatDateForComparison(getLocaleDateStringByTimeZone());
-  const shiftObj = await shiftWithPunchingDiffrence(roleId);
+  const shiftObj = await shiftAndPunchingDiffrence(roleId);
   if (!shiftObj.success) {
     return res.status(400).json(shiftObj);
   }
@@ -75,7 +75,7 @@ const handlemarkPunchOut = async (req, res) => {
   });
   await punchOut.save();
   let date = formatDateForComparison(getLocaleDateStringByTimeZone());
-  const shiftObj = await shiftWithPunchingDiffrence(roleId);
+  const shiftObj = await shiftAndPunchingDiffrence(roleId);
   if (!shiftObj.success) {
     return res.status(400).json(shiftObj);
   }
@@ -109,7 +109,7 @@ const handleGetOneSpecificUserAttendanceInfoWithBranchInfo = async (
   const date = formatDateForComparison(getLocaleDateStringByTimeZone());
 
   const branch = await Branch.findById(role.branch);
-  const shiftObj = await shiftWithPunchingDiffrence(role._id);
+  const shiftObj = await shiftAndPunchingDiffrence(role._id);
 
   if (!shiftObj.success) {
     return res.status(200).json(shiftObj);

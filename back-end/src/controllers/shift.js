@@ -73,7 +73,7 @@ export const handleShiftUpdateById = async (req, res) => {
 
 // function
 
-export const shiftWithPunchingDiffrence = async (roleId) => {
+export const shiftAndPunchingDiffrence = async (roleId) => {
   const shift = await Shift.findOne({
     createdFor: roleId,
   });
@@ -116,7 +116,9 @@ export const shiftWithPunchingDiffrence = async (roleId) => {
     return {
       success: true,
       diffrence,
-      message: diffrence ? "Start Time is Large!" : "End Time is Large!",
+      message: diffrence
+        ? "StartTime - CurrentTime Diffrence is Large!"
+        : "EndTime - CurrentTime Diffrence is Large!",
       shift,
     };
     // if (startTimeDiff > endTimeDiff) {
@@ -160,5 +162,12 @@ export const shiftWithPunchingDiffrence = async (roleId) => {
     //     shift,
     //   });
     // }
+  } else {
+    return {
+      success: true,
+      message: "Start Time Smaller Then End Time!",
+      shift,
+      diffrence: false,
+    };
   }
 };
