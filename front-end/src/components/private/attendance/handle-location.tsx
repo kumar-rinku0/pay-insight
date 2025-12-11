@@ -86,7 +86,7 @@ const HandleLocation = ({
   return (
     <div className="min-w-full h-[100vh] cap flex items-center justify-center">
       <Button onClick={handleAllowAccess} disabled={disableBtn}>
-        Allow Location
+        Grant Location
       </Button>
     </div>
   );

@@ -7,6 +7,8 @@ import HandleLocation from "./handle-location";
 import HandleCamera from "./handle-camera";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import type { ShiftType } from "@/types/res-type";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Attendance = () => {
   const { isAuthenticated, user } = useAuth();
@@ -17,11 +19,13 @@ const Attendance = () => {
   const [photoCaptured, setPhotoCaptured] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [timeScreen, setTimeScreen] = useState(true);
 
   const [branch, setBranch] = useState<{
     coordinates: [number, number] | null;
     radius: number | null;
-  }>({ coordinates: null, radius: null });
+    shift: ShiftType | null;
+  }>({ coordinates: null, radius: null, shift: null });
 
   const [inputs, setInputs] = useState<{
     punchInGeometry: { type: string; coordinates: number[] } | null;
@@ -41,8 +45,8 @@ const Attendance = () => {
         .get("/api/attendance/users/information/today")
         .then((res) => {
           console.log("Attendance info:", res.data);
-          const { coordinates, radius } = res.data;
-          setBranch({ coordinates, radius });
+          const { coordinates, radius, shift } = res.data;
+          setBranch({ coordinates, radius, shift });
           setHasPunchedIn(!res.data.lastPuchedOut);
         })
         .catch((err) => console.error(err));
@@ -130,6 +134,54 @@ const Attendance = () => {
       })
       .finally(() => setLoading(false));
   };
+
+  if (timeScreen) {
+    return (
+      <div className="min-h-[80vh] flex flex-col gap-4 justify-center items-center">
+        <div className="flex justify-center items-center gap-2">
+          <div>Time :</div>
+          <LiveClock />
+        </div>
+        {!branch.shift ? (
+          <div className="flex flex-col gap-4 justify-center items-center">
+            <Skeleton className="h-6 w-60" />
+            <Skeleton className="h-9 w-[5rem]" />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4 justify-center items-center">
+            <div className="flex justify-center">
+              {!hasPunchedIn ? (
+                <div>
+                  Mark Punching In Before{" "}
+                  {new Date(
+                    getTodayTimestamp(branch.shift.startTime)
+                  ).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+              ) : (
+                <div>
+                  Mark Puching Out After{" "}
+                  {new Date(
+                    getTodayTimestamp(branch.shift.startTime)
+                  ).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+              )}
+            </div>
+            <div>
+              <Button onClick={() => setTimeScreen(false)}>
+                {!hasPunchedIn ? "Punch IN" : "Punch OUT"}
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   if (!allowLocation) {
     return (
@@ -223,3 +275,37 @@ const Attendance = () => {
 };
 
 export default Attendance;
+
+function LiveClock() {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div>
+      {time.toLocaleTimeString("en-US", {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })}
+    </div>
+  );
+}
+
+export function getTodayTimestamp(timeStr: string, extraMinutes = 0) {
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  const today = new Date().toLocaleDateString("en-US", {
+    timeZone: "Asia/Kolkata",
+  });
+  return (
+    new Date(`${today} ${hours}:${minutes}:00 GMT+0530`).getTime() +
+    extraMinutes * 60 * 1000
+  );
+}
