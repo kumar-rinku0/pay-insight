@@ -1,12 +1,5 @@
 import Shift from "../models/shift.js";
-import { Attendance } from "../models/attendance.js";
-import {
-  getTodayTimestamp,
-  getLocaleDateStringByTimeZone,
-  formatDateForComparison,
-  currntTimeInFixedFomat,
-  getLocaleMonthStringByTimeZone,
-} from "../utils/functions.js";
+import { currntTimeInFixedFomat } from "../utils/functions.js";
 
 export const getAllShifts = async (req, res) => {
   const shifts = await Shift.find({});
