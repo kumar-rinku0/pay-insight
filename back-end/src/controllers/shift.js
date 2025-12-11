@@ -98,7 +98,7 @@ export const shiftAndPunchingTodayOrPreviousDay = async (roleId) => {
   }
 
   if (shift.startTime > shift.endTime) {
-    const currTime = "08:05";
+    const currTime = currntTimeInFixedFomat(Date.now());
     const currTimeValue = Number(currTime.replace(":", "."));
     const startTimeValue = Number(shift.startTime.replace(":", "."));
     const endTimeValue = Number(shift.endTime.replace(":", "."));
