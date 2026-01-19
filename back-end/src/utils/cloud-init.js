@@ -72,3 +72,11 @@ export const handleUploadImage = async (req, res, next) => {
   req.url = result.secure_url;
   return next();
 };
+
+export const handleReturnImageUpload = (req, res) => {
+  const url = req.url;
+  if (!url) {
+    return res.status(400).json({ ok: false, message: "img upload failed." });
+  }
+  return res.status(200).json({ ok: true, message: "img uploaded.", url: url });
+};
