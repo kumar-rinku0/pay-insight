@@ -55,7 +55,7 @@ route.route("/registerbyrole").post(
   wrapAsync(async (req, res, next) => {
     await onlyLimitedRolesAccess(req, res, next, 2);
   }),
-  wrapAsync(handleUserSignUpWithRoles)
+  wrapAsync(handleUserSignUpWithRoles),
 );
 
 route.route("/remember").patch(onlyLoggedInUser, wrapAsync(handleRememberMe));

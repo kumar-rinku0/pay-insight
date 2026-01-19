@@ -49,7 +49,9 @@ cloudinary.config({
 });
 export const handleUploadImage = async (req, res, next) => {
   if (!req.file) {
-    return res.status(400).send("No file uploaded");
+    return res
+      .status(400)
+      .json({ ok: false, message: "upload file not found." });
   }
   const file = req.file;
   const mimeType = file.mimetype; // e.g., 'image/jpeg'
